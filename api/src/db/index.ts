@@ -1,6 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configDotenv } from 'dotenv';
 import { DataSource, type DataSourceOptions } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Activity } from '../activity/activity.entity';
 import { dotenvPath } from '../config';
@@ -40,6 +41,7 @@ const options = {
   entities,
   subscribers: isTest ? [] : subscribers,
   migrations,
+  namingStrategy: new SnakeNamingStrategy(),
 } as const satisfies DataSourceOptions;
 
 export const dbModule = TypeOrmModule.forRoot(options);

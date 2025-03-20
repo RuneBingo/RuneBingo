@@ -3,7 +3,7 @@ import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import { HelloWorldJob } from './jobs/hello-world.job';
 import { JobsService } from './jobs/jobs.service';
 
-@Controller()
+@Controller('v1')
 export class AppController {
   constructor(private readonly jobsService: JobsService) {}
 

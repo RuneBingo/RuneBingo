@@ -2,22 +2,22 @@ import { CommandBus, EventsHandler } from '@nestjs/cqrs';
 
 import { CreateActivityCommand } from '@/activity/commands/create-activity.command';
 
-import { UserCreatedEvent } from './user-created.event';
+import { UserUpdatedEvent } from './user-updated.event';
 
-@EventsHandler(UserCreatedEvent)
-export class UserCreatedHandler {
+@EventsHandler(UserUpdatedEvent)
+export class UserUpdatedHandler {
   constructor(private readonly commandBus: CommandBus) {}
 
-  async handle(event: UserCreatedEvent) {
-    const { userId, requesterId, ...parameters } = event;
+  async handle(event: UserUpdatedEvent) {
+    const { userId, requesterId, updates } = event;
 
     await this.commandBus.execute(
       new CreateActivityCommand({
-        key: 'user.created',
+        key: 'user.updated',
         requesterId,
         trackableId: userId,
         trackableType: 'User',
-        parameters,
+        parameters: updates,
       }),
     );
   }

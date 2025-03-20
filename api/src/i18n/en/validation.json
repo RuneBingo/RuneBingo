@@ -1,4 +1,8 @@
 {
   "notEmpty": "{property} must not be empty",
-  "invalidEmail": "'{value}' is not a valid email address"
+  "invalidEmail": "'{value}' is not a valid email address",
+  "username": {
+    "noSpecialCharacters": "Username must not contain special characters",
+    "invalidLength": "Username must be between {constraints.0} and {constraints.1} characters long"
+  }
 }

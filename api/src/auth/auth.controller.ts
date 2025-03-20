@@ -1,4 +1,14 @@
-import { Body, Controller, HttpCode, Logger, Post, Request, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Logger,
+  Post,
+  Request,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
@@ -15,12 +25,16 @@ import { FindUserByEmailQuery } from '@/user/queries/find-user-by-email.query';
 import type { User } from '@/user/user.entity';
 
 import { type AppConfig } from '../config';
+import type { SignUpCodePayload } from './auth-codes.types';
 import { SignInWithEmailCommand } from './commands/sign-in-with-email.command';
+import { SignUpWithEmailCommand } from './commands/sign-up-with-email.command';
 import { SignInWithEmailDto } from './dto/sign-in-with-email.dto';
-import { VerifyEmailCodeDto } from './dto/verify-email-code.dto';
-import { VerifyEmailCodeQuery } from './queries/verify-email-code.query';
+import { SignUpWithEmailDto } from './dto/sign-up-with-email.dto';
+import { VerifyAuthCodeDto } from './dto/verify-auth-code.dto';
+import { VerifyAuthCodeQuery } from './queries/verify-auth-code.query';
+import { UserDto } from '../user/dto/user.dto';
 
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
@@ -31,10 +45,25 @@ export class AuthController {
     private readonly emailerService: EmailerService,
   ) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Get the current authenticated user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The current authenticated user, or null if not authenticated.',
+    type: [UserDto],
+  })
+  me(@Request() req: Request) {
+    const user = req.userEntity;
+
+    if (!user) return null;
+
+    return new UserDto(user);
+  }
+
   @Post('sign-out')
   @ApiOperation({ summary: 'Sign out from current session' })
-  @ApiResponse({ status: 201, description: 'Signed out successfully.' })
-  @HttpCode(201)
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Signed out successfully.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async signOut(@Request() req: Request) {
     const { uuid } = req.session;
     if (!uuid) return;
@@ -46,50 +75,93 @@ export class AuthController {
     });
   }
 
-  @Post('email/sign-in')
-  @ApiOperation({ summary: 'Request authentication code via email' })
-  @ApiResponse({ status: 201, description: 'An email with an authentication code has been sent.' })
-  @HttpCode(201)
+  @Post('sign-in')
+  @ApiOperation({ summary: 'Request sign-in code via email' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'An email with an sign-in code has been sent.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The email address is invalid.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'The user account is disabled.' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'The user account does not exist.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async signInWithEmail(@Body() body: SignInWithEmailDto, @I18nLang() lang: string) {
     const env = this.configService.get('NODE_ENV', { infer: true });
     const { email } = body;
 
     const { code } = await this.commandBus.execute(new SignInWithEmailCommand(email));
+
     if (env === 'development') {
-      this.logger.log(`Generated code ${code} for email ${email}.`);
+      this.logger.log(`Generated sign-in code ${code} for email ${email}.`);
     }
 
     const user = await this.queryBus.execute(new FindUserByEmailQuery({ email }));
     void this.emailerService.sendEmail(new VerificationEmail(email, user?.language ?? lang, { code: code }));
   }
 
-  @Post('email/verify-code')
-  @ApiOperation({ summary: 'Verify email authentication code' })
-  @ApiResponse({ status: 201, description: 'Signed in successfully.' })
+  @Post('sign-up')
+  @ApiOperation({ summary: 'Request sign-up code via email' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'An email with an sign-up code has been sent.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The email address or username is invalid.' })
+  @ApiResponse({ status: HttpStatus.CONFLICT, description: 'The email address or username is already in use.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async signUpWithEmail(@Body() dto: SignUpWithEmailDto, @I18nLang() lang: string) {
+    const env = this.configService.get('NODE_ENV', { infer: true });
+    const { email, username } = dto;
+
+    const { code } = await this.commandBus.execute(new SignUpWithEmailCommand(email, username, lang));
+
+    if (env === 'development') {
+      this.logger.log(`Generated sign-up code ${code} for email ${email}.`);
+    }
+
+    void this.emailerService.sendEmail(new VerificationEmail(email, lang, { code: code }));
+  }
+
+  @Post('verify-code')
+  @ApiOperation({ summary: 'Verify authentication code' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description:
+      'Verification successful. User has been created if it was a sign up. Session created if sign up or sign in.',
+  })
   @ApiUnauthorizedResponse({ description: 'The code is invalid or has expired.' })
-  async verifyEmailCode(
-    @Body() body: VerifyEmailCodeDto,
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async verifyCode(
+    @Body() body: VerifyAuthCodeDto,
     @I18n() i18n: I18nService<I18nTranslations>,
-    @I18nLang() language: string,
     @Request() req: Request,
   ) {
     const { email, code } = body;
 
-    const { valid } = await this.queryBus.execute(new VerifyEmailCodeQuery(email, code));
-    if (!valid) {
-      throw new UnauthorizedException(i18n.t('auth.verifyCode.invalidOrExpired'));
+    const payload = await this.queryBus.execute(new VerifyAuthCodeQuery(email, code));
+
+    let user: User | null = null;
+    let createSession = false;
+
+    switch (payload.action) {
+      case 'sign-in': {
+        user = await this.queryBus.execute(new FindUserByEmailQuery({ email }));
+        if (!user || user.isDisabled) {
+          throw new BadRequestException(i18n.t('auth.verifyAuthCode.invalidOrExpired'));
+        }
+
+        createSession = true;
+        break;
+      }
+
+      case 'sign-up': {
+        const { username, language } = payload as SignUpCodePayload;
+        user = await this.commandBus.execute(
+          new CreateUserCommand({ email, username, emailVerified: true, language, requester: 'self' }),
+        );
+
+        createSession = true;
+        break;
+      }
+
+      default:
+        throw new BadRequestException(i18n.t('auth.verifyAuthCode.invalidOrExpired'));
     }
 
-    let user = await this.queryBus.execute(new FindUserByEmailQuery({ email, withDeleted: true }));
-    if (!user) {
-      user = await this.commandBus.execute(
-        new CreateUserCommand({ email, emailVerified: true, language, requester: 'self' }),
-      );
-    }
-
-    if (user.isDeleted) {
-      throw new UnauthorizedException(i18n.t('auth.verifyCode.accountDeleted'));
-    }
+    if (!user || !createSession) return;
 
     await this.createSessionForUser(req, user, 'email');
   }

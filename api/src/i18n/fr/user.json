@@ -1,0 +1,41 @@
+{
+  "createUser": {
+    "emailAlreadyExists": "L'adresse email est déjà utilisée.",
+    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé."
+  },
+  "findByUsername": {
+    "notFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le voir."
+  },
+  "searchUsers": {
+    "invalidStatus": "Statut invalide. Les valeurs autorisées sont 'active', 'disabled' ou null."
+  },
+  "searchUserActivities": {
+    "userNotFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le voir."
+  },
+  "updateUser": {
+    "userNotFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le modifier.",
+    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé."
+  },
+  "formatUserActivities": {
+    "userNotFound": "L'utilisateur avec l'id {id} n'existe pas."
+  },
+  "activity": {
+    "created": {
+      "title": {
+        "self": "{username} s'est enregistré à l'application.",
+        "other": "{requesterName} a enregistré {username} à l'application."
+      }
+    },
+    "updated": {
+      "title": {
+        "self": "{username} a mis à jour ses informations de compte.",
+        "other": "{requesterName} a mis à jour les informations de compte de {username}."
+      },
+      "body": {
+        "username": "A mis à jour le nom d'utilisateur à {username}.",
+        "language": "A mis à jour la langue à {language}.",
+        "role": "A mis à jour le rôle à {role}."
+      }
+    }
+  }
+}

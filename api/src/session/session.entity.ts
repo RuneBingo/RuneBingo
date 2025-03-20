@@ -49,7 +49,7 @@ export class Session extends StrongEntity {
   lastSeenAt: Date;
 
   @ManyToOne(() => User, (user: User) => user.sessions)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: Promise<User>;
 
   @Column()

@@ -79,8 +79,8 @@ export abstract class BaseEntityParanoid extends BaseEntity {
    *
    * - If the entity is not deleted, this field is `null`.
    */
-  @Index({ where: '"deletedAt" IS NULL' })
-  @Index({ where: '"deletedAt" IS NOT NULL' })
+  @Index({ where: '"deleted_at" IS NULL' })
+  @Index({ where: '"deleted_at" IS NOT NULL' })
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deletedAt: Date | null = null;
 
@@ -109,8 +109,8 @@ export abstract class StrongEntityParanoid extends StrongEntity {
    *
    * - If the entity is not deleted, this field is `null`.
    */
-  @Index({ where: '"deletedAt" IS NULL' })
-  @Index({ where: '"deletedAt" IS NOT NULL' })
+  @Index({ where: '"deleted_at" IS NULL' })
+  @Index({ where: '"deleted_at" IS NOT NULL' })
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deletedAt: Date | null = null;
 

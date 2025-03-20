@@ -6,9 +6,22 @@ import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
     "auth": {
-        "verifyCode": {
+        "signInWithEmail": {
+            "userNotFound": string;
+            "userDisabled": string;
+        };
+        "signUpWithEmail": {
+            "emailAlreadyExists": string;
+            "usernameAlreadyExists": string;
+        };
+        "verifyAuthCode": {
             "invalidOrExpired": string;
             "accountDeleted": string;
+        };
+        "roles": {
+            "admin": string;
+            "moderator": string;
+            "user": string;
         };
     };
     "email": {
@@ -18,14 +31,65 @@ export type I18nTranslations = {
             "cta": string;
         };
     };
+    "general": {
+        "language": {
+            "en": string;
+            "fr": string;
+        };
+    };
     "session": {
         "createSessionForUser": {
             "userDisabled": string;
         };
     };
+    "user": {
+        "createUser": {
+            "emailAlreadyExists": string;
+            "usernameAlreadyExists": string;
+        };
+        "findByUsername": {
+            "notFound": string;
+        };
+        "searchUsers": {
+            "invalidStatus": string;
+        };
+        "searchUserActivities": {
+            "userNotFound": string;
+        };
+        "updateUser": {
+            "userNotFound": string;
+            "usernameAlreadyExists": string;
+        };
+        "formatUserActivities": {
+            "userNotFound": string;
+        };
+        "activity": {
+            "created": {
+                "title": {
+                    "self": string;
+                    "other": string;
+                };
+            };
+            "updated": {
+                "title": {
+                    "self": string;
+                    "other": string;
+                };
+                "body": {
+                    "username": string;
+                    "language": string;
+                    "role": string;
+                };
+            };
+        };
+    };
     "validation": {
         "notEmpty": string;
         "invalidEmail": string;
+        "username": {
+            "noSpecialCharacters": string;
+            "invalidLength": string;
+        };
     };
 };
 /* prettier-ignore */

@@ -1,0 +1,41 @@
+{
+  "createUser": {
+    "emailAlreadyExists": "The email address is already taken.",
+    "usernameAlreadyExists": "The username is already taken."
+  },
+  "findByUsername": {
+    "notFound": "The user doesn't exist or you don't have permission to see it."
+  },
+  "searchUsers": {
+    "invalidStatus": "Invalid status. Allowed values are 'active', 'disabled' or null."
+  },
+  "searchUserActivities": {
+    "userNotFound": "The user doesn't exist or you don't have permission to see it."
+  },
+  "updateUser": {
+    "userNotFound": "The user doesn't exist or you don't have permission to see it.",
+    "usernameAlreadyExists": "The username is already taken."
+  },
+  "formatUserActivities": {
+    "userNotFound": "The user with id {id} doesn't exist."
+  },
+  "activity": {
+    "created": {
+      "title": {
+        "self": "{username} has registered to the application.",
+        "other": "{requesterName} has registered {username} to the application."
+      }
+    },
+    "updated": {
+      "title": {
+        "self": "{username} has updated their account information.",
+        "other": "{requesterName} has updated {username}'s account information."
+      },
+      "body": {
+        "username": "Set the username to {username}.",
+        "language": "Set the language to {language}.",
+        "role": "Set the role to {role}."
+      }
+    }
+  }
+}
