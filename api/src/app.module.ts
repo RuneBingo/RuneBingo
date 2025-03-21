@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { configModule } from './config';
 import { cqrsModule } from './cqrs';
 import { dbModule } from './db';
+import { SeedingModule } from './db/seeding/seeding.module';
 import { EmailerModule } from './emailer/emailer.module';
 import { EmailerService } from './emailer/emailer.service';
 import { i18nModule } from './i18n';
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     dbModule,
     i18nModule,
     RedisModule,
+    SeedingModule,
     SessionModule,
     UserModule,
     AuthModule,

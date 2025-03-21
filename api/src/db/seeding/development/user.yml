@@ -1,0 +1,27 @@
+char0o:
+  username: char0o
+  email: directfromquebec@gmail.com
+  emailVerified: true
+  role: admin
+  language: en
+
+raph:
+  username: Raph
+  email: raph.pion@gmail.com
+  emailVerified: true
+  role: admin
+  language: en
+
+zezima:
+  username: zezima
+  email: zezima@runebingo.com
+  emailVerified: true
+  role: moderator
+  language: en
+
+b0aty:
+  username: b0aty
+  email: b0aty@runebingo.com
+  emailVerified: true
+  role: user
+  language: en

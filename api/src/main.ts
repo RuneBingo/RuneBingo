@@ -23,6 +23,8 @@ async function bootstrap() {
     logger: new ConsoleLogger({ colors: true }),
   });
 
+  await app.init();
+
   const configService = app.get(ConfigService<AppConfig>);
   const port = configService.getOrThrow('server.port', { infer: true });
   const env = configService.get('NODE_ENV', { infer: true });

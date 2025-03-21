@@ -136,3 +136,20 @@ This will drop the database, recreate it, and apply all migrations:
 ```sh
 npm run db:reset
 ```
+
+## CLI Commands
+
+The RuneBingo API also provides CLI commands for managing the application.
+
+### Seeding the Database
+
+To seed the database with data, run the following command:
+
+```sh
+npm run db:seed
+```
+
+> [!CAUTION]
+> This command should only be run in development environments, as it will add/overwrite existing data and cannot be undone.
+
+This will add seeding data to the database from the `src/db/seeding/seeds/development` directory. You don't need to reset the database before seeding it, as it will automatically overwrite any existing data with the updated seed data.
