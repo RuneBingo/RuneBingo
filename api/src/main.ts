@@ -2,7 +2,6 @@ import { ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { type NestExpressApplication } from '@nestjs/platform-express';
-import { RedisStore } from 'connect-redis';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { I18nValidationExceptionFilter } from 'nestjs-i18n';
@@ -22,8 +21,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: new ConsoleLogger({ colors: true }),
   });
-
-  await app.init();
 
   const configService = app.get(ConfigService<AppConfig>);
   const port = configService.getOrThrow('server.port', { infer: true });
@@ -52,7 +49,7 @@ function setupSession(app: NestExpressApplication) {
 
   app.use(
     session({
-      store: new RedisStore({ client: redisService.getClient() }),
+      store: redisService.store,
       secret: sessionSecret,
       resave: false,
       saveUninitialized: false,

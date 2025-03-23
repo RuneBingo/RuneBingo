@@ -15,7 +15,7 @@ export class Session extends StrongEntity {
   @Generated('uuid')
   uuid: string;
 
-  @Column({ length: 255 })
+  @Column({ unique: true, length: 255 })
   sessionID: string;
 
   @Column({ length: 255, default: 'email' })

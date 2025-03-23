@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { addWeeks } from 'date-fns';
@@ -29,8 +29,8 @@ export class CreateSessionForUserHandler {
   async execute(command: CreateSessionForUserCommand): Promise<CreateSessionForUserResult> {
     const { user, method, sessionId, ip, userAgent } = command;
 
-    if (user.isDisabled) {
-      throw new UnauthorizedException(this.i18nService.t('session.createSessionForUser.userDisabled'));
+    if (user.isDeleted || user.isDisabled) {
+      throw new ForbiddenException(this.i18nService.t('session.createSessionForUser.userDisabled'));
     }
 
     const { deviceType, os, browser } = this.getUserAgentInfo(userAgent);

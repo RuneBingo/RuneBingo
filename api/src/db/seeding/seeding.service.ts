@@ -5,16 +5,19 @@ import type { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 
 import { entities } from '..';
 import { Seeder } from './seeder';
+import { SessionSeeder } from './session.seeder';
 import { UserSeeder } from './user.seeder';
 import { AppConfig } from '../../config';
 
 @Injectable()
 export class SeedingService {
+  private shouldInitializeDataSource = false;
   private readonly logger = new Logger(SeedingService.name);
 
   private readonly seedingEntityOrder = [
     // Strong entities
     UserSeeder,
+    SessionSeeder,
     // Weak entities
     // Add more seeders here
   ];
@@ -29,8 +32,13 @@ export class SeedingService {
   ) {}
 
   public async initialize() {
+    if (this.shouldInitializeDataSource) {
+      await this.dataSource.initialize();
+      this.shouldInitializeDataSource = false;
+    }
+
     for (const seeder of this.seedingEntityOrder) {
-      const instance = new seeder(this.configService, this.dataSource);
+      const instance = new seeder(this.configService, this.dataSource, this);
       await instance.seed();
 
       if (!this.seederTypeMap.has(instance.entityName)) {
@@ -39,7 +47,8 @@ export class SeedingService {
         );
       }
 
-      this.seederMap.set(this.seederTypeMap.get(instance.entityName)!, instance);
+      const entityType = this.seederTypeMap.get(instance.entityName)!;
+      this.seederMap.set(entityType, instance as Seeder<ObjectLiteral, unknown, string>);
     }
   }
 
@@ -51,12 +60,17 @@ export class SeedingService {
 
     await this.dataSource.destroy();
     this.seederMap.clear();
+    this.shouldInitializeDataSource = true;
   }
 
-  public getEntity<Entity extends ObjectLiteral>(entity: EntityTarget<Entity>, key: string): Entity | null {
+  public getEntity<Entity extends ObjectLiteral>(entity: EntityTarget<Entity>, key: string): Entity {
     const seeder = this.seederMap.get(entity);
-    if (!seeder) return null;
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
+    if (!seeder) throw new Error(`Seeder for entity ${entity} not found`);
 
-    return seeder.getEntity(key) as Entity;
+    const result = seeder.getEntity(key) as Entity | null;
+    if (!result) throw new Error(`Entity with key ${key} not found`);
+
+    return result;
   }
 }

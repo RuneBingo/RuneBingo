@@ -17,7 +17,7 @@ export class SignOutSessionByUuidHandler {
     const { uuid, requester } = command;
 
     let session = await this.sessionRepository.findOneBy({ uuid });
-    if (!session) {
+    if (!session || session.isSignedOut) {
       return null;
     }
 

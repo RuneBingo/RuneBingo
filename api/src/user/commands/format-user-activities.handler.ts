@@ -4,12 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { In, Repository } from 'typeorm';
 
+import { Activity } from '@/activity/activity.entity';
+import { ActivityDto } from '@/activity/dto/activity.dto';
+import { Roles } from '@/auth/roles/roles.constants';
 import { I18nTranslations } from '@/i18n/types';
 
 import { FormatUserActivitiesCommand, FormatUserActivitiesResult } from './format-user-activities.command';
-import { Activity } from '../../activity/activity.entity';
-import { ActivityDto } from '../../activity/dto/activity.dto';
-import { Roles } from '../../auth/roles/roles.constants';
 import { UserDto } from '../dto/user.dto';
 import { User } from '../user.entity';
 

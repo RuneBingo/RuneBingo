@@ -37,8 +37,6 @@ export class UpdateUserHandler {
       Object.entries(command.updates).filter(([key, value]) => value !== undefined && value !== user![key]),
     ) as UpdateUserParams['updates'];
 
-    console.log(user, command.updates, updates);
-
     if (Object.keys(updates).length === 0) {
       return user;
     }

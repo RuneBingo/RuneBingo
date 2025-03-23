@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { QueryHandler } from '@nestjs/cqrs';
+import Joi from 'joi';
 import { I18nService } from 'nestjs-i18n';
 
 import { I18nTranslations } from '@/i18n/types';
@@ -7,6 +8,7 @@ import { RedisService } from '@/redis/redis.service';
 import { User } from '@/user/user.entity';
 
 import { VerifyAuthCodeQuery, type VerifyAuthCodeResult } from './verify-auth-code.query';
+import { signInCodeSchema, signUpCodeSchema } from '../auth-codes.schemas';
 import type { AuthCodePayload } from '../auth-codes.types';
 
 @QueryHandler(VerifyAuthCodeQuery)
@@ -26,12 +28,34 @@ export class VerifyAuthCodeHandler {
     }
 
     const payloadObj = JSON.parse(payload) as object;
-    if (!('action' in payloadObj)) {
-      throw new BadRequestException(this.i18nService.t('auth.verifyAuthCode.invalidOrExpired'));
-    }
+
+    this.validatePayload(payloadObj);
 
     await this.redisService.delete(`auth:${emailNormalized}:${code}`);
 
-    return payloadObj as AuthCodePayload;
+    return payloadObj;
+  }
+
+  private validatePayload(payload: object): asserts payload is AuthCodePayload {
+    if (!('action' in payload)) {
+      throw new BadRequestException(this.i18nService.t('auth.verifyAuthCode.invalidOrExpired'));
+    }
+
+    let schema: Joi.ObjectSchema<AuthCodePayload>;
+    switch (payload.action) {
+      case 'sign-in':
+        schema = signInCodeSchema;
+        break;
+      case 'sign-up':
+        schema = signUpCodeSchema;
+        break;
+      default:
+        throw new BadRequestException(this.i18nService.t('auth.verifyAuthCode.invalidOrExpired'));
+    }
+
+    const { error } = schema.validate(payload);
+    if (error) {
+      throw new BadRequestException(this.i18nService.t('auth.verifyAuthCode.invalidOrExpired'));
+    }
   }
 }

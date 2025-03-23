@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { access, constants, readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { Logger } from '@nestjs/common';
@@ -7,12 +7,13 @@ import type Joi from 'joi';
 import { type ObjectLiteral, type DataSource, In, type FindOptionsWhere } from 'typeorm';
 import YAML from 'yaml';
 
+import { type SeedingService } from './seeding.service';
 import { type AppConfig } from '../../config';
 
-export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier = string> {
+export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier extends string | number = string> {
   public abstract readonly entityName: string;
 
-  protected abstract readonly schema: Joi.Schema<Record<string, Schema>>;
+  protected abstract readonly schema: Joi.Schema<Record<Identifier, Schema>>;
   protected abstract readonly identifierColumn: keyof Entity;
   protected readonly entityMapping = new Map<string, Entity>();
   protected readonly logger = new Logger(this.constructor.name);
@@ -20,6 +21,7 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier = 
   constructor(
     protected readonly configService: ConfigService<AppConfig>,
     protected readonly db: DataSource,
+    protected readonly seedingService: SeedingService,
   ) {}
 
   public async seed() {
@@ -48,6 +50,7 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier = 
     const identifiers = await Promise.all(seedEntities.map((e) => this.getIdentifier(e)));
     const savedEntities = await repository.find({
       where: { [this.identifierColumn]: In(identifiers) } as FindOptionsWhere<Entity>,
+      withDeleted: true,
     });
 
     for (const entity of savedEntities) {
@@ -68,10 +71,16 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier = 
 
   private async getSeedData(): Promise<Record<string, Schema> | undefined> {
     try {
+      await access(this.seedPath, constants.R_OK);
+
       const seedFileContents = await readFile(this.seedPath, 'utf-8');
       const seedFileData = YAML.parse(seedFileContents) as Record<string, Schema>;
       return this.schema.validateAsync(seedFileData);
     } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+        return {};
+      }
+
       this.logger.error(e);
       return undefined;
     }

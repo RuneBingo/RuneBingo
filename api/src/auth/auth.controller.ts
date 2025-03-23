@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { I18n, I18nLang, I18nService } from 'nestjs-i18n';
 
 import { EmailerService } from '@/emailer/emailer.service';
@@ -122,7 +122,8 @@ export class AuthController {
     description:
       'Verification successful. User has been created if it was a sign up. Session created if sign up or sign in.',
   })
-  @ApiUnauthorizedResponse({ description: 'The code is invalid or has expired.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'The code is invalid or has expired.' })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'The user account is disabled or deleted.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   async verifyCode(
     @Body() body: VerifyAuthCodeDto,
@@ -167,10 +168,17 @@ export class AuthController {
   }
 
   private async createSessionForUser(req: Request, user: User, method: SessionMethod) {
-    const { headers, ip, session } = req;
+    const { headers, ip } = req;
+    let { session } = req;
 
     if (session.uuid) {
       await this.commandBus.execute(new SignOutSessionByUuidCommand({ uuid: session.uuid, requester: user }));
+
+      req.session.regenerate((err) => {
+        if (err) this.logger.error(err);
+      });
+
+      session = req.session;
     }
 
     const sessionEntity = await this.commandBus.execute(

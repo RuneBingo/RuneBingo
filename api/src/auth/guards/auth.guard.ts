@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
     const requiredRole = this.reflector.get<Roles | undefined>('role', context.getHandler());
     const request = context.switchToHttp().getRequest<Request>();
 
-    if (!request.userEntity) {
+    if (!request.userEntity || request.userEntity.isDeleted || request.userEntity.isDisabled) {
       throw new UnauthorizedException();
     }
 

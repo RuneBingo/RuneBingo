@@ -1,0 +1,47 @@
+name: 'API: Lint & Tests'
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  run-ci:
+    name: Run CI Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📄 Create .env from secret
+        run: echo "${{ secrets.CI_ENV }}" | base64 -d > .env
+
+      - name: 📄 Create config.local.json from secret
+        run: |
+          echo "${{ secrets.CI_API_CONFIG_LOCAL_JSON }}" | base64 -d > api/config.local.json
+
+      - name: 🐳 Start Docker containers
+        run: docker compose up -d
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧹 Lint API
+        run: npm run lint -w api
+
+      - name: 🧪 Test API
+        run: npm run test -w api

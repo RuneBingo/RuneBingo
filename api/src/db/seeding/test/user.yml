@@ -25,3 +25,19 @@ b0aty:
   emailVerified: true
   role: user
   language: en
+
+disabled_user:
+  username: disabled user
+  email: disabled.user@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+  disabledAt: 2025-01-01T00:00:00.000Z
+
+deleted_user:
+  username: deleted user
+  email: deleted.user@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+  deletedAt: 2025-01-01T00:00:00.000Z

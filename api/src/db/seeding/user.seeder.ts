@@ -11,6 +11,8 @@ type UserSeed = {
   emailVerified: boolean;
   role: Roles;
   language: string;
+  disabledAt?: Date;
+  deletedAt?: Date;
 };
 
 const userSeedSchema = Joi.object<Record<string, UserSeed>>().pattern(
@@ -23,10 +25,12 @@ const userSeedSchema = Joi.object<Record<string, UserSeed>>().pattern(
       .valid(...Object.values(Roles))
       .required(),
     language: Joi.string().required(),
+    disabledAt: Joi.date().optional(),
+    deletedAt: Joi.date().optional(),
   }),
 );
 
-export class UserSeeder extends Seeder<User, UserSeed> {
+export class UserSeeder extends Seeder<User, UserSeed, string> {
   entityName = User.name;
   identifierColumn = 'usernameNormalized' as keyof User;
   schema = userSeedSchema;
@@ -45,11 +49,13 @@ export class UserSeeder extends Seeder<User, UserSeed> {
     user.role = seed.role;
     user.language = seed.language;
     user.gravatarHash = gravatarHash;
+    user.disabledAt = seed.disabledAt ?? null;
+    user.deletedAt = seed.deletedAt ?? null;
 
     return user;
   }
 
-  protected getIdentifier(entity: User): string {
+  protected getIdentifier(entity: User) {
     return entity.usernameNormalized;
   }
 }

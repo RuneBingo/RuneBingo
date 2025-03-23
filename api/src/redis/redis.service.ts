@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { RedisStore } from 'connect-redis';
 import { createClient, RedisClientType } from 'redis';
 
 import { type AppConfig } from '../config';
@@ -7,6 +8,7 @@ import { type AppConfig } from '../config';
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType;
+  private _store: RedisStore;
 
   constructor(private readonly configService: ConfigService<AppConfig>) {
     this.client = createClient({
@@ -18,6 +20,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     });
 
     this.client.on('error', (err) => console.error('Redis Client Error:', err));
+
+    this._store = new RedisStore({ client: this.client });
   }
 
   async onModuleInit() {
@@ -28,10 +32,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     await this.client.disconnect();
   }
 
-  getClient(): RedisClientType {
-    return this.client;
+  get store() {
+    return this._store;
   }
-
   /** Sets a key-value pair in Redis. If `ttl` is provided, the key will expire after `ttl` seconds. */
   async set(key: string, value: string, ttl?: number) {
     await this.client.set(key, value, { EX: ttl });

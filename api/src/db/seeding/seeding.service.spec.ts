@@ -2,12 +2,12 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { Test, type TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import * as YAML from 'yaml';
 
+import { Session } from '@/session/session.entity';
 import { User } from '@/user/user.entity';
 
-import { dbModule, entities } from '..';
+import { dbModule } from '..';
 import { SeedingService } from './seeding.service';
 import { configModule } from '../../config';
 
@@ -25,7 +25,7 @@ describe('SeedingService', () => {
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [configModule, dbModule, TypeOrmModule.forFeature(entities)],
+      imports: [configModule, dbModule],
       providers: [SeedingService],
     }).compile();
 
@@ -38,7 +38,10 @@ describe('SeedingService', () => {
     await module.close();
   });
 
-  it.each([['user', User]])('seeds %s successfully', async (fileName, entityClass) => {
+  it.each([
+    ['user', User],
+    ['session', Session],
+  ])('seeds %s successfully', async (fileName, entityClass) => {
     const seedData = await getSeedData(fileName);
     for (const identifier of Object.keys(seedData)) {
       const entity = seedingService.getEntity(entityClass, identifier);
