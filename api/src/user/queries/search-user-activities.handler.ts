@@ -5,13 +5,13 @@ import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
 import { Activity } from '@/activity/activity.entity';
-import { Roles } from '@/auth/roles/roles.constants';
-import { userHasRole } from '@/auth/roles/roles.utils';
 import { resolvePaginatedQueryWithoutTotal } from '@/db/paginated-query.utils';
 import { I18nTranslations } from '@/i18n/types';
 
 import { User } from '../user.entity';
 import { SearchUserActivitiesQuery, type SearchUserActivitiesResult } from './search-user-activities.query';
+import { ViewUserScope } from '../scopes/view-user.scope';
+import { UserPolicies } from '../user.policies';
 
 @QueryHandler(SearchUserActivitiesQuery)
 export class SearchUserActivitiesHandler {
@@ -25,13 +25,19 @@ export class SearchUserActivitiesHandler {
     const { requester, username, ...pagination } = query.params;
 
     const usernameNormalized = User.normalizeUsername(username);
-    const user = await this.userRepository.findOneBy({ usernameNormalized });
+
+    const scope = this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username_normalized = :usernameNormalized', { usernameNormalized });
+
+    const user = await new ViewUserScope(requester, scope).resolve().getOne();
+
     if (!user) {
       throw new NotFoundException(this.i18nService.t('user.searchUserActivities.userNotFound'));
     }
 
-    if (user.id !== requester.id && !userHasRole(requester, Roles.Admin)) {
-      throw new ForbiddenException();
+    if (!new UserPolicies(requester).canViewActivities(user)) {
+      throw new ForbiddenException(this.i18nService.t('user.searchUserActivities.forbidden'));
     }
 
     const q = this.activityRepository

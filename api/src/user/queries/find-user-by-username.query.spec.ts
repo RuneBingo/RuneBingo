@@ -8,8 +8,8 @@ import { SeedingService } from '@/db/seeding/seeding.service';
 import { i18nModule } from '@/i18n';
 
 import { User } from '../user.entity';
+import { FindUserByUsernameHandler } from './find-user-by-username.handler';
 import { FindUserByUsernameQuery } from './find-user-by-username.query';
-import { FindUserByUsernameHandler } from './find-user.by-username.handler';
 
 describe('FindUserByUsernameHandler', () => {
   let module: TestingModule;

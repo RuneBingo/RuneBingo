@@ -4,17 +4,20 @@ import { join } from 'path';
 import { Logger } from '@nestjs/common';
 import { type ConfigService } from '@nestjs/config';
 import type Joi from 'joi';
-import { type ObjectLiteral, type DataSource, In, type FindOptionsWhere } from 'typeorm';
+import { type ObjectLiteral, type DataSource, type FindOptionsWhere } from 'typeorm';
 import YAML from 'yaml';
 
 import { type SeedingService } from './seeding.service';
 import { type AppConfig } from '../../config';
 
-export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier extends string | number = string> {
+type IdentifierRecord<Entity extends ObjectLiteral> = Partial<Record<keyof Entity, Entity[keyof Entity]>>;
+
+export abstract class Seeder<Entity extends ObjectLiteral, Schema> {
   public abstract readonly entityName: string;
 
-  protected abstract readonly schema: Joi.Schema<Record<Identifier, Schema>>;
-  protected abstract readonly identifierColumn: keyof Entity;
+  protected abstract readonly schema: Joi.Schema<Record<string, Schema>>;
+  protected abstract readonly identifierColumns: (keyof Entity)[];
+
   protected readonly entityMapping = new Map<string, Entity>();
   protected readonly logger = new Logger(this.constructor.name);
 
@@ -30,7 +33,7 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier ex
       return;
     }
 
-    const identifierToKeyMap = new Map<Identifier, string>();
+    const identifierToKeyMap = new Map<string, string>();
     const repository = this.db.getRepository<Entity>(this.entityName);
 
     const seedEntities = await Promise.all(
@@ -38,26 +41,39 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier ex
         const entity = await this.deserialize(seed);
         const identifier = await this.getIdentifier(entity);
 
-        identifierToKeyMap.set(identifier, key);
+        identifierToKeyMap.set(JSON.stringify(identifier), key);
         return entity;
       }),
     );
 
     if (seedEntities.length === 0) return;
 
-    await repository.upsert(seedEntities, [this.identifierColumn as string]);
+    await repository.upsert(seedEntities, this.identifierColumns as string[]);
 
-    const identifiers = await Promise.all(seedEntities.map((e) => this.getIdentifier(e)));
+    const identifiers = (await Promise.all(
+      seedEntities.map((e) => this.getIdentifier(e)),
+    )) as IdentifierRecord<Entity>[];
+
+    const where: FindOptionsWhere<Entity>[] = identifiers.map((identifier) => {
+      const clause: Partial<Entity> = {};
+      this.identifierColumns.forEach((column) => {
+        clause[column] = identifier[column];
+      });
+
+      return clause;
+    });
+
     const savedEntities = await repository.find({
-      where: { [this.identifierColumn]: In(identifiers) } as FindOptionsWhere<Entity>,
+      where,
       withDeleted: true,
     });
 
     for (const entity of savedEntities) {
       const identifier = await this.getIdentifier(entity);
-      if (!identifierToKeyMap.has(identifier)) continue;
+      const key = identifierToKeyMap.get(JSON.stringify(identifier));
+      if (!key) continue;
 
-      this.entityMapping.set(identifierToKeyMap.get(identifier)!, entity);
+      this.entityMapping.set(key, entity);
     }
   }
 
@@ -67,7 +83,7 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema, Identifier ex
 
   protected abstract deserialize(seed: Schema): Entity | Promise<Entity>;
 
-  protected abstract getIdentifier(entity: Entity): Identifier | Promise<Identifier>;
+  protected abstract getIdentifier(entity: Entity): Promise<IdentifierRecord<Entity>> | IdentifierRecord<Entity>;
 
   private async getSeedData(): Promise<Record<string, Schema> | undefined> {
     try {

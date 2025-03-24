@@ -1,7 +1,8 @@
 {
   "createUser": {
     "emailAlreadyExists": "L'adresse email est déjà utilisée.",
-    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé."
+    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé.",
+    "forbidden": "Vous n'avez pas les permissions pour créer un utilisateur avec ce rôle."
   },
   "findByUsername": {
     "notFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le voir."
@@ -10,11 +11,13 @@
     "invalidStatus": "Statut invalide. Les valeurs autorisées sont 'active', 'disabled' ou null."
   },
   "searchUserActivities": {
-    "userNotFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le voir."
+    "userNotFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le voir.",
+    "forbidden": "Vous n'avez pas les permissions pour voir les activités de cet utilisateur."
   },
   "updateUser": {
     "userNotFound": "L'utilisateur n'existe pas ou vous n'avez pas les permissions pour le modifier.",
-    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé."
+    "usernameAlreadyExists": "Le nom d'utilisateur est déjà utilisé.",
+    "forbidden": "Vous n'avez pas les permissions pour modifier cet utilisateur ou certains champs demandés."
   },
   "formatUserActivities": {
     "userNotFound": "L'utilisateur avec l'id {id} n'existe pas."

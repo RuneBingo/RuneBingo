@@ -40,7 +40,7 @@ const sessionSeedSchema = Joi.object<Record<string, SessionSeed>>().pattern(
 
 export class SessionSeeder extends Seeder<Session, SessionSeed> {
   entityName = Session.name;
-  identifierColumn = 'sessionID' as keyof Session;
+  identifierColumns = ['sessionID'] satisfies (keyof Session)[];
   schema = sessionSeedSchema;
 
   protected deserialize(seed: SessionSeed): Session {
@@ -65,6 +65,6 @@ export class SessionSeeder extends Seeder<Session, SessionSeed> {
   }
 
   protected getIdentifier(entity: Session) {
-    return entity.sessionID;
+    return { sessionID: entity.sessionID };
   }
 }

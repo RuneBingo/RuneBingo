@@ -30,9 +30,9 @@ const userSeedSchema = Joi.object<Record<string, UserSeed>>().pattern(
   }),
 );
 
-export class UserSeeder extends Seeder<User, UserSeed, string> {
+export class UserSeeder extends Seeder<User, UserSeed> {
   entityName = User.name;
-  identifierColumn = 'usernameNormalized' as keyof User;
+  identifierColumns = ['usernameNormalized'] satisfies (keyof User)[];
   schema = userSeedSchema;
 
   protected deserialize(seed: UserSeed): User {
@@ -56,6 +56,6 @@ export class UserSeeder extends Seeder<User, UserSeed, string> {
   }
 
   protected getIdentifier(entity: User) {
-    return entity.usernameNormalized;
+    return { usernameNormalized: entity.usernameNormalized };
   }
 }

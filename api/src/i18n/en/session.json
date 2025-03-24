@@ -1,5 +1,9 @@
 {
   "createSessionForUser": {
-    "userDisabled": "User is disabled"
+    "userDisabled": "User is disabled",
+    "forbidden": "You don't have permission to create a session for this user."
+  },
+  "signOutSessionByUuid": {
+    "forbidden": "You don't have permission to sign out this session."
   }
 }

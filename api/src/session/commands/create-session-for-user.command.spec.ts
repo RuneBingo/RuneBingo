@@ -56,6 +56,7 @@ describe('CreateSessionForUserHandler', () => {
     const user = seedingService.getEntity(User, 'deleted_user');
 
     const command = new CreateSessionForUserCommand({
+      requester: user,
       user,
       method: 'email',
       sessionId: 'session-uuid',
@@ -70,6 +71,7 @@ describe('CreateSessionForUserHandler', () => {
     const user = seedingService.getEntity(User, 'disabled_user');
 
     const command = new CreateSessionForUserCommand({
+      requester: user,
       user,
       method: 'email',
       sessionId: 'session-uuid',
@@ -84,6 +86,7 @@ describe('CreateSessionForUserHandler', () => {
     const user = seedingService.getEntity(User, 'char0o');
 
     const command = new CreateSessionForUserCommand({
+      requester: user,
       user,
       method: 'email',
       sessionId: 'session-uuid',

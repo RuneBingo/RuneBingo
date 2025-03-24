@@ -183,6 +183,7 @@ export class AuthController {
 
     const sessionEntity = await this.commandBus.execute(
       new CreateSessionForUserCommand({
+        requester: user,
         user,
         method,
         ip: ip || 'unknown',

@@ -1,7 +1,8 @@
 {
   "createUser": {
     "emailAlreadyExists": "The email address is already taken.",
-    "usernameAlreadyExists": "The username is already taken."
+    "usernameAlreadyExists": "The username is already taken.",
+    "forbidden": "You don't have permission to create a user with this role."
   },
   "findByUsername": {
     "notFound": "The user doesn't exist or you don't have permission to see it."
@@ -10,11 +11,13 @@
     "invalidStatus": "Invalid status. Allowed values are 'active', 'disabled' or null."
   },
   "searchUserActivities": {
-    "userNotFound": "The user doesn't exist or you don't have permission to see it."
+    "userNotFound": "The user doesn't exist or you don't have permission to see it.",
+    "forbidden": "You don't have permission to see the activities of this user."
   },
   "updateUser": {
     "userNotFound": "The user doesn't exist or you don't have permission to see it.",
-    "usernameAlreadyExists": "The username is already taken."
+    "usernameAlreadyExists": "The username is already taken.",
+    "forbidden": "You don't have permission to update this user or some of the requested fields."
   },
   "formatUserActivities": {
     "userNotFound": "The user with id {id} doesn't exist."

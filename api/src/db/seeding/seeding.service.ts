@@ -48,7 +48,7 @@ export class SeedingService {
       }
 
       const entityType = this.seederTypeMap.get(instance.entityName)!;
-      this.seederMap.set(entityType, instance as Seeder<ObjectLiteral, unknown, string>);
+      this.seederMap.set(entityType, instance as Seeder<ObjectLiteral, unknown>);
     }
   }
 

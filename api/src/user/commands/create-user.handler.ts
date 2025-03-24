@@ -1,14 +1,16 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
+import { Roles } from '@/auth/roles/roles.constants';
 import { I18nTranslations } from '@/i18n/types';
 
 import { CreateUserCommand, type CreateUserResult } from './create-user.command';
 import { UserCreatedEvent } from '../events/user-created.event';
 import { User } from '../user.entity';
+import { UserPolicies } from '../user.policies';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler {
@@ -44,6 +46,12 @@ export class CreateUserHandler {
     newUser.gravatarHash = gravatarHash;
     newUser.language = language;
     newUser.createdBy = requester instanceof User ? requester.id : null;
+    newUser.role = Roles.User;
+
+    const policyRequester = requester instanceof User ? requester : null;
+    if (!new UserPolicies(policyRequester).canCreate(newUser)) {
+      throw new ForbiddenException(this.i18nService.t('user.createUser.forbidden'));
+    }
 
     newUser = await this.userRepository.save(newUser);
 

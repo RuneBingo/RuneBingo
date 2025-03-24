@@ -11,6 +11,7 @@ import { Session } from '@/session/session.entity';
 
 import { CreateSessionForUserCommand, CreateSessionForUserResult } from './create-session-for-user.command';
 import { SessionCreatedEvent } from '../events/session-created.event';
+import { SessionPolicies } from '../session.policies';
 
 type IPInfoResponse = {
   city: string;
@@ -29,16 +30,13 @@ export class CreateSessionForUserHandler {
   async execute(command: CreateSessionForUserCommand): Promise<CreateSessionForUserResult> {
     const { user, method, sessionId, ip, userAgent } = command;
 
-    if (user.isDeleted || user.isDisabled) {
-      throw new ForbiddenException(this.i18nService.t('session.createSessionForUser.userDisabled'));
-    }
-
     const { deviceType, os, browser } = this.getUserAgentInfo(userAgent);
     const location = await this.getLocationFromIP(ip);
 
     let session = new Session();
     session.createdBy = user.id;
     session.userId = user.id;
+    session.user = Promise.resolve(user);
     session.sessionID = sessionId;
     session.method = method;
     session.ipAddress = ip;
@@ -49,6 +47,10 @@ export class CreateSessionForUserHandler {
     session.location = location;
     session.lastSeenAt = new Date();
     session.expiresAt = addWeeks(new Date(), 2);
+
+    if (!new SessionPolicies(command.requester).canCreate(session, user)) {
+      throw new ForbiddenException(this.i18nService.t('session.createSessionForUser.forbidden'));
+    }
 
     session = await this.sessionRepository.save(session);
 

@@ -1,5 +1,9 @@
 {
   "createSessionForUser": {
-    "userDisabled": "L'utilisateur est désactivé"
+    "userDisabled": "L'utilisateur est désactivé",
+    "forbidden": "Vous n'avez pas les permissions pour créer une session pour cet utilisateur."
+  },
+  "signOutSessionByUuid": {
+    "forbidden": "Vous n'avez pas les permissions pour déconnecter cette session."
   }
 }

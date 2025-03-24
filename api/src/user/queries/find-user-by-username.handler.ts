@@ -4,11 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
-import { Roles } from '@/auth/roles/roles.constants';
-import { userHasRole } from '@/auth/roles/roles.utils';
 import { I18nTranslations } from '@/i18n/types';
 
 import { FindUserByUsernameQuery, type FindUserByUsernameResult } from './find-user-by-username.query';
+import { ViewUserScope } from '../scopes/view-user.scope';
 import { User } from '../user.entity';
 
 @QueryHandler(FindUserByUsernameQuery)
@@ -23,8 +22,13 @@ export class FindUserByUsernameHandler {
 
     const usernameNormalized = User.normalizeUsername(username);
 
-    const user = await this.repository.findOneBy({ usernameNormalized });
-    if (!user || (user.isDisabled && (!requester || !userHasRole(requester, Roles.Moderator)))) {
+    const scope = this.repository
+      .createQueryBuilder('user')
+      .where('user.username_normalized = :usernameNormalized', { usernameNormalized });
+
+    const user = await new ViewUserScope(requester, scope).resolve().getOne();
+
+    if (!user) {
       throw new NotFoundException(this.i18nService.t('user.findByUsername.notFound'));
     }
 

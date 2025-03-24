@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { ForbiddenException } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +11,7 @@ import { i18nModule } from '@/i18n';
 
 import { SignOutSessionByUuidCommand } from './sign-out-session-by-uuid.command';
 import { SignOutSessionByUuidHandler } from './sign-out-session-by-uuid.handler';
+import { User } from '../../user/user.entity';
 import { SessionSignedOutEvent } from '../events/session-signed-out.event';
 import { Session } from '../session.entity';
 
@@ -49,6 +51,15 @@ describe('SignOutSessionByUuidHandler', () => {
 
   afterAll(() => {
     return module.close();
+  });
+
+  it('throws ForbiddenException if the requester is not and admin and not the same as the session user', async () => {
+    const requester = seedingService.getEntity(User, 'b0aty');
+    const session = seedingService.getEntity(Session, 'zezima_active_session_01');
+
+    const command = new SignOutSessionByUuidCommand({ uuid: session.uuid, requester });
+
+    await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
   });
 
   it('signs out session and emits SessionSignedOutEvent', async () => {

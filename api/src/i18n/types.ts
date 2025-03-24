@@ -40,12 +40,17 @@ export type I18nTranslations = {
     "session": {
         "createSessionForUser": {
             "userDisabled": string;
+            "forbidden": string;
+        };
+        "signOutSessionByUuid": {
+            "forbidden": string;
         };
     };
     "user": {
         "createUser": {
             "emailAlreadyExists": string;
             "usernameAlreadyExists": string;
+            "forbidden": string;
         };
         "findByUsername": {
             "notFound": string;
@@ -55,10 +60,12 @@ export type I18nTranslations = {
         };
         "searchUserActivities": {
             "userNotFound": string;
+            "forbidden": string;
         };
         "updateUser": {
             "userNotFound": string;
             "usernameAlreadyExists": string;
+            "forbidden": string;
         };
         "formatUserActivities": {
             "userNotFound": string;
