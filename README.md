@@ -43,3 +43,5 @@ npm install
 You may now refer to project-specific documentation to configure the projects:
 
 - [API](/api/README.md)
+- [Frontend](/frontend/README.md)
+  - [Design System](/frontend/src/design-system/README.md)
