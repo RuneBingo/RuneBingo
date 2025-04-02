@@ -9,7 +9,6 @@ import { type User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
-import { slugifyTitle } from '../bingo.util';
 import { BingoCreatedEvent } from '../events/bingo-created.event';
 
 export type CreateBingoParams = {
@@ -102,7 +101,7 @@ export class CreateBingoHandler {
       throw new BadRequestException(this.i18nService.t('bingo.createBingo.startDateAfterEndDate'));
     }
 
-    const titleSlug = slugifyTitle(title);
+    const titleSlug = Bingo.slugifyTitle(title);
 
     const existingBingo = await this.bingoRepository.findOneBy({ slug: titleSlug });
 
@@ -110,7 +109,7 @@ export class CreateBingoHandler {
       throw new ConflictException(this.i18nService.t('bingo.createBingo.titleNotUnique'));
     }
 
-    if (!(await new BingoPolicies(requester).canCreate(this.bingoRepository))) {
+    if (!(await new BingoPolicies(requester).canCreate())) {
       throw new ForbiddenException(this.i18nService.t('bingo.createBingo.activeBingoAlreadyExists'));
     }
 

@@ -54,10 +54,11 @@ describe('CancelBingoHandler', () => {
 
   it('throws ForbiddenException if the requester is not a participant or a at least moderator', async () => {
     const requester = seedingService.getEntity(User, 'b0aty');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -65,10 +66,11 @@ describe('CancelBingoHandler', () => {
 
   it('throws ForbiddenException if the requester is a bingo participant without organizer role', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -76,10 +78,11 @@ describe('CancelBingoHandler', () => {
 
   it('throws BadRequest if bingo is already canceled', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
+    const bingo = seedingService.getEntity(Bingo, 'canceled-bingo');
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 6,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
@@ -87,21 +90,22 @@ describe('CancelBingoHandler', () => {
 
   it('cancels the bingo if user is at least organizer and emits BingoCanceledEvent', async () => {
     const requester = seedingService.getEntity(User, 'didiking');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
-    const bingo = await handler.execute(command);
-    expect(bingo).toBeDefined();
-    expect(bingo.canceledAt).toBeDefined();
-    expect(bingo.canceledById).toBe(requester.id);
+    const canceledBingo = await handler.execute(command);
+    expect(canceledBingo).toBeDefined();
+    expect(canceledBingo.canceledAt).toBeDefined();
+    expect(canceledBingo.canceledById).toBe(requester.id);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
       new BingoCanceledEvent({
-        bingoId: bingo.id,
+        bingoId: canceledBingo.id,
         requesterId: requester.id,
       }),
     );
@@ -109,16 +113,17 @@ describe('CancelBingoHandler', () => {
 
   it('cancels the bingo if user is at least moderator', async () => {
     const requester = seedingService.getEntity(User, 'zezima');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
-    const bingo = await handler.execute(command);
-    expect(bingo).toBeDefined();
-    expect(bingo.canceledAt).toBeDefined();
-    expect(bingo.canceledById).toBe(requester.id);
+    const canceledBingo = await handler.execute(command);
+    expect(canceledBingo).toBeDefined();
+    expect(canceledBingo.canceledAt).toBeDefined();
+    expect(canceledBingo.canceledById).toBe(requester.id);
   });
 
   it('throws NotFound if the bingo doesnt exist', async () => {
@@ -126,7 +131,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      bingoId: 999,
+      slug: 'Little slug',
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);

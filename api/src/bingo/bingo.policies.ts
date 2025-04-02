@@ -1,5 +1,3 @@
-import { type Repository } from 'typeorm';
-
 import { Roles } from '@/auth/roles/roles.constants';
 import { userHasRole } from '@/auth/roles/roles.utils';
 import { type BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
@@ -12,18 +10,22 @@ import { type Bingo } from './bingo.entity';
 export class BingoPolicies {
   constructor(private readonly requester: User) {}
 
-  async canCreate(bingoRepository: Repository<Bingo>) {
-    const existingBingo = await bingoRepository.findOne({
-      where: {
-        createdById: this.requester.id,
-        endedAt: undefined,
-      },
-    });
-    if (existingBingo) {
+  async canCreate() {
+    const bingoParticipants = await this.requester.participants;
+
+    if (!bingoParticipants || bingoParticipants.length === 0) return true;
+
+    for (const bingoParticipant of bingoParticipants) {
+      const bingo = await bingoParticipant.bingo; // Ensure `await` is used properly
+
+      if (!bingo || bingo.canceledAt || bingo.endedAt) continue;
+
       return false;
     }
+
     return true;
   }
+
   canUpdate(participant: BingoParticipant | null, bingo: Bingo) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 

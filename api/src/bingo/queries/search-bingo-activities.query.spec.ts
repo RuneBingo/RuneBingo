@@ -37,8 +37,9 @@ describe('SearchUserActivitiesHandler', () => {
 
   it('throws NotFoundException if the user does not exist', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
+
     const query = new SearchBingoActivitiesQuery({
-      bingoId: 999,
+      slug: 'this-slug-doesnt-exist',
       requester,
     });
 
@@ -47,8 +48,10 @@ describe('SearchUserActivitiesHandler', () => {
 
   it('throws ForbiddenException if the user is not an organizer or moderator', async () => {
     const requester = seedingService.getEntity(User, 'b0aty');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
     const query = new SearchBingoActivitiesQuery({
-      bingoId: 1,
+      slug: bingo.slug,
       requester,
     });
 
@@ -57,8 +60,10 @@ describe('SearchUserActivitiesHandler', () => {
 
   it('throws ForbiddenException if the user is only a participant', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
     const query = new SearchBingoActivitiesQuery({
-      bingoId: 1,
+      slug: bingo.slug,
       requester,
     });
 
@@ -67,8 +72,10 @@ describe('SearchUserActivitiesHandler', () => {
 
   it('return the user activities if the user is not participant but moderator', async () => {
     const requester = seedingService.getEntity(User, 'zezima');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
     const query = new SearchBingoActivitiesQuery({
-      bingoId: 1,
+      slug: bingo.slug,
       requester,
     });
 
@@ -77,8 +84,10 @@ describe('SearchUserActivitiesHandler', () => {
 
   it('return the user activities if the user is an organizer', async () => {
     const requester = seedingService.getEntity(User, 'didiking');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
     const query = new SearchBingoActivitiesQuery({
-      bingoId: 1,
+      slug: bingo.slug,
       requester,
     });
 

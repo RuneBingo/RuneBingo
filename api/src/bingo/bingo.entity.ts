@@ -1,17 +1,28 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import slugify from 'slugify';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
+import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 @Entity()
 export class Bingo extends StrongEntityParanoid {
+  static slugifyTitle(title: string): string {
+    // TODO: find out why this is unsafe and fix it
+
+    return slugify(title, {
+      lower: true,
+      strict: true,
+      locale: 'en',
+    });
+  }
   @Column({ default: 'en' })
   language: string;
 
   @Column()
   title: string;
 
-  @Column()
+  @Column({ unique: true })
   slug: string;
 
   @Column()
@@ -35,11 +46,11 @@ export class Bingo extends StrongEntityParanoid {
   @Column({ type: 'date' })
   endDate: string;
 
-  @ManyToOne(() => User, { nullable: true, lazy: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'created_by' })
   createdBy: Promise<User>;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'updated_by' })
   updatedBy: Promise<User>;
 
@@ -59,7 +70,7 @@ export class Bingo extends StrongEntityParanoid {
   @Column({ name: 'ended_by', type: 'int', nullable: true })
   endedById: number | null = null;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'ended_by' })
   endedBy: Promise<User>;
 
@@ -69,14 +80,17 @@ export class Bingo extends StrongEntityParanoid {
   @Column({ name: 'canceled_by', type: 'int', nullable: true })
   canceledById: number | null = null;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'canceled_by' })
   canceledBy: Promise<User>;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'deleted_by' })
   deletedBy: Promise<User>;
 
   @Column({ type: 'date', nullable: true })
   maxRegistrationDate?: string;
+
+  @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
+  participants: Promise<BingoParticipant[]>;
 }

@@ -14,7 +14,7 @@ import { BingoDeletedEvent } from '../events/bingo-deleted.event';
 
 export type DeleteBingoParams = {
   requester: User;
-  bingoId: number;
+  slug: string;
 };
 
 export type DeleteBingoResult = Bingo;
@@ -39,9 +39,9 @@ export class DeleteBingoHandler {
   ) {}
 
   async execute(command: DeleteBingoCommand): Promise<DeleteBingoResult> {
-    const { requester, bingoId } = command.params;
+    const { requester, slug } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ id: bingoId });
+    const bingo = await this.bingoRepository.findOneBy({ slug });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
@@ -69,7 +69,7 @@ export class DeleteBingoHandler {
           deletedAt: () => 'CURRENT_TIMESTAMP',
           deletedById: requester.id,
         })
-        .where('bingoId = :bingoId', { bingoId })
+        .where('bingoId = :bingoId', { bingoId: bingo.id })
         .execute();
 
       bingo.deletedAt = new Date();
@@ -78,7 +78,7 @@ export class DeleteBingoHandler {
       await queryRunner.manager.save(bingo);
       await queryRunner.commitTransaction();
 
-      this.eventBus.publish(new BingoDeletedEvent({ bingoId, requesterId: requester.id }));
+      this.eventBus.publish(new BingoDeletedEvent({ bingoId: bingo.id, requesterId: requester.id }));
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
 import { Bingo } from '@/bingo/bingo.entity';
-import { slugifyTitle } from '@/bingo/bingo.util';
 
 import { Seeder } from './seeder';
 
@@ -50,7 +49,7 @@ export class BingoSeeder extends Seeder<Bingo, BingoSeed> {
   schema = bingoSeedSchema;
 
   protected deserialize(seed: BingoSeed): Bingo {
-    const slug = slugifyTitle(seed.title);
+    const slug = Bingo.slugifyTitle(seed.title);
 
     const bingo = new Bingo();
     bingo.createdById = seed.createdById;

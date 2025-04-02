@@ -57,10 +57,11 @@ describe('DeleteBingoHandler', () => {
 
   it('throws ForbiddenException if the requester is not a participant or a moderator', async () => {
     const requester = seedingService.getEntity(User, 'b0aty');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -68,10 +69,11 @@ describe('DeleteBingoHandler', () => {
 
   it('throws ForbiddenException if the requester is a bingo participant without owner role', async () => {
     const requester = seedingService.getEntity(User, 'didiking');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: 1,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -82,7 +84,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: 999,
+      slug: 'wtf-is-a-slug',
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -90,10 +92,11 @@ describe('DeleteBingoHandler', () => {
 
   it('throws NotFound if the bingo is already deleted', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
+    const bingo = seedingService.getEntity(Bingo, 'deleted-bingo');
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: 5,
+      slug: bingo.slug,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -101,22 +104,21 @@ describe('DeleteBingoHandler', () => {
 
   it('deletes the bingo if user at least moderator and emits DeletedBingo event', async () => {
     const requester = seedingService.getEntity(User, 'zezima');
-
-    const bingoId = 1;
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: bingoId,
+      slug: bingo.slug,
     });
 
-    const bingo = await handler.execute(command);
-    expect(bingo).toBeDefined();
-    expect(bingo.deletedAt).toBeDefined();
-    expect(bingo.deletedById).toBe(requester.id);
+    const toDelete = await handler.execute(command);
+    expect(toDelete).toBeDefined();
+    expect(toDelete.deletedAt).toBeDefined();
+    expect(toDelete.deletedById).toBe(requester.id);
 
     const updatedBingoParticipants = await dataSource.getRepository(BingoParticipant).find({
       where: {
-        bingoId,
+        bingoId: bingo.id,
       },
       withDeleted: true,
     });
@@ -129,7 +131,7 @@ describe('DeleteBingoHandler', () => {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
       new BingoDeletedEvent({
-        bingoId: bingo.id,
+        bingoId: toDelete.id,
         requesterId: requester.id,
       }),
     );
@@ -137,21 +139,20 @@ describe('DeleteBingoHandler', () => {
 
   it('deletes the bingo if user is owner', async () => {
     const requester = seedingService.getEntity(User, 'didiking');
-
-    const bingoId = 2;
+    const bingo = seedingService.getEntity(Bingo, 'german-osrs');
 
     const command = new DeleteBingoCommand({
       requester,
-      bingoId: bingoId,
+      slug: bingo.slug,
     });
 
-    const bingo = await handler.execute(command);
-    expect(bingo).toBeDefined();
-    expect(bingo.deletedAt).toBeDefined();
-    expect(bingo.deletedById).toBe(requester.id);
+    const toDelete = await handler.execute(command);
+    expect(toDelete).toBeDefined();
+    expect(toDelete.deletedAt).toBeDefined();
+    expect(toDelete.deletedById).toBe(requester.id);
     const updatedBingoParticipant = await dataSource.getRepository(BingoParticipant).findOne({
       where: {
-        bingoId,
+        bingoId: bingo.id,
         userId: requester.id,
       },
       withDeleted: true,

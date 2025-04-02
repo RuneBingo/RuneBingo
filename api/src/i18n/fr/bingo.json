@@ -1,9 +1,9 @@
 {
     "createBingo": {
         "titleNotUnique": "Un bingo avec ce titre existe déjà.",
-        "startDateAfterEndDate": "La date the début doit être avant la date de fin.",
+        "startDateAfterEndDate": "La date de début doit être avant la date de fin.", 
         "registrationDateAfterStartDate": "La date d'enregistrement doit être avant la date de début.",
-        "activeBingoAlreadyExists": "Vous avez déjà un bingo actif."
+        "activeBingoAlreadyExists": "Vous participez déjà à un bingo en attente ou en cours."  
     },
     "findById": {
         "notFound": "Le bingo n'existe pas."
@@ -12,17 +12,17 @@
         "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
         "forbidden": "Vous n'avez pas la permission de modifier ce bingo.",
         "titleNotUnique": "Un bingo avec ce titre existe déjà.",
-        "startDateAfterEndDate": "La date the début doit être avant la date de fin.",
+        "startDateAfterEndDate": "La date de début doit être avant la date de fin.",
         "endDateBeforeStartDate": "La date de fin doit être après la date de début.",
-        "registrationDateAfterStartDate": "La date d'enregistrement doit être avant la date de début."
+        "registrationDateAfterStartDate": "La date limite d'enregistrement doit être avant la date de début."  
     },
     "deleteBingo": {
-        "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
-        "forbidden": "Vous n'êtes pas autorisé à supprimer ce bingo."
+        "bingoNotFound": "Aucun bingo avec ce slug n'a été trouvé.",
+        "forbidden": "Vous n'avez pas les permissions pour supprimer ce bingo."  
     },
     "cancelBingo": {
         "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
-        "forbidden": "Vous n'êtes pas auàrisé à annuler ce bingo.",
+        "forbidden": "Vous n'êtes pas autorisé à annuler ce bingo.",  
         "alreadyCanceled": "Le bingo est déjà annulé."
     },
     "searchBingoActivities": {
@@ -61,6 +61,6 @@
         "canceled": {
             "title": "{username} a annulé le bingo."
         },
-        "forbidden": "Vous ne pouvez voir les activité de ce bingo."
+        "forbidden": "Vous n'avez pas les permissions pour voir les activités de ce bingo."
     }
 }

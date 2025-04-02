@@ -6,4 +6,4 @@ import { BingoParticipant } from './bingo-participant.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([BingoParticipant])],
 })
-export class BingoparticipantModule {}
+export class BingoParticipantModule {}

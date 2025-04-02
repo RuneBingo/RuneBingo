@@ -24,7 +24,9 @@ export class SearchUsersHandler {
 
     scope = new ViewUserScope(requester, scope).resolve();
 
-    if (requester && userHasRole(requester, Roles.Moderator)) {
+    if (!requester || !userHasRole(requester, Roles.Moderator)) {
+      scope = scope.andWhere('user.disabled_at IS NULL');
+    } else {
       this.applyStatus(scope, status);
     }
 

@@ -16,7 +16,7 @@ import { BingoPolicies } from '../bingo.policies';
 
 export type SearchBingoActivitiesParams = PaginatedQueryParams<{
   requester: User;
-  bingoId: number;
+  slug: string;
 }>;
 
 export type SearchBingoActivitiesResult = PaginatedDtoWithoutTotal<Activity>;
@@ -40,9 +40,9 @@ export class SearchBingoActivitiesHandler {
   ) {}
 
   async execute(query: SearchBingoActivitiesQuery): Promise<SearchBingoActivitiesResult> {
-    const { requester, bingoId, ...pagination } = query.params;
+    const { requester, slug, ...pagination } = query.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ id: bingoId });
+    const bingo = await this.bingoRepository.findOneBy({ slug });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.searchBingoActivities.bingoNotFound'));
@@ -60,7 +60,7 @@ export class SearchBingoActivitiesHandler {
     const q = this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.trackable_id = :trackableId AND activity.key LIKE :keyPrefix ', {
-        trackableId: bingoId,
+        trackableId: bingo.id,
         keyPrefix: 'bingo%',
       })
       .orderBy('activity.createdAt', 'DESC');

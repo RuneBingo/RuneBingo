@@ -4,4 +4,4 @@ export enum BingoRoles {
   Owner = 'owner',
 }
 
-export const bingoRoleHierarchy = [BingoRoles.Participant, BingoRoles.Organizer, BingoRoles.Owner];
+export const bingoRoleHierarchy = [BingoRoles.Participant, BingoRoles.Organizer, BingoRoles.Owner] as const;

@@ -46,7 +46,7 @@ export class SeedingService {
       try {
         await instance.seed();
       } catch (error) {
-        this.logger.error('Error instantiating seeds: ', error);
+        throw new Error(error instanceof Error ? error.message : String(error));
       }
 
       if (!this.seederTypeMap.has(instance.entityName)) {

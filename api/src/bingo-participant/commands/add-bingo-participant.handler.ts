@@ -15,13 +15,11 @@ export class AddBingoParticipantHandler {
   async execute(command: AddBingoParticipantCommand): Promise<AddBingoParticipantResult> {
     const { bingo, user, role } = command.params;
 
-    const bingoParticipant: BingoParticipant = new BingoParticipant();
+    const bingoParticipant = new BingoParticipant();
     bingoParticipant.userId = user.id;
     bingoParticipant.bingoId = bingo.id;
     bingoParticipant.role = role;
 
-    await this.bingoParticipantRepository.save(bingoParticipant);
-
-    return bingoParticipant;
+    return this.bingoParticipantRepository.save(bingoParticipant);
   }
 }

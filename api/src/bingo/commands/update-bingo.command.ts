@@ -10,11 +10,10 @@ import { type User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
-import { slugifyTitle } from '../bingo.util';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
 
 export type UpdateBingoParams = {
-  bingoId: number;
+  slug: string;
   requester: User;
   updates: {
     language?: string;
@@ -33,7 +32,7 @@ export type UpdateBingoParams = {
 export type UpdateBingoResult = Bingo;
 
 export class UpdateBingoCommand extends Command<Bingo> {
-  public readonly bingoId: number;
+  public readonly slug: string;
   public readonly requester: User;
   public readonly updates: {
     language?: string;
@@ -47,9 +46,9 @@ export class UpdateBingoCommand extends Command<Bingo> {
     endDate?: string;
     maxRegistrationDate?: string;
   };
-  constructor({ bingoId, requester, updates }: UpdateBingoParams) {
+  constructor({ slug, requester, updates }: UpdateBingoParams) {
     super();
-    this.bingoId = bingoId;
+    this.slug = slug;
     this.requester = requester;
     this.updates = updates;
   }
@@ -67,9 +66,9 @@ export class UpdateBingoHandler {
   ) {}
 
   async execute(command: UpdateBingoCommand): Promise<UpdateBingoResult> {
-    const { bingoId, requester } = command;
+    const { slug, requester } = command;
 
-    let bingo = await this.bingoRepository.findOneBy({ id: bingoId });
+    let bingo = await this.bingoRepository.findOneBy({ slug });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.updateBingo.bingoNotFound'));
@@ -114,7 +113,7 @@ export class UpdateBingoHandler {
     }
 
     if (updates.title) {
-      const titleSlug = slugifyTitle(updates.title);
+      const titleSlug = Bingo.slugifyTitle(updates.title);
 
       const existingBingo = await this.bingoRepository.findOneBy({ slug: titleSlug });
 
@@ -124,19 +123,19 @@ export class UpdateBingoHandler {
       bingo.slug = titleSlug;
     }
 
-    this.eventBus.publish(
-      new BingoUpdatedEvent({
-        bingoId: bingoId,
-        requesterId: command.requester.id,
-        updates,
-      }),
-    );
-
     Object.assign(bingo, updates);
     bingo.updatedById = requester.id;
     bingo.updatedBy = Promise.resolve(requester);
 
     bingo = await this.bingoRepository.save(bingo);
+
+    this.eventBus.publish(
+      new BingoUpdatedEvent({
+        bingoId: bingo.id,
+        requesterId: command.requester.id,
+        updates,
+      }),
+    );
 
     return bingo;
   }

@@ -48,24 +48,7 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema> {
 
     if (seedEntities.length === 0) return;
 
-    // Had to do this to fix the partial unique index of bingo
-    for (const entity of seedEntities) {
-      const identifier = await this.getIdentifier(entity);
-      const existing = await repository.findOne({
-        where: identifier,
-        withDeleted: true,
-      });
-
-      if (existing) {
-        if (existing.deletedAt) {
-          await repository.save({ ...existing, ...entity, deletedAt: null });
-        } else {
-          await repository.save({ ...existing, ...entity });
-        }
-      } else {
-        await repository.save(entity);
-      }
-    }
+    await repository.upsert(seedEntities, this.identifierColumns as string[]);
 
     const identifiers = (await Promise.all(
       seedEntities.map((e) => this.getIdentifier(e)),

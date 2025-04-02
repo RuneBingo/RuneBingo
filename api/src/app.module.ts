@@ -4,7 +4,7 @@ import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { BingoModule } from './bingo/bingo.module';
-import { BingoparticipantModule } from './bingo-participant/bingo-participant.module';
+import { BingoParticipantModule } from './bingo-participant/bingo-participant.module';
 import { configModule } from './config';
 import { cqrsModule } from './cqrs';
 import { dbModule } from './db';
@@ -35,7 +35,7 @@ import { UserModule } from './user/user.module';
     EmailerModule,
     JobsModule,
     BingoModule,
-    BingoparticipantModule,
+    BingoParticipantModule,
   ],
   providers: [EmailerService],
   controllers: [AppController],

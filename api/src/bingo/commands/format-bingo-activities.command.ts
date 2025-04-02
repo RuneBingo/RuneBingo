@@ -10,8 +10,6 @@ import { I18nTranslations } from '@/i18n/types';
 import { UserDto } from '@/user/dto/user.dto';
 import { User } from '@/user/user.entity';
 
-import { Bingo } from '../bingo.entity';
-
 export type FormatBingoActivitiesResult = ActivityDto[];
 
 export class FormatBingoActivitiesCommand extends Command<FormatBingoActivitiesResult> {
@@ -25,8 +23,6 @@ export class FormatBingoActivitiesHandler {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Bingo)
-    private readonly bingoRepository: Repository<Bingo>,
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
