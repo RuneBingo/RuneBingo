@@ -42,6 +42,9 @@ import { UpdateBingoDto } from './dto/update-bingo.dto';
 import { FindBingoBySlugParams, FindBingoBySlugQuery } from './queries/find-bingo-by-slug.query';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
+import { PaginatedBingoParticipantsDto } from '@/bingo-participant/dto/paginated-bingo-participants.dto';
+import { SearchBingoParticipantsParams, SearchBingoParticipantsQuery } from '@/bingo-participant/queries/search-bingo-participants.query';
+import { BingoParticipantDto } from '@/bingo-participant/dto/bingo-participant.dto';
 
 @Controller('v1/bingo')
 export class BingoController {
@@ -99,6 +102,7 @@ export class BingoController {
       search,
       status,
       isPrivate: isPrivate !== undefined ? isPrivate === 'true' : undefined,
+      limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
     } satisfies SearchBingosParams;
 
@@ -109,6 +113,45 @@ export class BingoController {
     );
 
     return new PaginatedBingosDto({ items: bingosDto, ...pagination });
+  }
+
+  @Get(':slug/participants')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get bingo participants' })
+  @ApiOkResponse({ description: 'Bingo Participants.' })
+  @ApiQuery({ name: 'query', required: false })
+  @ApiQuery({ name: 'team', required: false })
+  @ApiQuery({ name: 'role', enum: ['participant', 'organizer', 'owner'], required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'offset', required: false })
+  async getBingoParticipants(
+    @Req() req: Request,
+    @Param('slug') slug: string,
+    @Query('query') query: string = '',
+    @Query('team') teamName: string = '',
+    @Query('role') role: string | undefined = undefined,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ): Promise<PaginatedBingoParticipantsDto> {
+    const normalizedQuery = query?.trim() === '' ? undefined : query;
+    const normalizedTeamName = teamName?.trim() === '' ? undefined : query;
+    const params = {
+      requester: req.userEntity,
+      slug,
+      query: normalizedQuery,
+      teamName: normalizedTeamName,
+      role,
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined,
+    } satisfies SearchBingoParticipantsParams;
+
+    const { items, ...pagination } = await this.queryBus.execute(new SearchBingoParticipantsQuery(params));
+
+    const bingoParticipantsDtos = await Promise.all(
+      items.map(async (bingoParticipant) => new BingoParticipantDto(bingoParticipant)),
+    );
+
+    return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
   }
 
   @Get(':slug')

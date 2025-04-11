@@ -24,6 +24,11 @@ export type I18nTranslations = {
             "user": string;
         };
     };
+    "bingo-participant": {
+        "searchBingoParticipants": {
+            "bingoNotFound": string;
+        };
+    };
     "bingo": {
         "createBingo": {
             "titleNotUnique": string;
