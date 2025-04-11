@@ -13,8 +13,7 @@ export class ViewBingoScope extends Scope<Bingo> {
     if (userHasRole(this.requester, Roles.Moderator)) return this.query;
 
     return this.query
-      .leftJoin('bingo_participant', 'bingoParticipant', 'bingoParticipant.bingo_id = bingo.id')
-      .andWhere('(bingo.private = false OR bingoParticipant.user_id = :requesterId)', {
+      .andWhere('exists (select 1 from bingo_participant where bingo_id = bingo.id and user_id = :requesterId)', {
         requesterId: this.requester.id,
       });
   }
