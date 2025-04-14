@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Activity } from '@/activity/activity.entity';
 import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
-import { AddBingoParticipantHandler } from '@/bingo-participant/commands/add-bingo-participant.handler';
 import { User } from '@/user/user.entity';
 
 import { BingoController } from './bingo.controller';
@@ -21,6 +20,7 @@ import { FindBingoBySlugHandler } from './queries/find-bingo-by-slug.query';
 import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.query';
 import { SearchBingosHandler } from './queries/search-bingos.query';
 import { SearchBingoParticipantsHandler } from '@/bingo-participant/queries/search-bingo-participants.query';
+import { AddBingoParticipantHandler } from '@/bingo-participant/commands/add-bingo-participant.command';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant])],

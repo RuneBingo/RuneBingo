@@ -15,6 +15,8 @@ import { BingoCanceledEvent } from '../events/bingo-canceled.event';
 export type CancelBingoParams = {
   requester: User;
   slug: string;
+  bingo?: Bingo;
+  bingoParticipant?: BingoParticipant;
 };
 
 export type CancelBingoResult = Bingo;
@@ -37,34 +39,33 @@ export class CancelBingoHandler {
   ) {}
 
   async execute(command: CancelBingoCommand): Promise<Bingo> {
-    const { requester, slug } = command.params;
+    const { requester, slug, bingo, bingoParticipant } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const foundBingo = bingo || await this.bingoRepository.findOneBy({ slug });
 
-    if (!bingo) {
+    if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
     }
 
-    if (bingo.canceledAt) {
+    if (foundBingo.canceledAt) {
       throw new BadRequestException(this.i18nService.t('bingo.cancelBingo.alreadyCanceled'));
     }
 
-    const bingoParticipant = await this.bingoParticipantRepository.findOneBy({
-      bingoId: bingo.id,
+    const foundBingoParticipant = bingoParticipant || await this.bingoParticipantRepository.findOneBy({
+      bingoId: foundBingo.id,
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canCancel(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester).canCancel(foundBingoParticipant, foundBingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.cancelBingo.forbidden'));
     }
 
-    bingo.canceledAt = new Date();
-    bingo.canceledById = requester.id;
-    bingo.canceledBy = Promise.resolve(requester);
+    foundBingo.canceledAt = new Date();
+    foundBingo.canceledById = requester.id;
 
-    const canceledBingo = await this.bingoRepository.save(bingo);
+    const canceledBingo = await this.bingoRepository.save(foundBingo);
 
-    this.eventBus.publish(new BingoCanceledEvent({ bingoId: bingo.id, requesterId: requester.id }));
+    this.eventBus.publish(new BingoCanceledEvent({ bingoId: foundBingo.id, requesterId: requester.id }));
 
     return canceledBingo;
   }

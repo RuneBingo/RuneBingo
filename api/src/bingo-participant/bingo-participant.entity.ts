@@ -5,6 +5,7 @@ import { BaseEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoRoles } from './roles/bingo-roles.constants';
+import { BingoTeam } from '@/bingo-team/bingo-team.entity';
 
 @Entity()
 export class BingoParticipant extends BaseEntityParanoid {
@@ -25,7 +26,9 @@ export class BingoParticipant extends BaseEntityParanoid {
   @Column({ type: 'varchar', default: 'participant' })
   role: BingoRoles;
 
-  // To implement when bingoTeam is done
   @Column({ name: 'team_id', type: 'int', nullable: true })
   teamId: number | null;
+
+  @ManyToOne(() => BingoTeam)
+  team: Promise<BingoTeam>;
 }

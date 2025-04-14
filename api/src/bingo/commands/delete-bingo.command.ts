@@ -15,6 +15,8 @@ import { BingoDeletedEvent } from '../events/bingo-deleted.event';
 export type DeleteBingoParams = {
   requester: User;
   slug: string;
+  bingo?: Bingo;
+  bingoParticipant?: BingoParticipant;
 };
 
 export type DeleteBingoResult = Bingo;
@@ -39,20 +41,20 @@ export class DeleteBingoHandler {
   ) {}
 
   async execute(command: DeleteBingoCommand): Promise<DeleteBingoResult> {
-    const { requester, slug } = command.params;
+    const { requester, slug, bingo, bingoParticipant } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const foundBingo = bingo || await this.bingoRepository.findOneBy({ slug });
 
-    if (!bingo) {
+    if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
     }
 
-    const bingoParticipant = await this.bingoParticipantRepository.findOneBy({
-      bingoId: bingo.id,
+    const foundBingoParticipant = bingoParticipant || await this.bingoParticipantRepository.findOneBy({
+      bingoId: foundBingo.id,
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canDelete(bingoParticipant)) {
+    if (!new BingoPolicies(requester).canDelete(foundBingoParticipant)) {
       throw new ForbiddenException(this.i18nService.t('bingo.deleteBingo.forbidden'));
     }
 
@@ -69,16 +71,16 @@ export class DeleteBingoHandler {
           deletedAt: () => 'CURRENT_TIMESTAMP',
           deletedById: requester.id,
         })
-        .where('bingoId = :bingoId', { bingoId: bingo.id })
+        .where('bingoId = :bingoId', { bingoId: foundBingo.id })
         .execute();
 
-      bingo.deletedAt = new Date();
-      bingo.deletedById = requester.id;
+      foundBingo.deletedAt = new Date();
+      foundBingo.deletedById = requester.id;
 
-      await queryRunner.manager.save(bingo);
+      await queryRunner.manager.save(foundBingo);
       await queryRunner.commitTransaction();
 
-      this.eventBus.publish(new BingoDeletedEvent({ bingoId: bingo.id, requesterId: requester.id }));
+      this.eventBus.publish(new BingoDeletedEvent({ bingoId: foundBingo.id, requesterId: requester.id }));
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -86,6 +88,6 @@ export class DeleteBingoHandler {
       await queryRunner.release();
     }
 
-    return bingo;
+    return foundBingo;
   }
 }

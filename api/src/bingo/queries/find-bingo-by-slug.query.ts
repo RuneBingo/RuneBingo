@@ -13,6 +13,7 @@ import { ViewBingoScope } from '../scopes/view-bingo.scope';
 export type FindBingoBySlugParams = {
   slug: string;
   requester: User | undefined;
+  bingo?: Bingo;
 };
 
 export type FindBingoBySlugResult = Bingo;
@@ -32,16 +33,18 @@ export class FindBingoBySlugHandler {
   ) {}
 
   async execute(query: FindBingoBySlugQuery): Promise<FindBingoBySlugResult> {
-    const { slug, requester } = query.params;
+    const { slug, bingo } = query.params;
 
-    const scope = this.bingoRepository.createQueryBuilder('bingo').where('bingo.slug = :slug', { slug: slug });
+    if (bingo) {
+      return bingo;
+    }
 
-    const bingo = await new ViewBingoScope(requester, scope).resolve().getOne();
+    const existingBingo = await this.bingoRepository.findOneBy({slug});
 
-    if (!bingo) {
+    if (!existingBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.findBingoByTitleSlug.bingoNotFound'));
     }
 
-    return bingo;
+    return existingBingo;
   }
 }

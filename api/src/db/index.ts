@@ -10,10 +10,11 @@ import { Activity } from '../activity/activity.entity';
 import { dotenvPath } from '../config';
 import { Session } from '../session/session.entity';
 import { User } from '../user/user.entity';
+import { BingoTeam } from '@/bingo-team/bingo-team.entity';
 
 configDotenv({ path: dotenvPath });
 
-export const entities = [Activity, Session, User, Bingo, BingoParticipant];
+export const entities = [Activity, Session, User, Bingo, BingoParticipant, BingoTeam];
 export const migrations = [__dirname + '/migrations/**/*.ts', __dirname + '/migrations/**/*.js'];
 export const subscribers = [__dirname + '/subscribers/**/*.ts', __dirname + '/subscribers/**/*.js'];
 

@@ -15,6 +15,8 @@ import { BingoUpdatedEvent } from '../events/bingo-updated.event';
 export type UpdateBingoParams = {
   slug: string;
   requester: User;
+  bingo?: Bingo;
+  bingoParticipant?: BingoParticipant;
   updates: {
     language?: string;
     title?: string;
@@ -34,6 +36,8 @@ export type UpdateBingoResult = Bingo;
 export class UpdateBingoCommand extends Command<Bingo> {
   public readonly slug: string;
   public readonly requester: User;
+  public readonly bingo?: Bingo;
+  public readonly bingoParticipant?: BingoParticipant;
   public readonly updates: {
     language?: string;
     title?: string;
@@ -46,10 +50,12 @@ export class UpdateBingoCommand extends Command<Bingo> {
     endDate?: string;
     maxRegistrationDate?: string;
   };
-  constructor({ slug, requester, updates }: UpdateBingoParams) {
+  constructor({ slug, requester, bingo, bingoParticipant, updates }: UpdateBingoParams) {
     super();
     this.slug = slug;
     this.requester = requester;
+    this.bingo = bingo;
+    this.bingoParticipant = bingoParticipant;
     this.updates = updates;
   }
 }
@@ -66,26 +72,26 @@ export class UpdateBingoHandler {
   ) {}
 
   async execute(command: UpdateBingoCommand): Promise<UpdateBingoResult> {
-    const { slug, requester } = command;
+    const { slug, requester, bingo, bingoParticipant } = command;
 
-    let bingo = await this.bingoRepository.findOneBy({ slug });
+    let foundBingo = bingo || await this.bingoRepository.findOneBy({ slug });
 
-    if (!bingo) {
+    if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.updateBingo.bingoNotFound'));
     }
 
-    const bingoParticipant = await this.bingoParticipantRepository.findOneBy({
-      bingoId: bingo.id,
+    const foundBingoParticipant = bingoParticipant || await this.bingoParticipantRepository.findOneBy({
+      bingoId: foundBingo.id,
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester).canUpdate(foundBingoParticipant, foundBingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
     }
 
     const updates = Object.fromEntries(
       Object.entries(command.updates).filter(([key, value]) => {
-        const current = bingo![key as keyof Bingo];
+        const current = foundBingo![key as keyof Bingo];
 
         if (value === undefined) return false;
 
@@ -94,11 +100,11 @@ export class UpdateBingoHandler {
     ) as UpdateBingoParams['updates'];
 
     if (Object.keys(updates).length === 0) {
-      return bingo;
+      return foundBingo;
     }
 
-    const newStartDate = new Date(updates.startDate || bingo.startDate);
-    const newEndDate = new Date(updates.endDate || bingo.endDate);
+    const newStartDate = new Date(updates.startDate || foundBingo.startDate);
+    const newEndDate = new Date(updates.endDate || foundBingo.endDate);
 
     if (newStartDate >= newEndDate) {
       throw new BadRequestException(this.i18nService.t('bingo.updateBingo.startDateAfterEndDate'));
@@ -120,23 +126,23 @@ export class UpdateBingoHandler {
       if (existingBingo) {
         throw new BadRequestException(this.i18nService.t('bingo.updateBingo.titleNotUnique'));
       }
-      bingo.slug = titleSlug;
+      foundBingo.slug = titleSlug;
     }
 
-    Object.assign(bingo, updates);
-    bingo.updatedById = requester.id;
-    bingo.updatedBy = Promise.resolve(requester);
+    Object.assign(foundBingo, updates);
+    foundBingo.updatedById = requester.id;
+    foundBingo.updatedBy = Promise.resolve(requester);
 
-    bingo = await this.bingoRepository.save(bingo);
+    foundBingo = await this.bingoRepository.save(foundBingo);
 
     this.eventBus.publish(
       new BingoUpdatedEvent({
-        bingoId: bingo.id,
+        bingoId: foundBingo.id,
         requesterId: command.requester.id,
         updates,
       }),
     );
 
-    return bingo;
+    return foundBingo;
   }
 }

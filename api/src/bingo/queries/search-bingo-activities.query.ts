@@ -17,6 +17,8 @@ import { BingoPolicies } from '../bingo.policies';
 export type SearchBingoActivitiesParams = PaginatedQueryParams<{
   requester: User;
   slug: string;
+  bingo?: Bingo;
+  bingoParticipant?: BingoParticipant;
 }>;
 
 export type SearchBingoActivitiesResult = PaginatedDtoWithoutTotal<Activity>;
@@ -40,28 +42,28 @@ export class SearchBingoActivitiesHandler {
   ) {}
 
   async execute(query: SearchBingoActivitiesQuery): Promise<SearchBingoActivitiesResult> {
-    const { requester, slug, ...pagination } = query.params;
+    const { requester, slug, bingo, bingoParticipant, ...pagination } = query.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const foundBingo = bingo || await this.bingoRepository.findOneBy({ slug });
 
-    if (!bingo) {
+    if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.searchBingoActivities.bingoNotFound'));
     }
 
-    const bingoParticipant = await this.bingoParticipantRepository.findOneBy({
-      bingoId: bingo.id,
+    const foundBingoParticipant = bingoParticipant || await this.bingoParticipantRepository.findOneBy({
+      bingoId: foundBingo.id,
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canViewActivities(bingoParticipant)) {
+    if (!new BingoPolicies(requester).canViewActivities(foundBingoParticipant)) {
       throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
     }
 
     const q = this.activityRepository
       .createQueryBuilder('activity')
-      .where('activity.trackable_id = :trackableId AND activity.key LIKE :keyPrefix ', {
-        trackableId: bingo.id,
-        keyPrefix: 'bingo%',
+      .where('activity.trackable_id = :trackableId AND activity.trackable_type = :type', {
+        trackableId: foundBingo.id,
+        type: 'Bingo',
       })
       .orderBy('activity.createdAt', 'DESC');
 
