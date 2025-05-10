@@ -1,23 +1,23 @@
 char0o:
-  userId: 1
-  bingoId: 1
+  user: char0o
+  bingo: osrs-qc
   role: 'participant'
-  teamId: 1
+  teamId: 1 # TODO: change teamId to team seed
 
 didiking-osrs:
-  userId: 5
-  bingoId: 1
+  user: didiking
+  bingo: osrs-qc
   role: 'organizer'
-  teamId: 1
+  teamId: 1 # TODO: change teamId to team seed
 
 didiking-german:
-  userId: 5
-  bingoId: 2
+  user: didiking
+  bingo: german-osrs
   role: 'owner'
-  teamId: 1
+  teamId: 1 # TODO: change teamId to team seed
 
 dee420:
-  userId: 6
-  bingoId: 1
+  user: dee420
+  bingo: osrs-qc
   role: 'participant'
-  teamId: 1
+  teamId: 1 # TODO: change teamId to team seed

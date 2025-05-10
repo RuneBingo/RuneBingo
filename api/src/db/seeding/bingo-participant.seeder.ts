@@ -1,13 +1,15 @@
 import Joi from 'joi';
 
+import { Bingo } from '@/bingo/bingo.entity';
 import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 import { BingoRoles } from '@/bingo-participant/roles/bingo-roles.constants';
+import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
 
 type BingoParticipantSeed = {
-  userId: number;
-  bingoId: number;
+  user: string;
+  bingo: string;
   role: BingoRoles;
   teamId: number | null;
   deletedAt?: Date;
@@ -16,8 +18,8 @@ type BingoParticipantSeed = {
 const bingoParticipantSchema = Joi.object<Record<string, BingoParticipantSeed>>().pattern(
   Joi.string(),
   Joi.object({
-    userId: Joi.number().required(),
-    bingoId: Joi.number().required(),
+    user: Joi.string().required(),
+    bingo: Joi.string().required(),
     role: Joi.string()
       .valid(...Object.values(BingoRoles))
       .required(),
@@ -32,9 +34,14 @@ export class BingoParticipantSeeder extends Seeder<BingoParticipant, BingoPartic
   schema = bingoParticipantSchema;
 
   protected deserialize(seed: BingoParticipantSeed): BingoParticipant {
+    const user = this.seedingService.getEntity(User, seed.user);
+    const bingo = this.seedingService.getEntity(Bingo, seed.bingo);
+
     const bingoParticipant = new BingoParticipant();
-    bingoParticipant.userId = seed.userId;
-    bingoParticipant.bingoId = seed.bingoId;
+    bingoParticipant.userId = user.id;
+    bingoParticipant.bingoId = bingo.id;
+    bingoParticipant.bingo = Promise.resolve(bingo);
+    bingoParticipant.user = Promise.resolve(user);
     bingoParticipant.role = seed.role;
     bingoParticipant.teamId = seed.teamId;
     bingoParticipant.deletedAt = seed.deletedAt ?? null;
