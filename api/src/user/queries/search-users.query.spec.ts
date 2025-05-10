@@ -1,6 +1,8 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource, IsNull } from 'typeorm';
 
+import { Roles } from '@/auth/roles/roles.constants';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';
@@ -14,6 +16,7 @@ describe('SearchUsersHandler', () => {
   let module: TestingModule;
   let seedingService: SeedingService;
   let handler: SearchUsersHandler;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -23,6 +26,7 @@ describe('SearchUsersHandler', () => {
 
     handler = module.get(SearchUsersHandler);
     seedingService = module.get(SeedingService);
+    dataSource = module.get(DataSource);
 
     await seedingService.initialize();
   });
@@ -48,7 +52,16 @@ describe('SearchUsersHandler', () => {
 
   it('ignores status filter if the requester is not a moderator', async () => {
     const requester = seedingService.getEntity(User, 'b0aty');
-    const expectedUsers = [seedingService.getEntity(User, 'b0aty')];
+    const expectedUsers = await dataSource.getRepository(User).find({
+      where: {
+        disabledAt: IsNull(),
+      },
+      withDeleted: false,
+      order: {
+        usernameNormalized: 'ASC',
+      },
+    });
+    requester.role = Roles.User;
 
     const query = new SearchUsersQuery({
       requester,
@@ -76,6 +89,8 @@ describe('SearchUsersHandler', () => {
 });
 
 const assertExpectedUsers = (result: SearchUsersResult, expectedUsers: User[]) => {
+  expect(expectedUsers.length).toBeGreaterThan(0);
+  expect(expectedUsers.length).toBe(result.items.length);
   result.items.forEach((item, i) => {
     expect(expectedUsers[i]).not.toBeNull();
     expect(item.id).toBe(expectedUsers[i].id);

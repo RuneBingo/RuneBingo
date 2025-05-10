@@ -15,11 +15,11 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { I18n, I18nService } from 'nestjs-i18n';
 
+import { PaginatedActivitiesDto } from '@/activity/dto/paginated-activities.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 
 import { FormatUserActivitiesCommand } from './commands/format-user-activities.command';
 import { UpdateUserCommand } from './commands/update-user.command';
-import { PaginatedUserActivitiesDto } from './dto/paginated-user-activities.dto';
 import { PaginatedUsersDto } from './dto/paginated-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -102,7 +102,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The activities of the user have been found.',
-    type: PaginatedUserActivitiesDto,
+    type: PaginatedActivitiesDto,
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
@@ -128,6 +128,6 @@ export class UserController {
 
     const itemsDto = await this.commandBus.execute(new FormatUserActivitiesCommand(items));
 
-    return new PaginatedUserActivitiesDto({ items: itemsDto, ...pagination });
+    return new PaginatedActivitiesDto({ items: itemsDto, ...pagination });
   }
 }

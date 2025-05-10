@@ -45,7 +45,7 @@ export class CreateUserHandler {
     newUser.usernameNormalized = usernameNormalized;
     newUser.gravatarHash = gravatarHash;
     newUser.language = language;
-    newUser.createdBy = requester instanceof User ? requester.id : null;
+    newUser.createdById = requester instanceof User ? requester.id : null;
     newUser.role = Roles.User;
 
     const policyRequester = requester instanceof User ? requester : null;
@@ -56,7 +56,7 @@ export class CreateUserHandler {
     newUser = await this.userRepository.save(newUser);
 
     if (requester === 'self') {
-      newUser.createdBy = newUser.id;
+      newUser.createdById = newUser.id;
       newUser = await this.userRepository.save(newUser);
     }
 
