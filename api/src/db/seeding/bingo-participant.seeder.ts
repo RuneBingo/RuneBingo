@@ -44,7 +44,6 @@ export class BingoParticipantSeeder extends Seeder<BingoParticipant, BingoPartic
     bingoParticipant.user = Promise.resolve(user);
     bingoParticipant.role = seed.role;
     bingoParticipant.teamId = seed.teamId;
-    bingoParticipant.deletedAt = seed.deletedAt ?? null;
 
     return bingoParticipant;
   }
