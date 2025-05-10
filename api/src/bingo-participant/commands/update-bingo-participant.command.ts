@@ -1,4 +1,4 @@
-import { Command, CommandHandler } from '@nestjs/cqrs';
+import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { BingoParticipant } from '../bingo-participant.entity';
 import { Bingo } from '@/bingo/bingo.entity';
 import { User } from '@/user/user.entity';
@@ -10,6 +10,7 @@ import { BingoRoles } from '../roles/bingo-roles.constants';
 import { I18nTranslations } from '@/i18n/types';
 import { I18nService } from 'nestjs-i18n';
 import { BingoParticipantPolicies } from '../bingo-participant.policies';
+import { BingoParticipantUpdatedEvent } from '../events/bingo-participant-updated.event';
 
 export type UpdateBingoParticipantParams = {
   requester: User;
@@ -41,6 +42,7 @@ export class UpdateBingoParticipantHandler {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly i18nService: I18nService<I18nTranslations>,
+    private readonly eventBus: EventBus,
   ) {}
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
@@ -70,17 +72,22 @@ export class UpdateBingoParticipantHandler {
       }));
 
     if (!requesterParticipant) {
-      throw new ForbiddenException(this.i18nService.t('bingo-participant.updateBingoParticipant.notParticipantOfTheBingo'));
+      throw new ForbiddenException(
+        this.i18nService.t('bingo-participant.updateBingoParticipant.notParticipantOfTheBingo'),
+      );
     }
 
-    const parsedRole = role ? this.getRoleFromString(role) : undefined;
+    let parsedRole: BingoRoles | undefined;
 
-    if (parsedRole === undefined) {
-      throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.roleInvalid'));
+    if (role !== undefined) {
+      parsedRole = this.getRoleFromString(role);
+      if (!parsedRole) {
+        throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.roleInvalid'));
+      }
     }
     let team;
     if (teamName) {
-        team = await this.bingoTeamRepository.findOneBy({ nameNormalized: teamName, bingoId: foundBingo.id });
+      team = await this.bingoTeamRepository.findOneBy({ nameNormalized: teamName, bingoId: foundBingo.id });
     }
 
     if (teamName && !team) {
@@ -93,20 +100,38 @@ export class UpdateBingoParticipantHandler {
     });
 
     if (!bingoParticipantToUpdate) {
-      throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoParticipantNotFound'));
+      throw new NotFoundException(
+        this.i18nService.t('bingo-participant.updateBingoParticipant.bingoParticipantNotFound'),
+      );
     }
 
-    if (!new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, bingoParticipantToUpdate, parsedRole)) {
-        throw new ForbiddenException(this.i18nService.t('bingo-participant.updateBingoParticipant.notAuthorizedToUpdate'))
+    if (
+      !new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, bingoParticipantToUpdate, parsedRole)
+    ) {
+      throw new ForbiddenException(
+        this.i18nService.t('bingo-participant.updateBingoParticipant.notAuthorizedToUpdate'),
+      );
     }
 
     if (teamName) {
-        bingoParticipantToUpdate.teamId = team.id;
+      bingoParticipantToUpdate.teamId = team.id;
     }
 
-    if (role) {
-        bingoParticipantToUpdate.role = parsedRole;
+    if (parsedRole) {
+      bingoParticipantToUpdate.role = parsedRole;
     }
+
+    this.eventBus.publish(
+      new BingoParticipantUpdatedEvent({
+        bingoId: foundBingo.id,
+        requesterId: requester.id,
+        username: userToUpdate.usernameNormalized,
+        updates: {
+          role,
+          teamName,
+        },
+      }),
+    );
 
     return await this.bingoParticipantRepository.save(bingoParticipantToUpdate);
   }

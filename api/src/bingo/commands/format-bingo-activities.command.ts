@@ -44,6 +44,12 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoCanceledActivity(activity);
           case 'bingo.deleted':
             return this.formatBingoDeletedActivity(activity);
+          case 'bingo_participant.added':
+            return this.formatBingoParticipantAddedActivity(activity);
+          case 'bingo_participant.removed':
+            return this.formatBingoParticipantRemovedActivity(activity);
+          case 'bingo_participant.updated':
+            return this.formatBingoParticipantUpdatedActivity(activity);
           default:
             this.logger.error(`Unsupported activity key: ${activity.key}`);
             return null;
@@ -131,6 +137,65 @@ export class FormatBingoActivitiesHandler {
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? 'System';
+    const addedUsername = activity.parameters!.username;
+
+    const title = this.i18nService.t('bingo-participant.activity.added', {
+      args: { username: addedUsername, requester: requesterName },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoParticipantRemovedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? 'System';
+    const removedUsername = activity.parameters!.username;
+
+    const title = this.i18nService.t('bingo-participant.activity.removed', {
+      args: { username: removedUsername, requester: requesterName },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoParticipantUpdatedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? 'System';
+    const updatedUsername = activity.parameters!.username;
+    const title = this.i18nService.t('bingo.activity.updated.title', {
+      args: { username: requesterName },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters!.updates ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'role':
+          body.push(
+            this.i18nService.t('bingo-participant.activity.updated.role', {
+              args: { requester: requesterName, username: updatedUsername, role: value },
+            }),
+          );
+          break;
+        case 'teamName':
+          body.push(
+            this.i18nService.t('bingo-participant.activity.updated.teamName', {
+              args: { requester: requesterName, username: updatedUsername, role: value },
+            }),
+          );
+          break;
+        default:
+          this.logger.error(`Unsupported activity parameter for 'bingo.update': ${key}`);
+          break;
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
   }
 
   private async preloadUsers(activities: Activity[]): Promise<void> {

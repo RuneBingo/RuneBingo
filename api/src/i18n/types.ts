@@ -45,6 +45,14 @@ export type I18nTranslations = {
             "roleInvalid": string;
             "teamNotFound": string;
         };
+        "activity": {
+            "added": string;
+            "removed": string;
+            "updated": {
+                "role": string;
+                "teamName": string;
+            };
+        };
     };
     "bingo": {
         "createBingo": {

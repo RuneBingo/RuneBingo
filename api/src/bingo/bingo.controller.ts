@@ -84,7 +84,7 @@ export class BingoController {
       }),
     );
     await this.commandBus.execute(
-      new AddBingoParticipantCommand({ user: req.userEntity!, bingo: bingo, role: BingoRoles.Owner }),
+      new AddBingoParticipantCommand({ requester: null, user: req.userEntity!, bingo: bingo, role: BingoRoles.Owner }),
     );
     const createdBy = new UserDto(await bingo.createdBy);
     return new BingoDto(bingo, { createdBy });

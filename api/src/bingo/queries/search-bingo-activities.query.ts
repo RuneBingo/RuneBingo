@@ -59,11 +59,13 @@ export class SearchBingoActivitiesHandler {
       throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
     }
 
+    const activityTypes = ['Bingo', 'Bingo-Participant']
+
     const q = this.activityRepository
       .createQueryBuilder('activity')
-      .where('activity.trackable_id = :trackableId AND activity.trackable_type = :type', {
+      .where('activity.trackable_id = :trackableId AND activity.trackable_type IN (:...activityTypes)', {
         trackableId: foundBingo.id,
-        type: 'Bingo',
+        activityTypes,
       })
       .orderBy('activity.createdAt', 'DESC');
 
