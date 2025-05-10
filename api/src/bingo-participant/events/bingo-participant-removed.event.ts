@@ -4,7 +4,7 @@ import { CommandBus, EventsHandler } from '@nestjs/cqrs';
 export type BingoParticipantRemovedParams = {
   requesterId: number;
   bingoId: number;
-  username: string;
+  userId: number;
   role: string;
 };
 
@@ -21,10 +21,10 @@ export class BingoParticipantRemovedHandler {
 
     await this.commandBus.execute(
       new CreateActivityCommand({
-        key: 'bingo_participant.removed',
+        key: 'bingo.participant.removed',
         requesterId,
         trackableId: bingoId,
-        trackableType: 'Bingo-Participant',
+        trackableType: 'Bingo',
         parameters,
       }),
     );

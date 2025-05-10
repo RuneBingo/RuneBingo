@@ -25,11 +25,7 @@ export class BingoParticipantPolicies {
   canUpdate(requesterParticipant: BingoParticipant, participantToUpdate: BingoParticipant, role?: BingoRoles) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 
-    if (
-      requesterParticipant.userId === participantToUpdate.userId &&
-      role &&
-      isBingoRoleHigher(role, participantToUpdate.role)
-    ) {
+    if (role && !participantHasBingoRole(requesterParticipant, BingoRoles.Owner)) {
       return false;
     }
 

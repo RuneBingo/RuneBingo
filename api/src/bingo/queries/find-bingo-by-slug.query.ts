@@ -9,6 +9,7 @@ import { User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
 import { ViewBingoScope } from '../scopes/view-bingo.scope';
+import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 
 export type FindBingoBySlugParams = {
   slug: string;
@@ -35,16 +36,12 @@ export class FindBingoBySlugHandler {
   async execute(query: FindBingoBySlugQuery): Promise<FindBingoBySlugResult> {
     const { slug, bingo } = query.params;
 
-    if (bingo) {
-      return bingo;
-    }
+    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
 
-    const existingBingo = await this.bingoRepository.findOneBy({slug});
-
-    if (!existingBingo) {
+    if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo.findBingoByTitleSlug.bingoNotFound'));
     }
 
-    return existingBingo;
+    return foundBingo;
   }
 }

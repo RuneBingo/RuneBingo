@@ -2,22 +2,18 @@ char0o:
   userId: 1
   bingoId: 1
   role: 'participant'
-  teamId: 1
 
 didiking-osrs:
   userId: 5
   bingoId: 1
   role: 'organizer'
-  teamId: 1
 
 didiking-german:
   userId: 5
   bingoId: 2
   role: 'owner'
-  teamId: 1
 
 dee420:
   userId: 6
   bingoId: 1
   role: 'participant'
-  teamId: 1

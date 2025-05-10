@@ -1,10 +1,14 @@
 import slugify from 'slugify';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
+@Index('IDX_UNIQUE_SLUG_WHEN_NOT_DELETED', ['slug'], {
+  unique: true,
+  where: `"deleted_at" IS NULL`, // raw SQL
+})
 @Entity()
 export class Bingo extends StrongEntityParanoid {
   static slugifyTitle(title: string): string {
@@ -22,7 +26,7 @@ export class Bingo extends StrongEntityParanoid {
   @Column()
   title: string;
 
-  @Column({ unique: true })
+  @Column()
   slug: string;
 
   @Column()

@@ -309,11 +309,11 @@ export class BingoController {
   @Put(':slug/participants/:username')
   @UseGuards(AuthGuard, ViewBingoAuthGuard)
   @HttpCode(204)
-  @ApiOperation({ summary: 'Delete a bingo participant from an event' })
-  @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
+  @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
+  @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
-  @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
-  @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
+  @ApiUnauthorizedResponse({ description: 'User not authed.' })
+  @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
   async updateBingoParticipant(
     @Req() req: BingoRequest,
     @Param('slug') slug: string,

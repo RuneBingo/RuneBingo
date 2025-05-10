@@ -10,7 +10,6 @@ type BingoParticipantSeed = {
   bingoId: number;
   role: BingoRoles;
   teamId: number | null;
-  deletedAt?: Date;
 };
 
 const bingoParticipantSchema = Joi.object<Record<string, BingoParticipantSeed>>().pattern(
@@ -22,7 +21,6 @@ const bingoParticipantSchema = Joi.object<Record<string, BingoParticipantSeed>>(
       .valid(...Object.values(BingoRoles))
       .required(),
     teamId: Joi.number().optional(),
-    deletedAt: Joi.date().optional(),
   }),
 );
 
@@ -37,7 +35,6 @@ export class BingoParticipantSeeder extends Seeder<BingoParticipant, BingoPartic
     bingoParticipant.bingoId = seed.bingoId;
     bingoParticipant.role = seed.role;
     bingoParticipant.teamId = seed.teamId;
-    bingoParticipant.deletedAt = seed.deletedAt ?? null;
 
     return bingoParticipant;
   }

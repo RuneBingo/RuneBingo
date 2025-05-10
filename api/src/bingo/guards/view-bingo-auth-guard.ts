@@ -58,6 +58,6 @@ export class ViewBingoAuthGuard implements CanActivate {
       }
     }
 
-    return false;
+    throw new NotFoundException();
   }
 }

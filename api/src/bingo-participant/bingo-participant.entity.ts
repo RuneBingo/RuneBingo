@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { BaseEntityParanoid } from '@/db/base.entity';
@@ -8,7 +8,7 @@ import { BingoRoles } from './roles/bingo-roles.constants';
 import { BingoTeam } from '@/bingo-team/bingo-team.entity';
 
 @Entity()
-export class BingoParticipant extends BaseEntityParanoid {
+export class BingoParticipant {
   @PrimaryColumn({ name: 'user_id', type: 'int' })
   userId: number;
 

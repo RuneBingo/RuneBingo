@@ -18,7 +18,7 @@ export type UpdateBingoParticipantParams = {
   username: string;
   bingo?: Bingo;
   bingoParticipant?: BingoParticipant;
-  role?: string;
+  role?: BingoRoles;
   teamName?: string;
 };
 
@@ -76,15 +76,7 @@ export class UpdateBingoParticipantHandler {
         this.i18nService.t('bingo-participant.updateBingoParticipant.notParticipantOfTheBingo'),
       );
     }
-
-    let parsedRole: BingoRoles | undefined;
-
-    if (role !== undefined) {
-      parsedRole = this.getRoleFromString(role);
-      if (!parsedRole) {
-        throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.roleInvalid'));
-      }
-    }
+    
     let team;
     if (teamName) {
       team = await this.bingoTeamRepository.findOneBy({ nameNormalized: teamName, bingoId: foundBingo.id });
@@ -106,7 +98,7 @@ export class UpdateBingoParticipantHandler {
     }
 
     if (
-      !new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, bingoParticipantToUpdate, parsedRole)
+      !new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, bingoParticipantToUpdate, role)
     ) {
       throw new ForbiddenException(
         this.i18nService.t('bingo-participant.updateBingoParticipant.notAuthorizedToUpdate'),
@@ -117,15 +109,15 @@ export class UpdateBingoParticipantHandler {
       bingoParticipantToUpdate.teamId = team.id;
     }
 
-    if (parsedRole) {
-      bingoParticipantToUpdate.role = parsedRole;
+    if (role) {
+      bingoParticipantToUpdate.role = role;
     }
 
     this.eventBus.publish(
       new BingoParticipantUpdatedEvent({
         bingoId: foundBingo.id,
         requesterId: requester.id,
-        username: userToUpdate.usernameNormalized,
+        userId: userToUpdate.id,
         updates: {
           role,
           teamName,

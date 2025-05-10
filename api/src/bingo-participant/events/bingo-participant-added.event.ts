@@ -4,7 +4,7 @@ import { CommandBus, EventsHandler } from '@nestjs/cqrs';
 export type BingoParticipantAddedParams = {
   requesterId: number | null;
   bingoId: number;
-  username: string;
+  userId: number;
   role: string;
 };
 
@@ -21,10 +21,10 @@ export class BingoParticipantAddedHandler {
 
     await this.commandBus.execute(
       new CreateActivityCommand({
-        key: 'bingo_participant.added',
+        key: 'bingo.participant.added',
         requesterId,
         trackableId: bingoId,
-        trackableType: 'Bingo-Participant',
+        trackableType: 'Bingo',
         parameters,
       }),
     );

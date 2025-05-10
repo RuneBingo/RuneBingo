@@ -43,7 +43,7 @@ export class AddBingoParticipantHandler {
       new BingoParticipantAddedEvent({
         bingoId: bingo.id,
         requesterId: requester ? requester.id : null,
-        username: user.usernameNormalized,
+        userId: user.id,
         role: role,
       }),
     );

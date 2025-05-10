@@ -4,7 +4,7 @@ import { CommandBus, EventsHandler } from '@nestjs/cqrs';
 export type BingoParticipantUpdatedParams = {
   requesterId: number;
   bingoId: number;
-  username: string;
+  userId: number;
   updates: {
     role?: string;
     teamName?: string;
@@ -20,15 +20,15 @@ export class BingoParticipantUpdatedHandler {
   constructor(private readonly commandBus: CommandBus) {}
 
   async handle(event: BingoParticipantUpdatedEvent) {
-    const { requesterId, bingoId, username, updates } = event.params;
+    const { requesterId, bingoId, userId, updates } = event.params;
 
     await this.commandBus.execute(
       new CreateActivityCommand({
-        key: 'bingo_participant.updated',
+        key: 'bingo.participant.updated',
         requesterId,
         trackableId: bingoId,
-        trackableType: 'Bingo-Participant',
-        parameters: {username, updates},
+        trackableType: 'Bingo',
+        parameters: {userId, updates},
       }),
     );
   }

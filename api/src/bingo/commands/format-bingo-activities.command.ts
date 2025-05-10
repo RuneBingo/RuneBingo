@@ -44,11 +44,11 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoCanceledActivity(activity);
           case 'bingo.deleted':
             return this.formatBingoDeletedActivity(activity);
-          case 'bingo_participant.added':
+          case 'bingo.participant.added':
             return this.formatBingoParticipantAddedActivity(activity);
-          case 'bingo_participant.removed':
+          case 'bingo.participant.removed':
             return this.formatBingoParticipantRemovedActivity(activity);
-          case 'bingo_participant.updated':
+          case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
           default:
             this.logger.error(`Unsupported activity key: ${activity.key}`);
@@ -142,10 +142,13 @@ export class FormatBingoActivitiesHandler {
   private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? 'System';
-    const addedUsername = activity.parameters!.username;
+
+    const userId = activity.parameters?.userId as number | undefined;
+
+    const username = userId !== undefined && this.usersMap.has(userId) ? this.usersMap.get(userId)!.username : "Unknown"; 
 
     const title = this.i18nService.t('bingo-participant.activity.added', {
-      args: { username: addedUsername, requester: requesterName },
+      args: { username: username, requester: requesterName },
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
@@ -173,7 +176,7 @@ export class FormatBingoActivitiesHandler {
 
     const body: string[] = [];
 
-    Object.entries(activity.parameters!.updates ?? {}).forEach(([key, value]) => {
+    Object.entries(activity.parameters?.updates ?? {}).forEach(([key, value]) => {
       switch (key) {
         case 'role':
           body.push(
@@ -199,7 +202,10 @@ export class FormatBingoActivitiesHandler {
   }
 
   private async preloadUsers(activities: Activity[]): Promise<void> {
-    const userIds = activities.map((activity) => activity.createdById).filter(Boolean) as number[];
+    const userIds = activities
+      .map((activity) => [activity.createdById, activity.parameters?.userId])
+      .flat()
+      .filter(Boolean) as number[];
 
     const users = await this.userRepository.find({ where: { id: In(userIds) } });
 

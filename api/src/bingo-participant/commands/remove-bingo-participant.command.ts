@@ -40,7 +40,7 @@ export class RemoveBingoParticipantHandler {
     private readonly eventBus: EventBus,
   ) {}
 
-  async execute(command: RemoveBingoParticipantCommand): Promise<RemoveBingoParticipantResult> {
+  async execute(command: RemoveBingoParticipantCommand): Promise<void> {
     const { requester, slug, username, bingo, bingoParticipant } = command.params;
 
     const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
@@ -85,18 +85,15 @@ export class RemoveBingoParticipantHandler {
       );
     }
 
-    bingoParticipantToRemove.deletedAt = new Date();
-    bingoParticipantToRemove.deletedById = requester.id;
-
     this.eventBus.publish(
       new BingoParticipantRemovedEvent({
         bingoId: foundBingo.id,
         requesterId: requester.id,
-        username: userToRemove.usernameNormalized,
+        userId: userToRemove.id,
         role: bingoParticipantToRemove.role,
       }),
     );
 
-    return await this.bingoParticipantRepository.save(bingoParticipantToRemove);
+    await this.bingoParticipantRepository.remove(bingoParticipantToRemove);
   }
 }
