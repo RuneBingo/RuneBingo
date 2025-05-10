@@ -67,7 +67,6 @@ export class SearchBingoParticipantsHandler {
       .innerJoin(User, 'user', 'user.id = bingo_participant.user_id')
       .leftJoin(BingoTeam, 'bingo_team', 'bingo_participant.team_id = bingo_team.id')
       .where('bingo_participant.bingo_id = :bingoId', { bingoId: foundBingo.id });
-    console.log(teamName);
     if (searchQuery) {
       scope.andWhere('(user.username_normalized ILIKE :searchQuery OR bingo_team.name_normalized ILIKE :searchQuery)', {
         searchQuery: `%${searchQuery}%`,

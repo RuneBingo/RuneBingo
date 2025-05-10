@@ -21,9 +21,12 @@ import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.
 import { SearchBingosHandler } from './queries/search-bingos.query';
 import { SearchBingoParticipantsHandler } from '@/bingo-participant/queries/search-bingo-participants.query';
 import { AddBingoParticipantHandler } from '@/bingo-participant/commands/add-bingo-participant.command';
+import { RemoveBingoParticipantHandler } from '@/bingo-participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantHandler } from '@/bingo-participant/commands/update-bingo-participant.command';
+import { BingoTeam } from '@/bingo-team/bingo-team.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant])],
+  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam])],
   controllers: [BingoController],
   providers: [
     //Commands
@@ -32,6 +35,8 @@ import { AddBingoParticipantHandler } from '@/bingo-participant/commands/add-bin
     DeleteBingoHandler,
     FormatBingoActivitiesHandler,
     AddBingoParticipantHandler,
+    RemoveBingoParticipantHandler,
+    UpdateBingoParticipantHandler,
     CancelBingoHandler,
 
     //Queries

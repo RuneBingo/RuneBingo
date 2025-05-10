@@ -1,0 +1,82 @@
+import { Bingo } from '@/bingo/bingo.entity';
+import { User } from '@/user/user.entity';
+import { BingoRoles } from '../roles/bingo-roles.constants';
+import { BingoParticipant } from '../bingo-participant.entity';
+import { Command, CommandHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { I18nTranslations } from '@/i18n/types';
+import { I18nService } from 'nestjs-i18n';
+import { BingoParticipantPolicies } from '../bingo-participant.policies';
+
+export type RemoveBingoParticipantParams = {
+  requester: User;
+  slug: string;
+  username: string;
+  bingo?: Bingo;
+  bingoParticipant?: BingoParticipant;
+};
+
+export type RemoveBingoParticipantResult = BingoParticipant;
+
+export class RemoveBingoParticipantCommand extends Command<BingoParticipant> {
+  constructor(public readonly params: RemoveBingoParticipantParams) {
+    super();
+  }
+}
+
+@CommandHandler(RemoveBingoParticipantCommand)
+export class RemoveBingoParticipantHandler {
+  constructor(
+    @InjectRepository(Bingo)
+    private readonly bingoRepository: Repository<Bingo>,
+    @InjectRepository(BingoParticipant)
+    private readonly bingoParticipantRepository: Repository<BingoParticipant>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly i18nService: I18nService<I18nTranslations>,
+  ) {}
+
+  async execute(command: RemoveBingoParticipantCommand): Promise<RemoveBingoParticipantResult> {
+    const { requester, slug, username, bingo, bingoParticipant } = command.params;
+
+    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
+
+    if (!foundBingo) {
+      throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));
+    }
+    
+    const userToRemove = await this.userRepository.findOneBy({usernameNormalized: username});
+    
+    if (!userToRemove) {
+        throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.userNotFound'));
+    }
+
+    const bingoParticipantToRemove = await this.bingoParticipantRepository.findOneBy({userId: userToRemove.id, bingoId: foundBingo.id});
+
+    if (!bingoParticipantToRemove) {
+        throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoParticipantNotFound'));
+    }
+
+    const requesterParticipant =
+      bingoParticipant ||
+      (await this.bingoParticipantRepository.findOneBy({
+        bingoId: foundBingo.id,
+        userId: requester.id,
+      }));
+
+    if (!requesterParticipant) {
+        throw new ForbiddenException(this.i18nService.t('bingo-participant.removeBingoParticipant.notParticipantOfTheBingo'))
+    }
+
+    if (!new BingoParticipantPolicies(requester).canRemove(requesterParticipant, bingoParticipantToRemove)) {
+      throw new ForbiddenException(this.i18nService.t('bingo-participant.removeBingoParticipant.notAuthorizedToDelete'));
+    }
+
+    bingoParticipantToRemove.deletedAt = new Date();
+    bingoParticipantToRemove.deletedById = requester.id;
+
+    return await this.bingoParticipantRepository.save(bingoParticipantToRemove);
+  }
+}

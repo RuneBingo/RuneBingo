@@ -16,6 +16,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -43,10 +44,16 @@ import { FindBingoBySlugParams, FindBingoBySlugQuery } from './queries/find-bing
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
 import { PaginatedBingoParticipantsDto } from '@/bingo-participant/dto/paginated-bingo-participants.dto';
-import { SearchBingoParticipantsParams, SearchBingoParticipantsQuery } from '@/bingo-participant/queries/search-bingo-participants.query';
+import {
+  SearchBingoParticipantsParams,
+  SearchBingoParticipantsQuery,
+} from '@/bingo-participant/queries/search-bingo-participants.query';
 import { BingoParticipantDto } from '@/bingo-participant/dto/bingo-participant.dto';
 import { ViewBingoAuthGuard } from './guards/view-bingo-auth-guard';
 import { BingoRequest } from './guards/bingo-request';
+import { RemoveBingoParticipantCommand } from '@/bingo-participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantDto } from '@/bingo-participant/dto/update-bingo-participant.dto';
+import { UpdateBingoParticipantCommand } from '@/bingo-participant/commands/update-bingo-participant.command';
 
 @Controller('v1/bingo')
 export class BingoController {
@@ -117,47 +124,7 @@ export class BingoController {
     return new PaginatedBingosDto({ items: bingosDto, ...pagination });
   }
 
-  @Get(':slug/participants')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
-  @ApiOperation({ summary: 'Get bingo participants' })
-  @ApiOkResponse({ description: 'Bingo Participants.' })
-  @ApiQuery({ name: 'query', required: false })
-  @ApiQuery({ name: 'team', required: false })
-  @ApiQuery({ name: 'role', enum: ['participant', 'organizer', 'owner'], required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'offset', required: false })
-  async getBingoParticipants(
-    @Req() req: BingoRequest,
-    @Param('slug') slug: string,
-    @Query('query') query: string = '',
-    @Query('team') teamName: string = '',
-    @Query('role') role: string | undefined = undefined,
-    @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
-  ): Promise<PaginatedBingoParticipantsDto> {
-    const normalizedQuery = query?.trim() === '' ? undefined : query;
-    const normalizedTeamName = teamName?.trim() === '' ? undefined : teamName;
-    console.log(normalizedQuery);
-    const params = {
-      requester: req.userEntity,
-      slug,
-      bingo: req.bingo,
-      bingoParticipant: req.bingoParticipant,
-      query: normalizedQuery,
-      teamName: normalizedTeamName,
-      role,
-      limit: limit ? parseInt(limit) : undefined,
-      offset: offset ? parseInt(offset) : undefined,
-    } satisfies SearchBingoParticipantsParams;
 
-    const { items, ...pagination } = await this.queryBus.execute(new SearchBingoParticipantsQuery(params));
-
-    const bingoParticipantsDtos = await Promise.all(
-      items.map(async (bingoParticipant) => BingoParticipantDto.fromBingoParticipant(bingoParticipant)),
-    );
-
-    return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
-  }
 
   @Get(':slug')
   @UseGuards(ViewBingoAuthGuard)
@@ -211,7 +178,7 @@ export class BingoController {
     description: 'Sucessful query of bingo activities.',
     type: PaginatedActivitiesDto,
   })
-  @ApiNotFoundResponse({ description: 'No bingo with provided Id was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   async getActivities(
@@ -240,23 +207,129 @@ export class BingoController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo event has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided Id was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to delete the bingo event.' })
   async delete(@Req() req: BingoRequest, @Param('slug') slug: string) {
-    await this.commandBus.execute(new DeleteBingoCommand({ requester: req.userEntity!, slug, bingo: req.bingo, bingoParticipant: req.bingoParticipant }));
+    await this.commandBus.execute(
+      new DeleteBingoCommand({
+        requester: req.userEntity!,
+        slug,
+        bingo: req.bingo,
+        bingoParticipant: req.bingoParticipant,
+      }),
+    );
   }
 
   @Post(':slug/cancel')
   @UseGuards(AuthGuard, ViewBingoAuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
   @ApiOkResponse({ description: 'The bingo event has been successfully cancelled.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided Id was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
   @ApiBadRequestResponse({ description: 'The bingo event was already cancelled or has ended.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to cancel the bingo event.' })
   async cancel(@Req() req: BingoRequest, @Param('slug') slug: string) {
-    const bingo = await this.commandBus.execute(new CancelBingoCommand({ requester: req.userEntity!, slug, bingo: req.bingo, bingoParticipant: req.bingoParticipant }));
+    const bingo = await this.commandBus.execute(
+      new CancelBingoCommand({
+        requester: req.userEntity!,
+        slug,
+        bingo: req.bingo,
+        bingoParticipant: req.bingoParticipant,
+      }),
+    );
     const canceledBy = new UserDto(await bingo.canceledBy);
     const createdBy = new UserDto(await bingo.createdBy);
     return new BingoDto(bingo, { createdBy, canceledBy });
+  }
+
+  @Get(':slug/participants')
+  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @ApiOperation({ summary: 'Get bingo participants' })
+  @ApiOkResponse({ description: 'Bingo Participants.' })
+  @ApiQuery({ name: 'query', required: false })
+  @ApiQuery({ name: 'team', required: false })
+  @ApiQuery({ name: 'role', enum: ['participant', 'organizer', 'owner'], required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'offset', required: false })
+  async getBingoParticipants(
+    @Req() req: BingoRequest,
+    @Param('slug') slug: string,
+    @Query('query') query: string = '',
+    @Query('team') teamName: string = '',
+    @Query('role') role: string | undefined = undefined,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ): Promise<PaginatedBingoParticipantsDto> {
+    const normalizedQuery = query?.trim() === '' ? undefined : query;
+    const normalizedTeamName = teamName?.trim() === '' ? undefined : teamName;
+    const params = {
+      requester: req.userEntity,
+      slug,
+      bingo: req.bingo,
+      bingoParticipant: req.bingoParticipant,
+      query: normalizedQuery,
+      teamName: normalizedTeamName,
+      role,
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined,
+    } satisfies SearchBingoParticipantsParams;
+
+    const { items, ...pagination } = await this.queryBus.execute(new SearchBingoParticipantsQuery(params));
+
+    const bingoParticipantsDtos = await Promise.all(
+      items.map(async (bingoParticipant) => BingoParticipantDto.fromBingoParticipant(bingoParticipant)),
+    );
+
+    return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
+  }
+
+  @Delete(':slug/participants/:username')
+  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a bingo participant from an event' })
+  @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
+  @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
+  async removeBingoParticipant(
+    @Req() req: BingoRequest,
+    @Param('slug') slug: string,
+    @Param('username') username: string,
+  ) {
+    await this.commandBus.execute(
+      new RemoveBingoParticipantCommand({
+        requester: req.userEntity!,
+        slug,
+        username,
+        bingo: req.bingo,
+        bingoParticipant: req.bingoParticipant,
+      }),
+    );
+  }
+
+  @Put(':slug/participants/:username')
+  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a bingo participant from an event' })
+  @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
+  @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
+  async updateBingoParticipant(
+    @Req() req: BingoRequest,
+    @Param('slug') slug: string,
+    @Param('username') username: string,
+    @Body() updateBingoParticipantDto: UpdateBingoParticipantDto,
+  ) {
+    await this.commandBus.execute(
+      new UpdateBingoParticipantCommand({
+        requester: req.userEntity!,
+        slug,
+        username,
+        bingo: req.bingo,
+        bingoParticipant: req.bingoParticipant,
+        teamName: updateBingoParticipantDto.teamName,
+        role: updateBingoParticipantDto.role,
+      }),
+    );
   }
 }

@@ -93,4 +93,8 @@ export class Bingo extends StrongEntityParanoid {
 
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
+
+  isPending(): Boolean {
+    return this.startedAt === null
+  }
 }
