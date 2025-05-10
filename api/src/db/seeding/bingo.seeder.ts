@@ -1,11 +1,12 @@
 import Joi from 'joi';
 
 import { Bingo } from '@/bingo/bingo.entity';
+import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
 
 type BingoSeed = {
-  createdById: number;
+  createdBy: string;
   language: string;
   title: string;
   description: string;
@@ -25,7 +26,7 @@ type BingoSeed = {
 const bingoSeedSchema = Joi.object<Record<string, BingoSeed>>().pattern(
   Joi.string(),
   Joi.object({
-    createdById: Joi.number().required(),
+    createdBy: Joi.string().required(),
     title: Joi.string().required(),
     language: Joi.string().required(),
     description: Joi.string().required(),
@@ -49,10 +50,13 @@ export class BingoSeeder extends Seeder<Bingo, BingoSeed> {
   schema = bingoSeedSchema;
 
   protected deserialize(seed: BingoSeed): Bingo {
+    const user = this.seedingService.getEntity(User, seed.createdBy);
     const slug = Bingo.slugifyTitle(seed.title);
 
     const bingo = new Bingo();
-    bingo.createdById = seed.createdById;
+
+    bingo.createdById = user.id;
+    bingo.createdBy = Promise.resolve(user);
     bingo.slug = slug;
     bingo.language = seed.language;
     bingo.title = seed.title;

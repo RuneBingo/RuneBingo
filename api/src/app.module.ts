@@ -28,6 +28,7 @@ import { BingoTeamModule } from './bingo-team/bingo-team.module';
     i18nModule,
     RedisModule,
     SeedingModule,
+    SeedingModule,
     SessionModule,
     UserModule,
     AuthModule,

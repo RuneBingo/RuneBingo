@@ -1,82 +1,82 @@
 osrs-qc:
-  createdById: 1
-  language: "en"
-  title: "OSRS QC"
-  description: "Les quebec"
+  createdBy: char0o
+  language: 'en'
+  title: 'OSRS QC'
+  description: 'Les quebec'
   private: true
   width: 5
   height: 5
   fullLineValue: 100
-  startDate: "2025-04-01"
-  endDate: "2025-04-30"
-  maxRegistrationDate: "2025-03-31"
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
 
 german-osrs:
-  createdById: 2
-  language: "en"
-  title: "German OSRS"
-  description: "Les allemands"
+  createdBy: raph
+  language: 'en'
+  title: 'German OSRS'
+  description: 'Les allemands'
   private: false
   width: 5
   height: 5
   fullLineValue: 100
-  startDate: "2025-04-01"
-  endDate: "2025-04-30"
-  maxRegistrationDate: "2025-03-31"
-
-deleted-bingo:
-  createdById: 2
-  language: "en"
-  title: "deleted bingo"
-  description: "Im deleted"
-  private: false
-  width: 5
-  height: 5
-  fullLineValue: 100
-  startDate: "2025-04-01"
-  endDate: "2025-04-30"
-  maxRegistrationDate: "2025-03-31"
-  deletedAt: "2024-04-03"
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
 
 ended-bingo:
-  createdById: 6
-  language: "en"
-  title: "ended bingo"
-  description: "Im ended"
+  createdBy: dee420
+  language: 'en'
+  title: 'ended bingo'
+  description: 'Im ended'
   private: false
   width: 5
   height: 5
   fullLineValue: 100
-  startDate: "2025-04-01"
+  startDate: '2025-04-01'
   startedAt: '2025-04-01'
-  endDate: "2025-04-30"
+  endDate: '2025-04-30'
   endedAt: '2025-04-30'
-  maxRegistrationDate: "2025-03-31"
+  maxRegistrationDate: '2025-03-31'
 
 started-bingo:
-  createdById: 5
-  language: "en"
-  title: "started bingo"
-  description: "Im started"
+  createdBy: didiking
+  language: 'en'
+  title: 'started bingo'
+  description: 'Im started'
   private: false
   width: 5
   height: 5
   fullLineValue: 100
-  startDate: "2025-04-01"
+  startDate: '2025-04-01'
   startedAt: '2025-04-01'
-  endDate: "2025-04-30"
-  maxRegistrationDate: "2025-03-31"
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
+
+deleted-bingo:
+  createdBy: raph
+  language: 'en'
+  title: 'deleted bingo'
+  description: 'Im deleted'
+  private: false
+  width: 5
+  height: 5
+  fullLineValue: 100
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
+  deletedAt: '2024-04-03'
 
 canceled-bingo:
-  createdById: 6
-  language: "en"
-  title: "canceled bingo"
-  description: "Im canceled"
+  createdBy: dee420
+  language: 'en'
+  title: 'canceled bingo'
+  description: 'Im canceled'
   private: false
   width: 5
   height: 5
   fullLineValue: 100
-  startDate: "2025-04-01"
-  endDate: "2025-04-30"
-  maxRegistrationDate: "2025-03-31"
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
   canceledAt: '2025-04-24'

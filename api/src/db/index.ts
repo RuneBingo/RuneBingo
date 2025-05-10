@@ -5,6 +5,10 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+
+import { Bingo } from '@/bingo/bingo.entity';
+import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 
 import { Activity } from '../activity/activity.entity';
 import { dotenvPath } from '../config';
@@ -45,6 +49,7 @@ const options = {
   entities,
   subscribers: isTest ? [] : subscribers,
   migrations,
+  namingStrategy: new SnakeNamingStrategy(),
   namingStrategy: new SnakeNamingStrategy(),
 } as const satisfies DataSourceOptions;
 

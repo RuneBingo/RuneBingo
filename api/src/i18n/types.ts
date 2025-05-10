@@ -15,6 +15,15 @@ export type I18nTranslations = {
             "usernameAlreadyExists": string;
         };
         "verifyAuthCode": {
+        "signInWithEmail": {
+            "userNotFound": string;
+            "userDisabled": string;
+        };
+        "signUpWithEmail": {
+            "emailAlreadyExists": string;
+            "usernameAlreadyExists": string;
+        };
+        "verifyAuthCode": {
             "invalidOrExpired": string;
             "accountDeleted": string;
         };
@@ -135,9 +144,63 @@ export type I18nTranslations = {
             "fr": string;
         };
     };
+    "general": {
+        "language": {
+            "en": string;
+            "fr": string;
+        };
+    };
     "session": {
         "createSessionForUser": {
             "userDisabled": string;
+            "forbidden": string;
+        };
+        "signOutSessionByUuid": {
+            "forbidden": string;
+        };
+    };
+    "user": {
+        "createUser": {
+            "emailAlreadyExists": string;
+            "usernameAlreadyExists": string;
+            "forbidden": string;
+        };
+        "findByUsername": {
+            "notFound": string;
+        };
+        "searchUsers": {
+            "invalidStatus": string;
+        };
+        "searchUserActivities": {
+            "userNotFound": string;
+            "forbidden": string;
+        };
+        "updateUser": {
+            "userNotFound": string;
+            "usernameAlreadyExists": string;
+            "forbidden": string;
+        };
+        "formatUserActivities": {
+            "userNotFound": string;
+        };
+        "activity": {
+            "created": {
+                "title": {
+                    "self": string;
+                    "other": string;
+                };
+            };
+            "updated": {
+                "title": {
+                    "self": string;
+                    "other": string;
+                };
+                "body": {
+                    "username": string;
+                    "language": string;
+                    "role": string;
+                };
+            };
             "forbidden": string;
         };
         "signOutSessionByUuid": {
@@ -191,6 +254,10 @@ export type I18nTranslations = {
     "validation": {
         "notEmpty": string;
         "invalidEmail": string;
+        "username": {
+            "noSpecialCharacters": string;
+            "invalidLength": string;
+        };
         "username": {
             "noSpecialCharacters": string;
             "invalidLength": string;
