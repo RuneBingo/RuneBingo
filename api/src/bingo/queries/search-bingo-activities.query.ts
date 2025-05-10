@@ -57,6 +57,7 @@ export class SearchBingoActivitiesHandler {
       throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
     }
 
+    // TODO: [#22] Adjust this to not have a key prefix and all bingo activities must use trackable 'Bingo'.
     const q = this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.trackable_id = :trackableId AND activity.key LIKE :keyPrefix ', {
