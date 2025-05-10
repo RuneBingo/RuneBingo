@@ -42,13 +42,11 @@ export class FormatUserActivitiesHandler {
       }),
     );
 
-    return activitiesDto.filter(Boolean) as ActivityDto<UserDto>[];
+    return activitiesDto.filter(Boolean) as ActivityDto[];
   }
 
   private async preloadUsers(activities: Activity[]): Promise<void> {
-    const userIds = activities.flatMap(
-      (activity) => [activity.trackableId, activity.createdBy].filter(Boolean) as number[],
-    );
+    const userIds = activities.map((activity) => activity.createdById).filter(Boolean) as number[];
 
     const users = await this.userRepository.find({ where: { id: In(userIds) } });
 
@@ -78,7 +76,7 @@ export class FormatUserActivitiesHandler {
     return userDto;
   }
 
-  private async formatUserCreatedActivity(activity: Activity): Promise<ActivityDto<UserDto>> {
+  private async formatUserCreatedActivity(activity: Activity): Promise<ActivityDto> {
     const user = await this.getUserById(activity.trackableId);
     const requester = await this.getRequester(activity);
 
@@ -94,18 +92,18 @@ export class FormatUserActivitiesHandler {
       });
     })();
 
-    return new ActivityDto(requester, activity.createdAt, activity.key, user, title);
+    return new ActivityDto(requester, activity.createdAt, activity.key, title);
   }
 
   private async getRequester(activity: Activity): Promise<UserDto | null> {
-    if (activity.createdBy === null) {
+    if (activity.createdById === null) {
       return null;
     }
 
-    return this.getUserById(activity.createdBy);
+    return this.getUserById(activity.createdById);
   }
 
-  private async formatUserUpdatedActivity(activity: Activity): Promise<ActivityDto<UserDto>> {
+  private async formatUserUpdatedActivity(activity: Activity): Promise<ActivityDto> {
     const user = await this.getUserById(activity.trackableId);
     const requester = await this.getRequester(activity);
 
@@ -148,6 +146,6 @@ export class FormatUserActivitiesHandler {
       }
     });
 
-    return new ActivityDto(requester, activity.createdAt, activity.key, user, title, body);
+    return new ActivityDto(requester, activity.createdAt, activity.key, title, body);
   }
 }

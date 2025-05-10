@@ -2,6 +2,7 @@ import { createHash } from 'crypto';
 
 import { Column, Entity, OneToMany } from 'typeorm';
 
+import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { Session } from '@/session/session.entity';
 
@@ -41,6 +42,9 @@ export class User extends StrongEntityParanoid {
 
   @OneToMany(() => Session, (session: Session) => session.user)
   sessions: Promise<Session[]>;
+
+  @OneToMany(() => BingoParticipant, (bingoParticpant) => bingoParticpant.user)
+  participants: Promise<BingoParticipant[]>;
 
   get isDisabled() {
     return this.disabledAt !== null;

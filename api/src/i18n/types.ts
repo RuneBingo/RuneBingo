@@ -24,6 +24,74 @@ export type I18nTranslations = {
             "user": string;
         };
     };
+    "bingo": {
+        "createBingo": {
+            "titleNotUnique": string;
+            "forbidden": string;
+            "startDateBeforeEndDate": string;
+            "registrationDateAfterStartDate": string;
+            "activeBingoAlreadyExists": string;
+            "startDateAfterEndDate": string;
+        };
+        "findById": {
+            "notFound": string;
+        };
+        "updateBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "titleNotUnique": string;
+            "startDateAfterEndDate": string;
+            "endDateBeforeStartDate": string;
+            "registrationDateAfterStartDate": string;
+        };
+        "deleteBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+        };
+        "cancelBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "alreadyCanceled": string;
+        };
+        "searchBingoActivities": {
+            "bingoNotFound": string;
+        };
+        "findBingoById": {
+            "bingoNotFound": string;
+        };
+        "findBingoByTitleSlug": {
+            "bingoNotFound": string;
+        };
+        "activity": {
+            "created": {
+                "title": string;
+            };
+            "updated": {
+                "title": string;
+                "body": {
+                    "language": string;
+                    "title": string;
+                    "description": string;
+                    "private": string;
+                    "width": string;
+                    "height": string;
+                    "fullLineValue": string;
+                    "startDate": string;
+                    "endDate": string;
+                };
+            };
+            "deleted": {
+                "title": string;
+            };
+            "canceled": {
+                "title": string;
+            };
+            "forbidden": string;
+        };
+        "formatBingoActivities": {
+            "title": string;
+        };
+    };
     "email": {
         "verificationEmail": {
             "subject": string;

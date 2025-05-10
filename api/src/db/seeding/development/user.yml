@@ -25,3 +25,17 @@ b0aty:
   emailVerified: true
   role: user
   language: en
+
+didiking:
+  username: didiking
+  email: didiking@hotmail.com
+  emailVerified: true
+  role: user
+  language: en
+
+dee420:
+  username: dee420
+  email: dee420@hotmail.com
+  emailVerified: true
+  role: user
+  language: en

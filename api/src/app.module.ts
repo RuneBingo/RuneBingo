@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { BingoModule } from './bingo/bingo.module';
+import { BingoParticipantModule } from './bingo-participant/bingo-participant.module';
 import { configModule } from './config';
 import { cqrsModule } from './cqrs';
 import { dbModule } from './db';
@@ -32,6 +34,8 @@ import { UserModule } from './user/user.module';
     ActivityModule,
     EmailerModule,
     JobsModule,
+    BingoModule,
+    BingoParticipantModule,
   ],
   providers: [EmailerService],
   controllers: [AppController],

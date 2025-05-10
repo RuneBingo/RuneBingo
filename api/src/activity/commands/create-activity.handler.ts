@@ -17,7 +17,7 @@ export class CreateActivityHandler {
     activity.trackableType = trackableType;
     activity.trackableId = trackableId;
     activity.parameters = parameters;
-    activity.createdBy = requesterId;
+    activity.createdById = requesterId;
 
     return this.activityRepository.save(activity);
   }

@@ -4,6 +4,8 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import type { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 
 import { entities } from '..';
+import { BingoParticipantSeeder } from './bingo-participant.seeder';
+import { BingoSeeder } from './bingo.seeder';
 import { Seeder } from './seeder';
 import { SessionSeeder } from './session.seeder';
 import { UserSeeder } from './user.seeder';
@@ -18,6 +20,8 @@ export class SeedingService {
     // Strong entities
     UserSeeder,
     SessionSeeder,
+    BingoSeeder,
+    BingoParticipantSeeder,
     // Weak entities
     // Add more seeders here
   ];
@@ -39,7 +43,11 @@ export class SeedingService {
 
     for (const seeder of this.seedingEntityOrder) {
       const instance = new seeder(this.configService, this.dataSource, this);
-      await instance.seed();
+      try {
+        await instance.seed();
+      } catch (error) {
+        throw new Error(error instanceof Error ? error.message : String(error));
+      }
 
       if (!this.seederTypeMap.has(instance.entityName)) {
         this.logger.error(

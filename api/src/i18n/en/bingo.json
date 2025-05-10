@@ -1,0 +1,65 @@
+{
+    "createBingo": {
+        "titleNotUnique": "A bingo with this title already exists.",
+        "forbidden": "You cannot create this bingo.",
+        "startDateBeforeEndDate": "The start date must be before the end date.",
+        "registrationDateAfterStartDate": "The registration date must be before the start date.",
+        "activeBingoAlreadyExists": "You already have an active bingo."
+    },
+    "findById": {
+        "notFound": "The bingo doesn't exist."
+    },
+    "updateBingo": {
+        "bingoNotFound": "No bingo with this id was found.",
+        "forbidden": "You don't have permission to update this user or some of the requested fields.",
+        "titleNotUnique": "A bingo with this title already exists.",
+        "startDateAfterEndDate": "The start date must be earlier than the end date.",
+        "endDateBeforeStartDate": "The end date must be later than the start date.",
+        "registrationDateAfterStartDate": "The registration date must be before the start date."
+    },
+    "deleteBingo": {
+        "bingoNotFound": "No bingo with this id was found.",
+        "forbidden": "You are not authorized to delete this bingo."
+    },
+    "cancelBingo": {
+        "bingoNotFound": "No bingo with this id was found.",
+        "forbidden": "You are not authorized to cancel this bingo.",
+        "alreadyCanceled": "Bingo is already canceled."
+    },
+    "searchBingoActivities": {
+        "bingoNotFound": "No bingo with this id was found."
+    },
+    "findBingoById": {
+        "bingoNotFound": "No bingo with this id was found."
+    },
+    "findBingoByTitleSlug": {
+        "bingoNotFound": "No bingo with this title slug was found."
+    },
+    "activity": {
+        "created": {
+            "title": "{username} has created the bingo."
+        },
+        "updated": {
+            "title": "{username} has updated the bingo.",
+            "body":{
+                "language": "Set the language to {language}.",
+                "title": "Set the title to {title}.",
+                "description": "Set the description to {description}.",
+                "private": "Set the private to {private}.",
+                "width": "Set the width to {width}.",
+                "height": "Set the height to {height}.",
+                "fullLineValue": "Set the full line value to {fullLineValue}.",
+                "startDate": "Set the start date to {startDate}.",
+                "endDate": "Set the end date to {endDate}."
+            }
+        },
+        "deleted": {
+            "title": "{username} has deleted the bingo."
+        },
+        "canceled": {
+            "title": "{username} has canceled the bingo."
+        },
+        "forbidden": "You cannot see this bingos activities."
+    }
+    
+}

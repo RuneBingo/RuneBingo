@@ -28,52 +28,56 @@ export abstract class Seeder<Entity extends ObjectLiteral, Schema> {
   ) {}
 
   public async seed() {
-    const seeds = await this.getSeedData();
-    if (!seeds) {
-      return;
-    }
+    try {
+      const seeds = await this.getSeedData();
+      if (!seeds) {
+        return;
+      }
 
-    const identifierToKeyMap = new Map<string, string>();
-    const repository = this.db.getRepository<Entity>(this.entityName);
+      const identifierToKeyMap = new Map<string, string>();
+      const repository = this.db.getRepository<Entity>(this.entityName);
 
-    const seedEntities = await Promise.all(
-      Object.entries(seeds).map(async ([key, seed]) => {
-        const entity = await this.deserialize(seed);
-        const identifier = await this.getIdentifier(entity);
+      const seedEntities = await Promise.all(
+        Object.entries(seeds).map(async ([key, seed]) => {
+          const entity = await this.deserialize(seed);
+          const identifier = await this.getIdentifier(entity);
 
-        identifierToKeyMap.set(JSON.stringify(identifier), key);
-        return entity;
-      }),
-    );
+          identifierToKeyMap.set(JSON.stringify(identifier), key);
+          return entity;
+        }),
+      );
 
-    if (seedEntities.length === 0) return;
+      if (seedEntities.length === 0) return;
 
-    await repository.upsert(seedEntities, this.identifierColumns as string[]);
+      await repository.upsert(seedEntities, this.identifierColumns as string[]);
 
-    const identifiers = (await Promise.all(
-      seedEntities.map((e) => this.getIdentifier(e)),
-    )) as IdentifierRecord<Entity>[];
+      const identifiers = (await Promise.all(
+        seedEntities.map((e) => this.getIdentifier(e)),
+      )) as IdentifierRecord<Entity>[];
 
-    const where: FindOptionsWhere<Entity>[] = identifiers.map((identifier) => {
-      const clause: Partial<Entity> = {};
-      this.identifierColumns.forEach((column) => {
-        clause[column] = identifier[column];
+      const where: FindOptionsWhere<Entity>[] = identifiers.map((identifier) => {
+        const clause: Partial<Entity> = {};
+        this.identifierColumns.forEach((column) => {
+          clause[column] = identifier[column];
+        });
+
+        return clause;
       });
 
-      return clause;
-    });
+      const savedEntities = await repository.find({
+        where,
+        withDeleted: true,
+      });
 
-    const savedEntities = await repository.find({
-      where,
-      withDeleted: true,
-    });
+      for (const entity of savedEntities) {
+        const identifier = await this.getIdentifier(entity);
+        const key = identifierToKeyMap.get(JSON.stringify(identifier));
+        if (!key) continue;
 
-    for (const entity of savedEntities) {
-      const identifier = await this.getIdentifier(entity);
-      const key = identifierToKeyMap.get(JSON.stringify(identifier));
-      if (!key) continue;
-
-      this.entityMapping.set(key, entity);
+        this.entityMapping.set(key, entity);
+      }
+    } catch (error) {
+      console.log(`Error while seeding ${this.entityName}`, error);
     }
   }
 
