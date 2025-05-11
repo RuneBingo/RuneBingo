@@ -15,8 +15,6 @@ import { BingoCanceledEvent } from '../events/bingo-canceled.event';
 export type CancelBingoParams = {
   requester: User;
   slug: string;
-  bingo?: Bingo;
-  bingoParticipant?: BingoParticipant;
 };
 
 export type CancelBingoResult = Bingo;
@@ -39,33 +37,33 @@ export class CancelBingoHandler {
   ) {}
 
   async execute(command: CancelBingoCommand): Promise<Bingo> {
-    const { requester, slug, bingo, bingoParticipant } = command.params;
+    const { requester, slug} = command.params;
 
-    const foundBingo = bingo || await this.bingoRepository.findOneBy({ slug });
+    const bingo = await this.bingoRepository.findOneBy({ slug });
 
-    if (!foundBingo) {
+    if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
     }
 
-    if (foundBingo.canceledAt) {
+    if (bingo.canceledAt) {
       throw new BadRequestException(this.i18nService.t('bingo.cancelBingo.alreadyCanceled'));
     }
 
-    const foundBingoParticipant = bingoParticipant || await this.bingoParticipantRepository.findOneBy({
-      bingoId: foundBingo.id,
+    const bingoParticipant = await this.bingoParticipantRepository.findOneBy({
+      bingoId: bingo.id,
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canCancel(foundBingoParticipant, foundBingo)) {
+    if (!new BingoPolicies(requester).canCancel(bingoParticipant, bingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.cancelBingo.forbidden'));
     }
 
-    foundBingo.canceledAt = new Date();
-    foundBingo.canceledById = requester.id;
+    bingo.canceledAt = new Date();
+    bingo.canceledById = requester.id;
 
-    const canceledBingo = await this.bingoRepository.save(foundBingo);
+    const canceledBingo = await this.bingoRepository.save(bingo);
 
-    this.eventBus.publish(new BingoCanceledEvent({ bingoId: foundBingo.id, requesterId: requester.id }));
+    this.eventBus.publish(new BingoCanceledEvent({ bingoId: bingo.id, requesterId: requester.id }));
 
     return canceledBingo;
   }

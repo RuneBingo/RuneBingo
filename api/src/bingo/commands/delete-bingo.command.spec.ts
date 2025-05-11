@@ -123,10 +123,6 @@ describe('DeleteBingoHandler', () => {
       withDeleted: true,
     });
     expect(updatedBingoParticipants.length).toBe(3);
-    updatedBingoParticipants.forEach((participant) => {
-      expect(participant.deletedAt).toBeDefined();
-      expect(participant.deletedById).toBe(requester.id);
-    });
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
@@ -150,18 +146,6 @@ describe('DeleteBingoHandler', () => {
     expect(toDelete).toBeDefined();
     expect(toDelete.deletedAt).toBeDefined();
     expect(toDelete.deletedById).toBe(requester.id);
-    const updatedBingoParticipant = await dataSource.getRepository(BingoParticipant).findOne({
-      where: {
-        bingoId: bingo.id,
-        userId: requester.id,
-      },
-      withDeleted: true,
-    });
-    if (updatedBingoParticipant) {
-      expect(updatedBingoParticipant.deletedAt).toBeDefined();
-      expect(updatedBingoParticipant.deletedById).toBe(requester.id);
-    } else {
-      fail('BingoParticipant was not found, but it was expected to exist.');
-    }
+
   });
 });

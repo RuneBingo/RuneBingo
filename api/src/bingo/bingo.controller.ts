@@ -49,8 +49,6 @@ import {
   SearchBingoParticipantsQuery,
 } from '@/bingo-participant/queries/search-bingo-participants.query';
 import { BingoParticipantDto } from '@/bingo-participant/dto/bingo-participant.dto';
-import { ViewBingoAuthGuard } from './guards/view-bingo-auth-guard';
-import { BingoRequest } from './guards/bingo-request';
 import { RemoveBingoParticipantCommand } from '@/bingo-participant/commands/remove-bingo-participant.command';
 import { UpdateBingoParticipantDto } from '@/bingo-participant/dto/update-bingo-participant.dto';
 import { UpdateBingoParticipantCommand } from '@/bingo-participant/commands/update-bingo-participant.command';
@@ -127,25 +125,24 @@ export class BingoController {
 
 
   @Get(':slug')
-  @UseGuards(ViewBingoAuthGuard)
   @ApiOperation({ summary: 'Find a bingo by its title slug' })
   @ApiOkResponse({ description: 'The bingo has been found.', type: BingoDto })
   @ApiNotFoundResponse({ description: 'The bingo does not exist.' })
-  async findByTitleSlug(@Param('slug') slug: string, @Req() req: BingoRequest): Promise<BingoDto> {
-    const params: FindBingoBySlugParams = { slug, requester: req.userEntity!, bingo: req.bingo };
+  async findByTitleSlug(@Param('slug') slug: string, @Req() req: Request): Promise<BingoDto> {
+    const params: FindBingoBySlugParams = { slug, requester: req.userEntity! };
     const bingo = await this.queryBus.execute(new FindBingoBySlugQuery(params));
 
     return new BingoDto(bingo);
   }
 
   @Put(':slug')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Update a bingo event' })
   @ApiOkResponse({ description: 'The bingo has been updated.', type: BingoDto })
   @ApiBadRequestResponse({ description: 'Invalid request parameters.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to modify this bingo event.' })
   async update(
-    @Req() req: BingoRequest,
+    @Req() req: Request,
     @Param('slug') slug: string,
     @Body(new ValidationPipe()) body: UpdateBingoDto,
   ): Promise<BingoDto> {
@@ -153,8 +150,6 @@ export class BingoController {
       new UpdateBingoCommand({
         requester: req.userEntity!,
         slug,
-        bingo: req.bingo,
-        bingoParticipant: req.bingoParticipant,
         updates: {
           language: body.language,
           title: body.title,
@@ -172,7 +167,7 @@ export class BingoController {
   }
 
   @Get(':slug/activities')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get paginated list of bingo activities' })
   @ApiOkResponse({
     description: 'Sucessful query of bingo activities.',
@@ -182,7 +177,7 @@ export class BingoController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   async getActivities(
-    @Req() req: BingoRequest,
+    @Req() req: Request,
     @Param('slug') slug: string,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
@@ -192,8 +187,6 @@ export class BingoController {
       slug,
       limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
-      bingo: req.bingo,
-      bingoParticipant: req.bingoParticipant,
     } satisfies SearchBingoActivitiesParams;
 
     const { items, ...pagination } = await this.queryBus.execute(new SearchBingoActivitiesQuery(params));
@@ -203,37 +196,33 @@ export class BingoController {
   }
 
   @Delete(':slug')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo event has been successfully deleted.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to delete the bingo event.' })
-  async delete(@Req() req: BingoRequest, @Param('slug') slug: string) {
+  async delete(@Req() req: Request, @Param('slug') slug: string) {
     await this.commandBus.execute(
       new DeleteBingoCommand({
         requester: req.userEntity!,
         slug,
-        bingo: req.bingo,
-        bingoParticipant: req.bingoParticipant,
       }),
     );
   }
 
   @Post(':slug/cancel')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
   @ApiOkResponse({ description: 'The bingo event has been successfully cancelled.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
   @ApiBadRequestResponse({ description: 'The bingo event was already cancelled or has ended.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to cancel the bingo event.' })
-  async cancel(@Req() req: BingoRequest, @Param('slug') slug: string) {
+  async cancel(@Req() req: Request, @Param('slug') slug: string) {
     const bingo = await this.commandBus.execute(
       new CancelBingoCommand({
         requester: req.userEntity!,
         slug,
-        bingo: req.bingo,
-        bingoParticipant: req.bingoParticipant,
       }),
     );
     const canceledBy = new UserDto(await bingo.canceledBy);
@@ -242,7 +231,7 @@ export class BingoController {
   }
 
   @Get(':slug/participants')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get bingo participants' })
   @ApiOkResponse({ description: 'Bingo Participants.' })
   @ApiQuery({ name: 'query', required: false })
@@ -251,7 +240,7 @@ export class BingoController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   async getBingoParticipants(
-    @Req() req: BingoRequest,
+    @Req() req: Request,
     @Param('slug') slug: string,
     @Query('query') query: string = '',
     @Query('team') teamName: string = '',
@@ -264,8 +253,6 @@ export class BingoController {
     const params = {
       requester: req.userEntity,
       slug,
-      bingo: req.bingo,
-      bingoParticipant: req.bingoParticipant,
       query: normalizedQuery,
       teamName: normalizedTeamName,
       role,
@@ -283,7 +270,7 @@ export class BingoController {
   }
 
   @Delete(':slug/participants/:username')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo participant from an event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
@@ -291,7 +278,7 @@ export class BingoController {
   @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
   @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
   async removeBingoParticipant(
-    @Req() req: BingoRequest,
+    @Req() req: Request,
     @Param('slug') slug: string,
     @Param('username') username: string,
   ) {
@@ -300,14 +287,12 @@ export class BingoController {
         requester: req.userEntity!,
         slug,
         username,
-        bingo: req.bingo,
-        bingoParticipant: req.bingoParticipant,
       }),
     );
   }
 
   @Put(':slug/participants/:username')
-  @UseGuards(AuthGuard, ViewBingoAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
@@ -315,7 +300,7 @@ export class BingoController {
   @ApiUnauthorizedResponse({ description: 'User not authed.' })
   @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
   async updateBingoParticipant(
-    @Req() req: BingoRequest,
+    @Req() req: Request,
     @Param('slug') slug: string,
     @Param('username') username: string,
     @Body() updateBingoParticipantDto: UpdateBingoParticipantDto,
@@ -325,8 +310,6 @@ export class BingoController {
         requester: req.userEntity!,
         slug,
         username,
-        bingo: req.bingo,
-        bingoParticipant: req.bingoParticipant,
         teamName: updateBingoParticipantDto.teamName,
         role: updateBingoParticipantDto.role,
       }),

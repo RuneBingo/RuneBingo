@@ -263,8 +263,8 @@ describe('UpdateBingoHandler', () => {
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
   });
 
-  // Uncomment when the slug partial index issue is fixed
-  /*it('change title even tho slug collides with deleted bingo', async () => {
+
+  it('change title even tho slug collides with deleted bingo', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc')
 
@@ -294,8 +294,8 @@ describe('UpdateBingoHandler', () => {
     expect(toUpdate.updatedAt).toBeDefined();
     expect(toUpdate.updatedById).toBe(requester.id);
     expect(toUpdate.maxRegistrationDate).toBe('2025-03-31');
-  });*/
-
+  });
+  
   it('should update every value', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');

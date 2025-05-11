@@ -11,14 +11,12 @@ import { User } from '@/user/user.entity';
 
 import { FindBingoBySlugHandler, FindBingoBySlugQuery } from './find-bingo-by-slug.query';
 import { Bingo } from '../bingo.entity';
-import { ViewBingoAuthGuard } from '../guards/view-bingo-auth-guard';
 import { APP_GUARD } from '@nestjs/core';
 
 describe('FindBingoBySlugHandler', () => {
   let module: TestingModule;
   let seedingService: SeedingService;
   let handler: FindBingoBySlugHandler;
-  let guard: ViewBingoAuthGuard;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
