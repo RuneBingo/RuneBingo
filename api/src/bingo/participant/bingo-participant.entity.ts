@@ -30,5 +30,5 @@ export class BingoParticipant {
   teamId: number | null;
 
   @ManyToOne(() => BingoTeam)
-  team: Promise<BingoTeam>;
+  team: Promise<BingoTeam | null>;
 }

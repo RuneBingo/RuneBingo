@@ -10,6 +10,7 @@ import { Seeder } from './seeder';
 import { SessionSeeder } from './session.seeder';
 import { UserSeeder } from './user.seeder';
 import { AppConfig } from '../../config';
+import { BingoTeamSeeder } from './bingo-team.seeder';
 
 @Injectable()
 export class SeedingService {
@@ -21,6 +22,7 @@ export class SeedingService {
     UserSeeder,
     SessionSeeder,
     BingoSeeder,
+    BingoTeamSeeder,
     BingoParticipantSeeder,
     // Weak entities
     // Add more seeders here
