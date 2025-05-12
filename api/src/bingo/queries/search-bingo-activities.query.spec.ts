@@ -12,6 +12,7 @@ import { User } from '@/user/user.entity';
 
 import { SearchBingoActivitiesHandler, SearchBingoActivitiesQuery } from './search-bingo-activities.query';
 import { Bingo } from '../bingo.entity';
+import { v4 } from 'uuid';
 
 describe('SearchUserActivitiesHandler', () => {
   let module: TestingModule;
@@ -35,11 +36,11 @@ describe('SearchUserActivitiesHandler', () => {
     return module.close();
   });
 
-  it('throws NotFoundException if the user does not exist', async () => {
+  it('throws NotFoundException if the bingo does not exist', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: 'this-slug-doesnt-exist',
+      bingoId: v4(),
       requester,
     });
 
@@ -51,7 +52,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -63,7 +64,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -75,7 +76,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -87,7 +88,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 

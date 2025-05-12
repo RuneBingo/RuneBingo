@@ -4,14 +4,14 @@ import { User } from "@/user/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, Unique } from "typeorm";
 
 @Entity()
-@Unique(['bingo', 'name'])
-@Unique(['bingo', 'nameNormalized'])
+@Unique('UQ_bingo_name', ['bingoId', 'name'])
+@Unique('UQ_bingo_name_normalized', ['bingoId', 'nameNormalized'])
 export class BingoTeam extends StrongEntityParanoid {
     @Column({name: 'bingo_id', type: 'int'})
     bingoId: number;
 
     @ManyToOne(() => Bingo)
-    @JoinColumn({name: 'bingo_id'})
+    @JoinColumn({name: 'id'})
     bingo: Promise<Bingo>;
 
     @Column()

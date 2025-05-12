@@ -14,7 +14,7 @@ import { BingoParticipantUpdatedEvent } from '../events/bingo-participant-update
 
 export type UpdateBingoParticipantParams = {
   requester: User;
-  slug: string;
+  bingoId: string;
   username: string;
   bingo?: Bingo;
   bingoParticipant?: BingoParticipant;
@@ -46,9 +46,9 @@ export class UpdateBingoParticipantHandler {
   ) {}
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
-    const { requester, slug, bingo, username, bingoParticipant, role, teamName } = command.params;
+    const { requester, bingoId, bingo, username, bingoParticipant, role, teamName } = command.params;
 
-    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
+    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ bingoId }));
 
     if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotFound'));

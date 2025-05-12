@@ -13,7 +13,7 @@ import { BingoParticipantRemovedEvent } from '../events/bingo-participant-remove
 
 export type RemoveBingoParticipantParams = {
   requester: User;
-  slug: string;
+  bingoId: string;
   username: string;
   bingo?: Bingo;
   bingoParticipant?: BingoParticipant;
@@ -41,9 +41,9 @@ export class RemoveBingoParticipantHandler {
   ) {}
 
   async execute(command: RemoveBingoParticipantCommand): Promise<void> {
-    const { requester, slug, username, bingo, bingoParticipant } = command.params;
+    const { requester, bingoId, username, bingo, bingoParticipant } = command.params;
 
-    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
+    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ bingoId }));
 
     if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));

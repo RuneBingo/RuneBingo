@@ -10,31 +10,31 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { ViewBingoScope } from '../scopes/view-bingo.scope';
 
-export type FindBingoBySlugParams = {
-  slug: string;
+export type FindBingoByBingoIdParams = {
+  bingoId: string;
   requester: User | undefined;
 };
 
-export type FindBingoBySlugResult = Bingo;
+export type FindBingoByBingoIdResult = Bingo;
 
-export class FindBingoBySlugQuery extends Query<FindBingoBySlugResult> {
-  constructor(public readonly params: FindBingoBySlugParams) {
+export class FindBingoByBingoIdQuery extends Query<FindBingoByBingoIdResult> {
+  constructor(public readonly params: FindBingoByBingoIdParams) {
     super();
   }
 }
 
-@QueryHandler(FindBingoBySlugQuery)
-export class FindBingoBySlugHandler {
+@QueryHandler(FindBingoByBingoIdQuery)
+export class FindBingoByBingoIdHandler {
   constructor(
     @InjectRepository(Bingo)
     private readonly bingoRepository: Repository<Bingo>,
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
-  async execute(query: FindBingoBySlugQuery): Promise<FindBingoBySlugResult> {
-    const { slug, requester } = query.params;
+  async execute(query: FindBingoByBingoIdQuery): Promise<FindBingoByBingoIdResult> {
+    const { bingoId, requester } = query.params;
 
-    const scope = this.bingoRepository.createQueryBuilder('bingo').where('bingo.slug = :slug', { slug: slug });
+    const scope = this.bingoRepository.createQueryBuilder('bingo').where('bingo.bingoId = :bingoId', { bingoId });
 
     const bingo = await new ViewBingoScope(requester, scope).resolve().getOne();
 

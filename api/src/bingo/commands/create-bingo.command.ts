@@ -28,42 +28,8 @@ export type CreateBingoParams = {
 export type CreateBingoResult = Bingo;
 
 export class CreateBingoCommand extends Command<CreateBingoResult> {
-  public readonly requester: User;
-  public readonly language: string;
-  public readonly title: string;
-  public readonly description: string;
-  public readonly isPrivate: boolean;
-  public readonly width: number;
-  public readonly height: number;
-  public readonly fullLineValue: number;
-  public readonly startDate: string;
-  public readonly endDate: string;
-  public readonly maxRegistrationDate?: string;
-  constructor({
-    requester,
-    language,
-    title,
-    description,
-    isPrivate,
-    width,
-    height,
-    fullLineValue,
-    startDate,
-    endDate,
-    maxRegistrationDate,
-  }: CreateBingoParams) {
+  constructor(public readonly params: CreateBingoParams) {
     super();
-    this.requester = requester;
-    this.language = language;
-    this.title = title;
-    this.description = description;
-    this.isPrivate = isPrivate;
-    this.width = width;
-    this.height = height;
-    this.fullLineValue = fullLineValue;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.maxRegistrationDate = maxRegistrationDate;
   }
 }
 
@@ -89,7 +55,7 @@ export class CreateBingoHandler {
       startDate,
       endDate,
       maxRegistrationDate,
-    } = command;
+    } = command.params;
 
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
@@ -101,23 +67,10 @@ export class CreateBingoHandler {
       throw new BadRequestException(this.i18nService.t('bingo.createBingo.startDateAfterEndDate'));
     }
 
-    const titleSlug = Bingo.slugifyTitle(title);
-
-    const existingBingo = await this.bingoRepository.findOneBy({ slug: titleSlug });
-
-    if (existingBingo) {
-      throw new ConflictException(this.i18nService.t('bingo.createBingo.titleNotUnique'));
-    }
-
-    if (!(await new BingoPolicies(requester).canCreate())) {
-      throw new ForbiddenException(this.i18nService.t('bingo.createBingo.activeBingoAlreadyExists'));
-    }
-
     const bingo = new Bingo();
     bingo.createdById = requester.id;
     bingo.language = language;
     bingo.title = title;
-    bingo.slug = titleSlug;
     bingo.description = description;
     bingo.private = isPrivate;
     bingo.width = width;
@@ -126,14 +79,14 @@ export class CreateBingoHandler {
     bingo.startDate = startDate;
     bingo.endDate = endDate;
     bingo.maxRegistrationDate = maxRegistrationDate;
-    bingo.createdById = command.requester.id;
+    bingo.createdById = requester.id;
     bingo.createdBy = Promise.resolve(requester);
     await this.bingoRepository.save(bingo);
 
     this.eventBus.publish(
       new BingoCreatedEvent({
         bingoId: bingo.id,
-        requesterId: command.requester.id,
+        requesterId: requester.id,
         language,
         title,
         description,

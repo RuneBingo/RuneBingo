@@ -17,7 +17,7 @@ import { ViewBingoParticipantsScope } from '../scopes/view-bingo-participants.sc
 import { BingoTeam } from '@/bingo-team/bingo-team.entity';
 
 export type SearchBingoParticipantsParams = PaginatedQueryParams<{
-  slug: string;
+  bingoId: string;
   requester: User | undefined;
   bingo?: Bingo;
   bingoParticipant?: BingoParticipant;
@@ -46,7 +46,7 @@ export class SearchBingoParticipantsHandler {
 
   async execute(query: SearchBingoParticipantsQuery): Promise<SearchBingoParticipantsResult> {
     const {
-      slug,
+      bingoId,
       requester,
       bingo,
       bingoParticipant,
@@ -56,7 +56,7 @@ export class SearchBingoParticipantsHandler {
       ...pagination
     } = query.params;
 
-    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ slug }));
+    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ bingoId }));
 
     if (!foundBingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.searchBingoParticipants.bingoNotFound'));

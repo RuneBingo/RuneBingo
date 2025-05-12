@@ -40,7 +40,6 @@ import { BingoDto } from './dto/bingo.dto';
 import { CreateBingoDto } from './dto/create-bingo.dto';
 import { PaginatedBingosDto } from './dto/paginated-bingos.dto';
 import { UpdateBingoDto } from './dto/update-bingo.dto';
-import { FindBingoBySlugParams, FindBingoBySlugQuery } from './queries/find-bingo-by-slug.query';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
 import { PaginatedBingoParticipantsDto } from '@/bingo-participant/dto/paginated-bingo-participants.dto';
@@ -52,6 +51,7 @@ import { BingoParticipantDto } from '@/bingo-participant/dto/bingo-participant.d
 import { RemoveBingoParticipantCommand } from '@/bingo-participant/commands/remove-bingo-participant.command';
 import { UpdateBingoParticipantDto } from '@/bingo-participant/dto/update-bingo-participant.dto';
 import { UpdateBingoParticipantCommand } from '@/bingo-participant/commands/update-bingo-participant.command';
+import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 
 @Controller('v1/bingo')
 export class BingoController {
@@ -124,18 +124,18 @@ export class BingoController {
 
 
 
-  @Get(':slug')
-  @ApiOperation({ summary: 'Find a bingo by its title slug' })
+  @Get(':bingoId')
+  @ApiOperation({ summary: 'Find a bingo by its title bingoId' })
   @ApiOkResponse({ description: 'The bingo has been found.', type: BingoDto })
   @ApiNotFoundResponse({ description: 'The bingo does not exist.' })
-  async findByTitleSlug(@Param('slug') slug: string, @Req() req: Request): Promise<BingoDto> {
-    const params: FindBingoBySlugParams = { slug, requester: req.userEntity! };
-    const bingo = await this.queryBus.execute(new FindBingoBySlugQuery(params));
+  async findByTitleSlug(@Param('bingoId') bingoId: string, @Req() req: Request): Promise<BingoDto> {
+    const params: FindBingoByBingoIdParams = { bingoId: bingoId, requester: req.userEntity! };
+    const bingo = await this.queryBus.execute(new FindBingoByBingoIdQuery(params));
 
     return new BingoDto(bingo);
   }
 
-  @Put(':slug')
+  @Put(':bingoId')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Update a bingo event' })
   @ApiOkResponse({ description: 'The bingo has been updated.', type: BingoDto })
@@ -143,13 +143,13 @@ export class BingoController {
   @ApiUnauthorizedResponse({ description: 'Not authorized to modify this bingo event.' })
   async update(
     @Req() req: Request,
-    @Param('slug') slug: string,
+    @Param('bingoId') bingoId: string,
     @Body(new ValidationPipe()) body: UpdateBingoDto,
   ): Promise<BingoDto> {
     const bingo = await this.commandBus.execute(
       new UpdateBingoCommand({
         requester: req.userEntity!,
-        slug,
+        bingoId: bingoId,
         updates: {
           language: body.language,
           title: body.title,
@@ -166,25 +166,25 @@ export class BingoController {
     return new BingoDto(bingo);
   }
 
-  @Get(':slug/activities')
+  @Get(':bingoId/activities')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get paginated list of bingo activities' })
   @ApiOkResponse({
     description: 'Sucessful query of bingo activities.',
     type: PaginatedActivitiesDto,
   })
-  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   async getActivities(
     @Req() req: Request,
-    @Param('slug') slug: string,
+    @Param('bingoId') bingoId: string,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ): Promise<PaginatedActivitiesDto> {
     const params = {
       requester: req.userEntity!,
-      slug,
+      bingoId,
       limit: limit ? parseInt(limit) : undefined,
       offset: offset ? parseInt(offset) : undefined,
     } satisfies SearchBingoActivitiesParams;
@@ -195,34 +195,34 @@ export class BingoController {
     return new PaginatedActivitiesDto({ items: itemsDto, ...pagination });
   }
 
-  @Delete(':slug')
+  @Delete(':bingoId')
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo event has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to delete the bingo event.' })
-  async delete(@Req() req: Request, @Param('slug') slug: string) {
+  async delete(@Req() req: Request, @Param('bingoId') bingoId: string) {
     await this.commandBus.execute(
       new DeleteBingoCommand({
         requester: req.userEntity!,
-        slug,
+        bingoId: bingoId,
       }),
     );
   }
 
-  @Post(':slug/cancel')
+  @Post(':bingoId/cancel')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
   @ApiOkResponse({ description: 'The bingo event has been successfully cancelled.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
   @ApiBadRequestResponse({ description: 'The bingo event was already cancelled or has ended.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to cancel the bingo event.' })
-  async cancel(@Req() req: Request, @Param('slug') slug: string) {
+  async cancel(@Req() req: Request, @Param('bingoId') bingoId: string) {
     const bingo = await this.commandBus.execute(
       new CancelBingoCommand({
         requester: req.userEntity!,
-        slug,
+        bingoId: bingoId,
       }),
     );
     const canceledBy = new UserDto(await bingo.canceledBy);
@@ -230,7 +230,7 @@ export class BingoController {
     return new BingoDto(bingo, { createdBy, canceledBy });
   }
 
-  @Get(':slug/participants')
+  @Get(':bingoId/participants')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get bingo participants' })
   @ApiOkResponse({ description: 'Bingo Participants.' })
@@ -241,7 +241,7 @@ export class BingoController {
   @ApiQuery({ name: 'offset', required: false })
   async getBingoParticipants(
     @Req() req: Request,
-    @Param('slug') slug: string,
+    @Param('bingoId') bingoId: string,
     @Query('query') query: string = '',
     @Query('team') teamName: string = '',
     @Query('role') role: string | undefined = undefined,
@@ -252,7 +252,7 @@ export class BingoController {
     const normalizedTeamName = teamName?.trim() === '' ? undefined : teamName;
     const params = {
       requester: req.userEntity,
-      slug,
+      bingoId,
       query: normalizedQuery,
       teamName: normalizedTeamName,
       role,
@@ -269,46 +269,46 @@ export class BingoController {
     return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
   }
 
-  @Delete(':slug/participants/:username')
+  @Delete(':bingoId/participants/:username')
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo participant from an event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
   @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
   async removeBingoParticipant(
     @Req() req: Request,
-    @Param('slug') slug: string,
+    @Param('bingoId') bingoId: string,
     @Param('username') username: string,
   ) {
     await this.commandBus.execute(
       new RemoveBingoParticipantCommand({
         requester: req.userEntity!,
-        slug,
+        bingoId,
         username,
       }),
     );
   }
 
-  @Put(':slug/participants/:username')
+  @Put(':bingoId/participants/:username')
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided slug was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
   @ApiUnauthorizedResponse({ description: 'User not authed.' })
   @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
   async updateBingoParticipant(
     @Req() req: Request,
-    @Param('slug') slug: string,
+    @Param('bingoId') bingoId: string,
     @Param('username') username: string,
     @Body() updateBingoParticipantDto: UpdateBingoParticipantDto,
   ) {
     await this.commandBus.execute(
       new UpdateBingoParticipantCommand({
         requester: req.userEntity!,
-        slug,
+        bingoId,
         username,
         teamName: updateBingoParticipantDto.teamName,
         role: updateBingoParticipantDto.role,

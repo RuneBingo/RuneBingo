@@ -4,6 +4,7 @@ import { Bingo } from '@/bingo/bingo.entity';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
+import { v4 } from 'uuid';
 
 type BingoSeed = {
   createdBy: string;
@@ -46,19 +47,18 @@ const bingoSeedSchema = Joi.object<Record<string, BingoSeed>>().pattern(
 
 export class BingoSeeder extends Seeder<Bingo, BingoSeed> {
   entityName = Bingo.name;
-  identifierColumns = ['slug'] satisfies (keyof Bingo)[];
+  identifierColumns = ['bingoId'] satisfies (keyof Bingo)[];
   schema = bingoSeedSchema;
 
   protected deserialize(seed: BingoSeed): Bingo {
     const user = this.seedingService.getEntity(User, seed.createdBy);
-    const slug = Bingo.slugifyTitle(seed.title);
 
     const bingo = new Bingo();
 
     bingo.createdById = user.id;
     bingo.createdBy = Promise.resolve(user);
-    bingo.slug = slug;
     bingo.language = seed.language;
+    bingo.bingoId = v4();
     bingo.title = seed.title;
     bingo.description = seed.description;
     bingo.private = seed.private;
@@ -77,6 +77,6 @@ export class BingoSeeder extends Seeder<Bingo, BingoSeed> {
   }
 
   protected getIdentifier(entity: Bingo) {
-    return { slug: entity.slug };
+    return { bingoId: entity.bingoId };
   }
 }

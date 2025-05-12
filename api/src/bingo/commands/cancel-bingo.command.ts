@@ -14,7 +14,7 @@ import { BingoCanceledEvent } from '../events/bingo-canceled.event';
 
 export type CancelBingoParams = {
   requester: User;
-  slug: string;
+  bingoId: string;
 };
 
 export type CancelBingoResult = Bingo;
@@ -37,9 +37,9 @@ export class CancelBingoHandler {
   ) {}
 
   async execute(command: CancelBingoCommand): Promise<Bingo> {
-    const { requester, slug} = command.params;
+    const { requester, bingoId} = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));

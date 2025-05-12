@@ -10,22 +10,6 @@ import { type Bingo } from './bingo.entity';
 export class BingoPolicies {
   constructor(private readonly requester: User) {}
 
-  async canCreate() {
-    const bingoParticipants = await this.requester.participants;
-
-    if (!bingoParticipants || bingoParticipants.length === 0) return true;
-
-    for (const bingoParticipant of bingoParticipants) {
-      const bingo = await bingoParticipant.bingo; // Ensure `await` is used properly
-
-      if (!bingo || bingo.canceledAt || bingo.endedAt) continue;
-
-      return false;
-    }
-
-    return true;
-  }
-
   canUpdate(participant: BingoParticipant | null, bingo: Bingo) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 

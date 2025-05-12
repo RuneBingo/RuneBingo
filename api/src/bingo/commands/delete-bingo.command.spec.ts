@@ -14,6 +14,7 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { DeleteBingoCommand, DeleteBingoHandler } from './delete-bingo.command';
 import { BingoDeletedEvent } from '../events/bingo-deleted.event';
+import { v4 as uuidV4 } from 'uuid';
 
 describe('DeleteBingoHandler', () => {
   let module: TestingModule;
@@ -61,7 +62,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -73,7 +74,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -84,7 +85,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: 'wtf-is-a-slug',
+      bingoId: uuidV4(),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -96,7 +97,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -108,7 +109,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const toDelete = await handler.execute(command);
@@ -119,10 +120,9 @@ describe('DeleteBingoHandler', () => {
     const updatedBingoParticipants = await dataSource.getRepository(BingoParticipant).find({
       where: {
         bingoId: bingo.id,
-      },
-      withDeleted: true,
+      }
     });
-    expect(updatedBingoParticipants.length).toBe(3);
+    expect(updatedBingoParticipants.length).toBe(0);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
@@ -139,7 +139,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const toDelete = await handler.execute(command);

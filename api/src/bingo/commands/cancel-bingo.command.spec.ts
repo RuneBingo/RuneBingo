@@ -13,6 +13,7 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { CancelBingoCommand, CancelBingoHandler } from './cancel-bingo.command';
 import { BingoCanceledEvent } from '../events/bingo-canceled.event';
+import { v4 as uuidV4 } from 'uuid';
 
 describe('CancelBingoHandler', () => {
   let module: TestingModule;
@@ -58,7 +59,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -70,7 +71,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -82,7 +83,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
@@ -94,7 +95,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const canceledBingo = await handler.execute(command);
@@ -117,7 +118,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const canceledBingo = await handler.execute(command);
@@ -131,7 +132,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: 'Little slug',
+      bingoId: uuidV4(),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
