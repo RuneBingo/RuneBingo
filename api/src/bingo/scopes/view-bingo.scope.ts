@@ -12,9 +12,11 @@ export class ViewBingoScope extends Scope<Bingo> {
 
     if (userHasRole(this.requester, Roles.Moderator)) return this.query;
 
-    return this.query
-      .andWhere('exists (select 1 from bingo_participant where bingo_id = bingo.id and user_id = :requesterId)', {
+    return this.query.andWhere(
+      'exists (select 1 from bingo_participant where bingo_id = bingo.id and user_id = :requesterId)',
+      {
         requesterId: this.requester.id,
-      });
+      },
+    );
   }
 }
