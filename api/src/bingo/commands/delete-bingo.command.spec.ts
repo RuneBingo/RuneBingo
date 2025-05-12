@@ -3,6 +3,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
@@ -14,7 +15,6 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { DeleteBingoCommand, DeleteBingoHandler } from './delete-bingo.command';
 import { BingoDeletedEvent } from '../events/bingo-deleted.event';
-import { v4 as uuidV4 } from 'uuid';
 
 describe('DeleteBingoHandler', () => {
   let module: TestingModule;
@@ -120,7 +120,7 @@ describe('DeleteBingoHandler', () => {
     const updatedBingoParticipants = await dataSource.getRepository(BingoParticipant).find({
       where: {
         bingoId: bingo.id,
-      }
+      },
     });
     expect(updatedBingoParticipants.length).toBe(0);
 
@@ -146,6 +146,5 @@ describe('DeleteBingoHandler', () => {
     expect(toDelete).toBeDefined();
     expect(toDelete.deletedAt).toBeDefined();
     expect(toDelete.deletedById).toBe(requester.id);
-
   });
 });

@@ -61,6 +61,7 @@
         "canceled": {
             "title": "{username} a annulé le bingo."
         },
-        "forbidden": "Vous n'avez pas les permissions pour voir les activités de ce bingo."
+        "forbidden": "Vous n'avez pas les permissions pour voir les activités de ce bingo.",
+        "system": "Système"
     }
 }

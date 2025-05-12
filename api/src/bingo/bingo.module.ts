@@ -3,6 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Activity } from '@/activity/activity.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
+import { AddBingoParticipantHandler } from '@/bingo/participant/commands/add-bingo-participant.command';
+import { RemoveBingoParticipantHandler } from '@/bingo/participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantHandler } from '@/bingo/participant/commands/update-bingo-participant.command';
+import { SearchBingoParticipantsHandler } from '@/bingo/participant/queries/search-bingo-participants.query';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoController } from './bingo.controller';
@@ -16,14 +21,9 @@ import { BingoCanceledHandler } from './events/bingo-canceled.event';
 import { BingoCreatedHandler } from './events/bingo-created.event';
 import { BingoDeletedHandler } from './events/bingo-deleted.event';
 import { BingoUpdatedHandler } from './events/bingo-updated.event';
+import { FindBingoByBingoIdHandler } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.query';
 import { SearchBingosHandler } from './queries/search-bingos.query';
-import { SearchBingoParticipantsHandler } from '@/bingo/participant/queries/search-bingo-participants.query';
-import { AddBingoParticipantHandler } from '@/bingo/participant/commands/add-bingo-participant.command';
-import { RemoveBingoParticipantHandler } from '@/bingo/participant/commands/remove-bingo-participant.command';
-import { UpdateBingoParticipantHandler } from '@/bingo/participant/commands/update-bingo-participant.command';
-import { BingoTeam } from '@/bingo/team/bingo-team.entity';
-import { FindBingoByBingoIdHandler } from './queries/find-bingo-by-bingo-id.query';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam])],

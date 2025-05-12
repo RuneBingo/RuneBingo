@@ -8,10 +8,6 @@ import { BingoParticipantUpdatedHandler } from './events/bingo-participant-updat
 
 @Module({
   imports: [TypeOrmModule.forFeature([BingoParticipant])],
-  providers: [
-    BingoParticipantAddedHandler,
-    BingoParticipantRemovedHandler,
-    BingoParticipantUpdatedHandler
-  ]
+  providers: [BingoParticipantAddedHandler, BingoParticipantRemovedHandler, BingoParticipantUpdatedHandler],
 })
 export class BingoParticipantModule {}

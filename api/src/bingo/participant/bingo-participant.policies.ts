@@ -1,9 +1,10 @@
-import { User } from '@/user/user.entity';
-import { BingoParticipant } from './bingo-participant.entity';
-import { userHasRole } from '@/auth/roles/roles.utils';
 import { Roles } from '@/auth/roles/roles.constants';
-import { isBingoRoleHigher, participantHasBingoRole } from './roles/bingo-roles.utils';
+import { userHasRole } from '@/auth/roles/roles.utils';
+import { type User } from '@/user/user.entity';
+
+import { type BingoParticipant } from './bingo-participant.entity';
 import { BingoRoles } from './roles/bingo-roles.constants';
+import { participantHasBingoRole } from './roles/bingo-roles.utils';
 
 export class BingoParticipantPolicies {
   constructor(private readonly requester: User) {}
@@ -32,8 +33,7 @@ export class BingoParticipantPolicies {
     if (
       !requesterIsModerator &&
       !participantHasBingoRole(requesterParticipant, BingoRoles.Organizer) &&
-      requesterParticipant.userId !== participantToUpdate.userId &&
-      isBingoRoleHigher(participantToUpdate.role, requesterParticipant.role)
+      requesterParticipant.userId !== participantToUpdate.userId
     ) {
       return false;
     }

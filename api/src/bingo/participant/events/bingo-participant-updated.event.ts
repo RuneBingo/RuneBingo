@@ -1,5 +1,6 @@
-import { CreateActivityCommand } from '@/activity/commands/create-activity.command';
 import { CommandBus, EventsHandler } from '@nestjs/cqrs';
+
+import { CreateActivityCommand } from '@/activity/commands/create-activity.command';
 
 export type BingoParticipantUpdatedParams = {
   requesterId: number;
@@ -8,7 +9,7 @@ export type BingoParticipantUpdatedParams = {
   updates: {
     role?: string;
     teamName?: string;
-  }
+  };
 };
 
 export class BingoParticipantUpdatedEvent {
@@ -28,7 +29,7 @@ export class BingoParticipantUpdatedHandler {
         requesterId,
         trackableId: bingoId,
         trackableType: 'Bingo',
-        parameters: {userId, updates},
+        parameters: { userId, updates },
       }),
     );
   }

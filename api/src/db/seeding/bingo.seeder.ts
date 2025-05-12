@@ -1,10 +1,10 @@
 import Joi from 'joi';
+import { v4 } from 'uuid';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
-import { v4 } from 'uuid';
 
 type BingoSeed = {
   createdBy: string;

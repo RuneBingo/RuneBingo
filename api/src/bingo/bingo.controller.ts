@@ -28,6 +28,15 @@ import {
 import { PaginatedActivitiesDto } from '@/activity/dto/paginated-activities.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { AddBingoParticipantCommand } from '@/bingo/participant/commands/add-bingo-participant.command';
+import { RemoveBingoParticipantCommand } from '@/bingo/participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantCommand } from '@/bingo/participant/commands/update-bingo-participant.command';
+import { BingoParticipantDto } from '@/bingo/participant/dto/bingo-participant.dto';
+import { PaginatedBingoParticipantsDto } from '@/bingo/participant/dto/paginated-bingo-participants.dto';
+import { UpdateBingoParticipantDto } from '@/bingo/participant/dto/update-bingo-participant.dto';
+import {
+  SearchBingoParticipantsParams,
+  SearchBingoParticipantsQuery,
+} from '@/bingo/participant/queries/search-bingo-participants.query';
 import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { UserDto } from '@/user/dto/user.dto';
 
@@ -40,18 +49,9 @@ import { BingoDto } from './dto/bingo.dto';
 import { CreateBingoDto } from './dto/create-bingo.dto';
 import { PaginatedBingosDto } from './dto/paginated-bingos.dto';
 import { UpdateBingoDto } from './dto/update-bingo.dto';
+import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
-import { PaginatedBingoParticipantsDto } from '@/bingo/participant/dto/paginated-bingo-participants.dto';
-import {
-  SearchBingoParticipantsParams,
-  SearchBingoParticipantsQuery,
-} from '@/bingo/participant/queries/search-bingo-participants.query';
-import { BingoParticipantDto } from '@/bingo/participant/dto/bingo-participant.dto';
-import { RemoveBingoParticipantCommand } from '@/bingo/participant/commands/remove-bingo-participant.command';
-import { UpdateBingoParticipantDto } from '@/bingo/participant/dto/update-bingo-participant.dto';
-import { UpdateBingoParticipantCommand } from '@/bingo/participant/commands/update-bingo-participant.command';
-import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 
 @Controller('v1/bingo')
 export class BingoController {
@@ -121,8 +121,6 @@ export class BingoController {
 
     return new PaginatedBingosDto({ items: bingosDto, ...pagination });
   }
-
-
 
   @Get(':bingoId')
   @ApiOperation({ summary: 'Find a bingo by its Bingo Id' })
@@ -244,14 +242,14 @@ export class BingoController {
     @Param('bingoId') bingoId: string,
     @Query('query') query: string = '',
     @Query('team') teamName: string = '',
-    @Query('role') role: string | undefined = undefined,
+    @Query('role') role: BingoRoles | undefined,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ): Promise<PaginatedBingoParticipantsDto> {
     const normalizedQuery = query?.trim() === '' ? undefined : query;
     const normalizedTeamName = teamName?.trim() === '' ? undefined : teamName;
     const params = {
-      requester: req.userEntity,
+      requester: req.userEntity!,
       bingoId,
       query: normalizedQuery,
       teamName: normalizedTeamName,
@@ -310,8 +308,10 @@ export class BingoController {
         requester: req.userEntity!,
         bingoId,
         username,
-        teamName: updateBingoParticipantDto.teamName,
-        role: updateBingoParticipantDto.role,
+        updates: {
+          teamName: updateBingoParticipantDto.teamName,
+          role: updateBingoParticipantDto.role,
+        },
       }),
     );
   }

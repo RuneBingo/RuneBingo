@@ -1,7 +1,7 @@
 char0o:
   user: char0o
   bingo: osrs-qc
-  role: 'participant'
+  role: 'owner'
   team: 'les-boys'
 
 didiking-osrs:
@@ -17,4 +17,10 @@ didiking-german:
 dee420:
   user: dee420
   bingo: osrs-qc
+  role: 'participant'
+  team: 'les-boys'
+
+paul:
+  user: char0o
+  bingo: started-bingo
   role: 'participant'

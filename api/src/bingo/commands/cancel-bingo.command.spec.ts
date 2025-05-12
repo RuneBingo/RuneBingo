@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { EventBus } from '@nestjs/cqrs';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
@@ -13,7 +14,6 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { CancelBingoCommand, CancelBingoHandler } from './cancel-bingo.command';
 import { BingoCanceledEvent } from '../events/bingo-canceled.event';
-import { v4 as uuidV4 } from 'uuid';
 
 describe('CancelBingoHandler', () => {
   let module: TestingModule;

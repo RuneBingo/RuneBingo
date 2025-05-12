@@ -25,6 +25,9 @@ export type I18nTranslations = {
         };
     };
     "bingo-participant": {
+        "addBingoParticipants": {
+            "conflict": string;
+        };
         "searchBingoParticipants": {
             "bingoNotFound": string;
         };
@@ -117,6 +120,7 @@ export type I18nTranslations = {
                 "title": string;
             };
             "forbidden": string;
+            "system": string;
         };
         "formatBingoActivities": {
             "title": string;

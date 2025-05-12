@@ -1,8 +1,9 @@
-import { BeforeInsert, Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { v4 as uuidV4 } from 'uuid';
+
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
-import { v4 as uuidV4 } from 'uuid';
 
 @Entity()
 export class Bingo extends StrongEntityParanoid {
@@ -91,7 +92,7 @@ export class Bingo extends StrongEntityParanoid {
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
 
-  isPending(): Boolean {
+  isPending(): boolean {
     return this.startedAt === null;
   }
 }

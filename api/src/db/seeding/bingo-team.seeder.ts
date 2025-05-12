@@ -1,11 +1,10 @@
 import Joi from 'joi';
 
 import { Bingo } from '@/bingo/bingo.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
-import { BingoTeam } from '@/bingo/team/bingo-team.entity';
-
 
 type BingoTeamSeed = {
   bingo: string;

@@ -57,7 +57,6 @@ export class SearchBingoActivitiesHandler {
       throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
     }
 
-
     const q = this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.trackable_id = :trackableId AND activity.trackable_type = :activityType', {

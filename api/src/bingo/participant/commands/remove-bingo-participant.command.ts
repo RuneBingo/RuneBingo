@@ -1,13 +1,14 @@
-import { Bingo } from '@/bingo/bingo.entity';
-import { User } from '@/user/user.entity';
-import { BingoRoles } from '../roles/bingo-roles.constants';
-import { BingoParticipant } from '../bingo-participant.entity';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { I18nTranslations } from '@/i18n/types';
 import { I18nService } from 'nestjs-i18n';
+import { Repository } from 'typeorm';
+
+import { Bingo } from '@/bingo/bingo.entity';
+import { I18nTranslations } from '@/i18n/types';
+import { User } from '@/user/user.entity';
+
+import { BingoParticipant } from '../bingo-participant.entity';
 import { BingoParticipantPolicies } from '../bingo-participant.policies';
 import { BingoParticipantRemovedEvent } from '../events/bingo-participant-removed.event';
 
@@ -15,8 +16,6 @@ export type RemoveBingoParticipantParams = {
   requester: User;
   bingoId: string;
   username: string;
-  bingo?: Bingo;
-  bingoParticipant?: BingoParticipant;
 };
 
 export type RemoveBingoParticipantResult = BingoParticipant;
@@ -34,44 +33,25 @@ export class RemoveBingoParticipantHandler {
     private readonly bingoRepository: Repository<Bingo>,
     @InjectRepository(BingoParticipant)
     private readonly bingoParticipantRepository: Repository<BingoParticipant>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     private readonly i18nService: I18nService<I18nTranslations>,
     private readonly eventBus: EventBus,
   ) {}
 
   async execute(command: RemoveBingoParticipantCommand): Promise<void> {
-    const { requester, bingoId, username, bingo, bingoParticipant } = command.params;
+    const { requester, bingoId, username } = command.params;
 
-    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ bingoId }));
+    const bingo = await this.bingoRepository.findOne({
+      where: { bingoId },
+      relations: ['participants', 'participants.user'],
+    });
 
-    if (!foundBingo) {
+    if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));
     }
 
-    const userToRemove = await this.userRepository.findOneBy({ usernameNormalized: username });
+    const participants = await bingo.participants;
 
-    if (!userToRemove) {
-      throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.userNotFound'));
-    }
-
-    const bingoParticipantToRemove = await this.bingoParticipantRepository.findOneBy({
-      userId: userToRemove.id,
-      bingoId: foundBingo.id,
-    });
-
-    if (!bingoParticipantToRemove) {
-      throw new NotFoundException(
-        this.i18nService.t('bingo-participant.removeBingoParticipant.bingoParticipantNotFound'),
-      );
-    }
-
-    const requesterParticipant =
-      bingoParticipant ||
-      (await this.bingoParticipantRepository.findOneBy({
-        bingoId: foundBingo.id,
-        userId: requester.id,
-      }));
+    const requesterParticipant = participants.find((participant) => participant.userId === requester.id);
 
     if (!requesterParticipant) {
       throw new ForbiddenException(
@@ -79,7 +59,21 @@ export class RemoveBingoParticipantHandler {
       );
     }
 
-    if (!new BingoParticipantPolicies(requester).canRemove(requesterParticipant, bingoParticipantToRemove)) {
+    let participantToRemove: BingoParticipant | undefined;
+    for (const participant of participants) {
+      const user = await participant.user;
+      if (user.usernameNormalized !== username) continue;
+      participantToRemove = participant;
+      break;
+    }
+
+    if (!participantToRemove) {
+      throw new NotFoundException(
+        this.i18nService.t('bingo-participant.removeBingoParticipant.bingoParticipantNotFound'),
+      );
+    }
+
+    if (!new BingoParticipantPolicies(requester).canRemove(requesterParticipant, participantToRemove)) {
       throw new ForbiddenException(
         this.i18nService.t('bingo-participant.removeBingoParticipant.notAuthorizedToDelete'),
       );
@@ -87,13 +81,13 @@ export class RemoveBingoParticipantHandler {
 
     this.eventBus.publish(
       new BingoParticipantRemovedEvent({
-        bingoId: foundBingo.id,
+        bingoId: bingo.id,
         requesterId: requester.id,
-        userId: userToRemove.id,
-        role: bingoParticipantToRemove.role,
+        userId: participantToRemove.userId,
+        role: participantToRemove.role,
       }),
     );
 
-    await this.bingoParticipantRepository.remove(bingoParticipantToRemove);
+    await this.bingoParticipantRepository.remove(participantToRemove);
   }
 }

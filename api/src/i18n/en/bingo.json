@@ -59,7 +59,8 @@
         "canceled": {
             "title": "{username} has canceled the bingo."
         },
-        "forbidden": "You cannot see this bingos activities."
+        "forbidden": "You cannot see this bingos activities.",
+        "system": "System"
     }
     
 }

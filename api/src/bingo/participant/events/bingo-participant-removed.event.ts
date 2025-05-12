@@ -1,5 +1,6 @@
-import { CreateActivityCommand } from '@/activity/commands/create-activity.command';
 import { CommandBus, EventsHandler } from '@nestjs/cqrs';
+
+import { CreateActivityCommand } from '@/activity/commands/create-activity.command';
 
 export type BingoParticipantRemovedParams = {
   requesterId: number;

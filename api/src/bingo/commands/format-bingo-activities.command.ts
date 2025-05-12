@@ -62,7 +62,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoCreatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const title = this.i18nService.t('bingo.activity.created.title', {
       args: { username: requesterName },
     });
@@ -72,7 +72,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoUpdatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const title = this.i18nService.t('bingo.activity.updated.title', {
       args: { username: requesterName },
     });
@@ -121,7 +121,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoDeletedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const title = this.i18nService.t('bingo.activity.deleted.title', {
       args: { username: requesterName },
     });
@@ -131,7 +131,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoCanceledActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const title = this.i18nService.t('bingo.activity.canceled.title', {
       args: { username: requesterName },
     });
@@ -141,11 +141,12 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
 
     const userId = activity.parameters?.userId as number | undefined;
 
-    const username = userId !== undefined && this.usersMap.has(userId) ? this.usersMap.get(userId)!.username : "Unknown"; 
+    const username =
+      userId !== undefined && this.usersMap.has(userId) ? this.usersMap.get(userId)!.username : 'Unknown';
 
     const title = this.i18nService.t('bingo-participant.activity.added', {
       args: { username: username, requester: requesterName },
@@ -156,7 +157,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantRemovedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const removedUsername = activity.parameters!.username;
 
     const title = this.i18nService.t('bingo-participant.activity.removed', {
@@ -168,7 +169,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantUpdatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? 'System';
+    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
     const updatedUsername = activity.parameters!.username;
     const title = this.i18nService.t('bingo.activity.updated.title', {
       args: { username: requesterName },
@@ -176,7 +177,7 @@ export class FormatBingoActivitiesHandler {
 
     const body: string[] = [];
 
-    Object.entries(activity.parameters?.updates ?? {}).forEach(([key, value]) => {
+    Object.entries((activity.parameters?.updates as Record<string, unknown>) ?? {}).forEach(([key, value]) => {
       switch (key) {
         case 'role':
           body.push(

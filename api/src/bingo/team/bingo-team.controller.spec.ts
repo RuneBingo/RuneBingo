@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
+
 import { BingoTeamController } from './bingo-team.controller';
 
 describe('BingoTeamController', () => {

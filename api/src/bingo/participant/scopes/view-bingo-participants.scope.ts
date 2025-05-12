@@ -1,8 +1,10 @@
+import { type SelectQueryBuilder } from 'typeorm';
+
+import { type Bingo } from '@/bingo/bingo.entity';
 import { Scope } from '@/db/scope';
-import { BingoParticipant } from '../bingo-participant.entity';
-import { Bingo } from '@/bingo/bingo.entity';
-import { User } from '@/user/user.entity';
-import { SelectQueryBuilder } from 'typeorm';
+import { type User } from '@/user/user.entity';
+
+import { type BingoParticipant } from '../bingo-participant.entity';
 
 export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
   constructor(
@@ -14,11 +16,11 @@ export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
   }
   resolve() {
     if (!this.requester) {
-        if (!this.bingo.private) {
-            return this.query;
-        } else {
-            return this.query.andWhere('1 = 0');
-        }
+      if (!this.bingo.private) {
+        return this.query;
+      } else {
+        return this.query.andWhere('1 = 0');
+      }
     }
 
     if (!this.bingo.private) {

@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
@@ -13,7 +14,6 @@ import { User } from '@/user/user.entity';
 import { UpdateBingoCommand, UpdateBingoHandler } from './update-bingo.command';
 import { Bingo } from '../bingo.entity';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
-import { v4 as uuidV4 } from 'uuid';
 
 describe('UpdateBingoHandler', () => {
   let module: TestingModule;
@@ -246,7 +246,7 @@ describe('UpdateBingoHandler', () => {
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
   });
-  
+
   it('should update every value', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');

@@ -1,4 +1,7 @@
 {
+  "addBingoParticipants": {
+    "conflict": "The user you are trying to add is already a participant."
+  },
   "searchBingoParticipants": {
     "bingoNotFound": "No bingo with this slug was found."
   },

@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
@@ -8,7 +8,6 @@ import { I18nTranslations } from '@/i18n/types';
 import { type User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
-import { BingoPolicies } from '../bingo.policies';
 import { BingoCreatedEvent } from '../events/bingo-created.event';
 
 export type CreateBingoParams = {

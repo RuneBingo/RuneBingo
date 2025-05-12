@@ -37,7 +37,7 @@ export class CancelBingoHandler {
   ) {}
 
   async execute(command: CancelBingoCommand): Promise<Bingo> {
-    const { requester, bingoId} = command.params;
+    const { requester, bingoId } = command.params;
 
     const bingo = await this.bingoRepository.findOneBy({ bingoId });
 

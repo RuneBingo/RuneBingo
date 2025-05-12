@@ -3,10 +3,10 @@ import Joi from 'joi';
 import { Bingo } from '@/bingo/bingo.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
-import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 
 type BingoParticipantSeed = {
   user: string;

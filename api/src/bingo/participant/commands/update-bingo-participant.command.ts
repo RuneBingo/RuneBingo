@@ -1,25 +1,27 @@
-import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
-import { BingoParticipant } from '../bingo-participant.entity';
-import { Bingo } from '@/bingo/bingo.entity';
-import { User } from '@/user/user.entity';
-import { BingoTeam } from '@/bingo/team/bingo-team.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { BingoRoles } from '../roles/bingo-roles.constants';
-import { I18nTranslations } from '@/i18n/types';
+import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
+import { Repository } from 'typeorm';
+
+import { Bingo } from '@/bingo/bingo.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
+import { I18nTranslations } from '@/i18n/types';
+import { User } from '@/user/user.entity';
+
+import { BingoParticipant } from '../bingo-participant.entity';
 import { BingoParticipantPolicies } from '../bingo-participant.policies';
 import { BingoParticipantUpdatedEvent } from '../events/bingo-participant-updated.event';
+import { BingoRoles } from '../roles/bingo-roles.constants';
 
 export type UpdateBingoParticipantParams = {
   requester: User;
   bingoId: string;
   username: string;
-  bingo?: Bingo;
-  bingoParticipant?: BingoParticipant;
-  role?: BingoRoles;
-  teamName?: string;
+  updates: {
+    role?: BingoRoles;
+    teamName?: string;
+  };
 };
 
 export type UpdateBingoParticipantResult = BingoParticipant;
@@ -46,86 +48,80 @@ export class UpdateBingoParticipantHandler {
   ) {}
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
-    const { requester, bingoId, bingo, username, bingoParticipant, role, teamName } = command.params;
+    const { requester, bingoId, username, updates } = command.params;
 
-    const foundBingo = bingo || (await this.bingoRepository.findOneBy({ bingoId }));
+    const bingo = await this.bingoRepository.findOne({
+      where: { bingoId },
+      relations: ['participants', 'participants.user'],
+    });
 
-    if (!foundBingo) {
+    if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotFound'));
     }
 
-    if (!foundBingo.isPending()) {
+    if (!bingo.isPending()) {
       throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotPending'));
     }
 
-    const userToUpdate = await this.userRepository.findOneBy({ usernameNormalized: username });
+    const participants = await bingo.participants;
 
-    if (!userToUpdate) {
-      throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.userNotFound'));
-    }
-
-    const requesterParticipant =
-      bingoParticipant ||
-      (await this.bingoParticipantRepository.findOneBy({
-        bingoId: foundBingo.id,
-        userId: requester.id,
-      }));
+    const requesterParticipant = participants.find((participant) => participant.userId === requester.id);
 
     if (!requesterParticipant) {
       throw new ForbiddenException(
-        this.i18nService.t('bingo-participant.updateBingoParticipant.notParticipantOfTheBingo'),
+        this.i18nService.t('bingo-participant.removeBingoParticipant.notParticipantOfTheBingo'),
       );
     }
-    
-    let team;
-    if (teamName) {
-      team = await this.bingoTeamRepository.findOneBy({ nameNormalized: teamName, bingoId: foundBingo.id });
+
+    let participantToUpdate: BingoParticipant | undefined;
+    for (const participant of participants) {
+      const user = await participant.user;
+      if (user.usernameNormalized !== username) continue;
+      participantToUpdate = participant;
+      break;
     }
 
-    if (teamName && !team) {
-      throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
-    }
-
-    const bingoParticipantToUpdate = await this.bingoParticipantRepository.findOneBy({
-      userId: userToUpdate.id,
-      bingoId: foundBingo.id,
-    });
-
-    if (!bingoParticipantToUpdate) {
+    if (!participantToUpdate) {
       throw new NotFoundException(
         this.i18nService.t('bingo-participant.updateBingoParticipant.bingoParticipantNotFound'),
       );
     }
 
-    if (
-      !new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, bingoParticipantToUpdate, role)
-    ) {
+    let team: BingoTeam | null = null;
+    if (updates.teamName) {
+      team = await this.bingoTeamRepository.findOneBy({ nameNormalized: updates.teamName, bingoId: bingo.id });
+    }
+
+    if (updates.teamName && !team) {
+      throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
+    }
+
+    if (!new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, participantToUpdate, updates.role)) {
       throw new ForbiddenException(
         this.i18nService.t('bingo-participant.updateBingoParticipant.notAuthorizedToUpdate'),
       );
     }
 
-    if (teamName) {
-      bingoParticipantToUpdate.teamId = team.id;
+    if (updates.teamName && team) {
+      participantToUpdate.teamId = team.id;
     }
 
-    if (role) {
-      bingoParticipantToUpdate.role = role;
+    if (updates.role) {
+      participantToUpdate.role = updates.role;
     }
 
     this.eventBus.publish(
       new BingoParticipantUpdatedEvent({
-        bingoId: foundBingo.id,
+        bingoId: bingo.id,
         requesterId: requester.id,
-        userId: userToUpdate.id,
+        userId: participantToUpdate.userId,
         updates: {
-          role,
-          teamName,
+          role: updates.role,
+          teamName: updates.teamName,
         },
       }),
     );
-
-    return await this.bingoParticipantRepository.save(bingoParticipantToUpdate);
+    return await this.bingoParticipantRepository.save(participantToUpdate);
   }
 
   getRoleFromString(role: string): BingoRoles | undefined {

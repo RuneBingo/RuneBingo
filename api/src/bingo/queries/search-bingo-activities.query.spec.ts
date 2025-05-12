@@ -1,6 +1,7 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 } from 'uuid';
 
 import { Activity } from '@/activity/activity.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
@@ -12,7 +13,6 @@ import { User } from '@/user/user.entity';
 
 import { SearchBingoActivitiesHandler, SearchBingoActivitiesQuery } from './search-bingo-activities.query';
 import { Bingo } from '../bingo.entity';
-import { v4 } from 'uuid';
 
 describe('SearchUserActivitiesHandler', () => {
   let module: TestingModule;
