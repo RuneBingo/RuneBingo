@@ -1,7 +1,7 @@
-import { Primary } from './Primary';
-import { Quaternary } from './Quaternary';
-import { Secondary } from './Secondary';
-import { Ternary } from './Ternary';
+import { Primary } from './primary';
+import { Quaternary } from './quaternary';
+import { Secondary } from './secondary';
+import { Ternary } from './ternary';
 
 export * from './types';
 

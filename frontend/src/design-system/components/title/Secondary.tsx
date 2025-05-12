@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
-import type { TitleProps } from './types';
+
 import { cn } from '@/design-system/lib/utils';
+
+import type { TitleProps } from './types';
 
 const Secondary = forwardRef<HTMLHeadingElement, TitleProps>(({ className, ...props }, ref) => (
   <h2

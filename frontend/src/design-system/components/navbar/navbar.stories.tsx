@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
-import { Navbar } from './navbar';
+import { type Meta, type StoryObj } from '@storybook/react';
 import { Home, User, Mail } from 'lucide-react';
+
+import { Navbar } from './navbar';
 
 const meta = {
   component: Navbar,
