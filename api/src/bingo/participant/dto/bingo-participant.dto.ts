@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserDto } from '@/user/dto/user.dto';
 
 import { BingoParticipant } from '../bingo-participant.entity';
-import { BingoTeamDto } from '@/bingo-team/dto/bingo-team.dto';
+import { BingoTeamDto } from '@/bingo/team/dto/bingo-team.dto';
 
 export class BingoParticipantDto {
   constructor(bingoParticipant: BingoParticipant) {

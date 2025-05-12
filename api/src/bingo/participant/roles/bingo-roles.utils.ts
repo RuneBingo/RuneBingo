@@ -1,4 +1,4 @@
-import { type BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { type BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 
 import { bingoRoleHierarchy, BingoRolePriority, type BingoRoles } from './bingo-roles.constants';
 

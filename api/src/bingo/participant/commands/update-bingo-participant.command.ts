@@ -2,7 +2,7 @@ import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { BingoParticipant } from '../bingo-participant.entity';
 import { Bingo } from '@/bingo/bingo.entity';
 import { User } from '@/user/user.entity';
-import { BingoTeam } from '@/bingo-team/bingo-team.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';

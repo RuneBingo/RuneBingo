@@ -3,7 +3,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';

@@ -5,7 +5,7 @@ import { BaseEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoRoles } from './roles/bingo-roles.constants';
-import { BingoTeam } from '@/bingo-team/bingo-team.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 
 @Entity()
 export class BingoParticipant {

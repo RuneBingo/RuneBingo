@@ -4,7 +4,7 @@ import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { BingoModule } from './bingo/bingo.module';
-import { BingoParticipantModule } from './bingo-participant/bingo-participant.module';
+import { BingoParticipantModule } from './bingo/participant/bingo-participant.module';
 import { configModule } from './config';
 import { cqrsModule } from './cqrs';
 import { dbModule } from './db';
@@ -17,7 +17,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
-import { BingoTeamModule } from './bingo-team/bingo-team.module';
+import { BingoTeamModule } from './bingo/team/bingo-team.module';
 
 @Module({
   imports: [

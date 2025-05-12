@@ -14,7 +14,7 @@ import { I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '@/i18n/types';
 import { ViewBingoScope } from '@/bingo/scopes/view-bingo.scope';
 import { ViewBingoParticipantsScope } from '../scopes/view-bingo-participants.scope';
-import { BingoTeam } from '@/bingo-team/bingo-team.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 
 export type SearchBingoParticipantsParams = PaginatedQueryParams<{
   bingoId: string;

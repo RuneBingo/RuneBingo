@@ -4,13 +4,13 @@ import { DataSource, type DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Bingo } from '@/bingo/bingo.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 
 import { Activity } from '../activity/activity.entity';
 import { dotenvPath } from '../config';
 import { Session } from '../session/session.entity';
 import { User } from '../user/user.entity';
-import { BingoTeam } from '@/bingo-team/bingo-team.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 
 configDotenv({ path: dotenvPath });
 

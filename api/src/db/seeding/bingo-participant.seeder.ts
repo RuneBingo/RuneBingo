@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 import { Bingo } from '@/bingo/bingo.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
-import { BingoRoles } from '@/bingo-participant/roles/bingo-roles.constants';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
+import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';

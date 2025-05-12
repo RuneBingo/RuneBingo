@@ -1,8 +1,8 @@
 import { Roles } from '@/auth/roles/roles.constants';
 import { userHasRole } from '@/auth/roles/roles.utils';
-import { type BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
-import { BingoRoles } from '@/bingo-participant/roles/bingo-roles.constants';
-import { participantHasBingoRole } from '@/bingo-participant/roles/bingo-roles.utils';
+import { type BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
+import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
+import { participantHasBingoRole } from '@/bingo/participant/roles/bingo-roles.utils';
 import { type User } from '@/user/user.entity';
 
 import { type Bingo } from './bingo.entity';

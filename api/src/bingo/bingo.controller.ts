@@ -27,8 +27,8 @@ import {
 
 import { PaginatedActivitiesDto } from '@/activity/dto/paginated-activities.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
-import { AddBingoParticipantCommand } from '@/bingo-participant/commands/add-bingo-participant.command';
-import { BingoRoles } from '@/bingo-participant/roles/bingo-roles.constants';
+import { AddBingoParticipantCommand } from '@/bingo/participant/commands/add-bingo-participant.command';
+import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { UserDto } from '@/user/dto/user.dto';
 
 import { CancelBingoCommand } from './commands/cancel-bingo.command';
@@ -42,15 +42,15 @@ import { PaginatedBingosDto } from './dto/paginated-bingos.dto';
 import { UpdateBingoDto } from './dto/update-bingo.dto';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
-import { PaginatedBingoParticipantsDto } from '@/bingo-participant/dto/paginated-bingo-participants.dto';
+import { PaginatedBingoParticipantsDto } from '@/bingo/participant/dto/paginated-bingo-participants.dto';
 import {
   SearchBingoParticipantsParams,
   SearchBingoParticipantsQuery,
-} from '@/bingo-participant/queries/search-bingo-participants.query';
-import { BingoParticipantDto } from '@/bingo-participant/dto/bingo-participant.dto';
-import { RemoveBingoParticipantCommand } from '@/bingo-participant/commands/remove-bingo-participant.command';
-import { UpdateBingoParticipantDto } from '@/bingo-participant/dto/update-bingo-participant.dto';
-import { UpdateBingoParticipantCommand } from '@/bingo-participant/commands/update-bingo-participant.command';
+} from '@/bingo/participant/queries/search-bingo-participants.query';
+import { BingoParticipantDto } from '@/bingo/participant/dto/bingo-participant.dto';
+import { RemoveBingoParticipantCommand } from '@/bingo/participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantDto } from '@/bingo/participant/dto/update-bingo-participant.dto';
+import { UpdateBingoParticipantCommand } from '@/bingo/participant/commands/update-bingo-participant.command';
 import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 
 @Controller('v1/bingo')
@@ -89,7 +89,7 @@ export class BingoController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get bingos paginated list of bingos' })
+  @ApiOperation({ summary: 'Get paginated list of bingos' })
   @ApiOkResponse({ description: 'Here are the bingos.' })
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'status', enum: ['pending', 'started', 'ended', 'canceled'], required: false })
@@ -125,7 +125,7 @@ export class BingoController {
 
 
   @Get(':bingoId')
-  @ApiOperation({ summary: 'Find a bingo by its title bingoId' })
+  @ApiOperation({ summary: 'Find a bingo by its Bingo Id' })
   @ApiOkResponse({ description: 'The bingo has been found.', type: BingoDto })
   @ApiNotFoundResponse({ description: 'The bingo does not exist.' })
   async findByTitleSlug(@Param('bingoId') bingoId: string, @Req() req: Request): Promise<BingoDto> {
@@ -200,7 +200,7 @@ export class BingoController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo event has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to delete the bingo event.' })
   async delete(@Req() req: Request, @Param('bingoId') bingoId: string) {
     await this.commandBus.execute(
@@ -215,7 +215,7 @@ export class BingoController {
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
   @ApiOkResponse({ description: 'The bingo event has been successfully cancelled.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
   @ApiBadRequestResponse({ description: 'The bingo event was already cancelled or has ended.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to cancel the bingo event.' })
   async cancel(@Req() req: Request, @Param('bingoId') bingoId: string) {
@@ -274,7 +274,7 @@ export class BingoController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a bingo participant from an event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
   @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
   async removeBingoParticipant(
@@ -296,7 +296,7 @@ export class BingoController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided bingoId was found.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
   @ApiUnauthorizedResponse({ description: 'User not authed.' })
   @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
   async updateBingoParticipant(

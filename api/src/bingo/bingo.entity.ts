@@ -1,5 +1,5 @@
 import { BeforeInsert, Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 import { v4 as uuidV4 } from 'uuid';

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { User } from '@/user/user.entity';
 

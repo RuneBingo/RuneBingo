@@ -5,7 +5,7 @@ import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
 import { Activity } from '@/activity/activity.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { type PaginatedDtoWithoutTotal } from '@/db/dto/paginated.dto';
 import { resolvePaginatedQueryWithoutTotal, type PaginatedQueryParams } from '@/db/paginated-query.utils';
 import { I18nTranslations } from '@/i18n/types';
