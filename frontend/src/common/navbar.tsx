@@ -55,9 +55,12 @@ export default function Navbar({ mode }: NavbarProps) {
               <Menu size={24} />
             </DrawerTrigger>
             <DrawerContent className="px-4 pb-6 md:hidden">
-              <DrawerTitle asChild>
-                <Title.Ternary>{t('title')}</Title.Ternary>
-              </DrawerTitle>
+              <div className="flex items-center justify-between">
+                <DrawerTitle asChild>
+                  <Title.Ternary>{t('title')}</Title.Ternary>
+                </DrawerTitle>
+                {!user && <SelectLanguage />}
+              </div>
               <div className="flex flex-col gap-6 my-6">
                 {SITE_LINKS.map((link) => (
                   <Link key={link.href} href={link.href} className="font-semibold" onClick={() => setDrawerOpen(false)}>
@@ -65,9 +68,22 @@ export default function Navbar({ mode }: NavbarProps) {
                   </Link>
                 ))}
               </div>
-              <Button variant="default" size="sm" onClick={() => setDrawerOpen(false)}>
-                {t('buttons.dashboard')}
-              </Button>
+              <div className="flex flex-col gap-3">
+                {user ? (
+                  <Button variant="default" size="sm" onClick={() => setDrawerOpen(false)}>
+                    {t('buttons.dashboard')}
+                  </Button>
+                ) : (
+                  <Fragment>
+                    <Button variant="default" onClick={() => router.push('/sign-up')}>
+                      {t('buttons.signUp')}
+                    </Button>
+                    <Button variant="outline" onClick={() => router.push('/sign-in')}>
+                      {t('buttons.signIn')}
+                    </Button>
+                  </Fragment>
+                )}
+              </div>
             </DrawerContent>
           </Drawer>
         )}
@@ -110,7 +126,7 @@ export default function Navbar({ mode }: NavbarProps) {
             </DropdownMenu>
           </Fragment>
         ) : (
-          <Fragment>
+          <div className="hidden md:flex gap-3">
             <SelectLanguage />
             <Button variant="default" onClick={() => router.push('/sign-up')}>
               {t('buttons.signUp')}
@@ -118,7 +134,7 @@ export default function Navbar({ mode }: NavbarProps) {
             <Button variant="outline" onClick={() => router.push('/sign-in')}>
               {t('buttons.signIn')}
             </Button>
-          </Fragment>
+          </div>
         )}
       </div>
     </div>
