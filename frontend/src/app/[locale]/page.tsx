@@ -2,9 +2,8 @@ import { type Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Fragment } from 'react';
 
+import Navbar from '@/common/navbar';
 import Page from '@/design-system/components/page/page';
-
-import Navbar from '../../common/navbar';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('site.home.meta');

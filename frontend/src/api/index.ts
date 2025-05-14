@@ -1,6 +1,6 @@
 import { getLocale as getLocaleIntl } from 'next-intl/server';
 
-import { DEFAULT_LOCALE } from '../i18n';
+import { DEFAULT_LOCALE } from '@/i18n';
 
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
