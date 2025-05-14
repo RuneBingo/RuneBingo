@@ -8,11 +8,11 @@ import { toast } from 'sonner';
 
 import { verifyCode } from '@/api/auth';
 import { useAppContext } from '@/common/context';
+import { transformApiError } from '@/common/utils/transform-api-error';
 import CodeInput from '@/design-system/components/code-input';
 import { Title } from '@/design-system/components/title';
 import { Button } from '@/design-system/ui/button';
 import { Separator } from '@/design-system/ui/separator';
-import { transformApiError } from '@/common/utils/transform-api-error';
 import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 
