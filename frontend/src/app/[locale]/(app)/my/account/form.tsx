@@ -16,7 +16,7 @@ import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
 import { Button } from '@/design-system/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/design-system/ui/popover';
-import { transformApiError } from '@/design-system/utils/transform-api-error';
+import { transformApiError } from '@/common/utils/transform-api-error';
 import { SUPPORTED_LOCALES } from '@/i18n';
 import { Link } from '@/i18n/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';

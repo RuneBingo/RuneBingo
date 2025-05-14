@@ -10,7 +10,7 @@ import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
 import { Button } from '@/design-system/ui/button';
 import { Separator } from '@/design-system/ui/separator';
-import { transformApiError } from '@/design-system/utils/transform-api-error';
+import { transformApiError } from '@/common/utils/transform-api-error';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 
