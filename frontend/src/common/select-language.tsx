@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
 import SelectField from '@/design-system/components/select-field';
@@ -16,6 +17,7 @@ export default function SelectLanguage({ short }: SelectLanguageProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const languagesOptions = SUPPORTED_LOCALES.map((locale) => ({
     label: t(locale),
@@ -23,7 +25,8 @@ export default function SelectLanguage({ short }: SelectLanguageProps) {
   }));
 
   const handleChange = (value: string) => {
-    router.push(pathname, { locale: value });
+    const query = Object.fromEntries(searchParams.entries());
+    router.push({ pathname, query }, { locale: value });
   };
 
   return <SelectField containerClassName="mb-0" value={locale} options={languagesOptions} onChange={handleChange} />;
