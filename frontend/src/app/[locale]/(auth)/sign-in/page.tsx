@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
 
-import { requestSignIn } from '@/api/auth';
+import { signInWithEmail } from '@/api/auth';
 import { transformApiError } from '@/common/utils/transform-api-error';
 import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
@@ -23,7 +23,7 @@ export default function SignInPage() {
   const t = useTranslations('auth.signIn');
 
   const onSubmit = async (values: SignInFormValues, { setErrors }: FormikHelpers<SignInFormValues>) => {
-    const response = await requestSignIn(values.email);
+    const response = await signInWithEmail(values.email);
     if ('error' in response) {
       const { message, validationErrors } = transformApiError(response);
       if (validationErrors) setErrors(validationErrors);
