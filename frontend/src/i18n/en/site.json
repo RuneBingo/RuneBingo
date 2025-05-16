@@ -1,0 +1,13 @@
+{
+  "home": {
+    "meta": {
+      "title": "RuneBingo - the Open Source Bingo Platform",
+      "description": "A comprehensive solution for event organizers to manage complex events without hassle."
+    },
+    "hero": {
+      "title": "Make organizing bingos a breeze",
+      "subtitle": "RuneBingo - the Open Source platform",
+      "description": "A comprehensive solution for event organizers to manage complex events without hassle."
+    }
+  }
+}

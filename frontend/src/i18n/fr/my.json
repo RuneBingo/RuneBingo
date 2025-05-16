@@ -1,0 +1,30 @@
+{
+  "account": {
+    "meta": {
+      "title": "Mon compte",
+      "description": "Mettre à jour vos informations de compte"
+    },
+    "title": "Mon compte",
+    "form": {
+      "personalInformation": {
+        "title": "Informations personnelles",
+        "fields": {
+          "username": {
+            "label": "Nom d'utilisateur",
+            "placeholder": "Entrez votre nom d'utilisateur"
+          },
+          "language": {
+            "label": "Langue",
+            "placeholder": "Sélectionnez votre langue"
+          }
+        },
+        "avatarPopover": {
+          "text": "Vous pouvez modifier votre avatar sur ",
+          "link": "Gravatar.com"
+        }
+      },
+      "submit": "Sauvegarder les modifications",
+      "success": "Votre compte a été mis à jour avec succès !"
+    }
+  }
+}

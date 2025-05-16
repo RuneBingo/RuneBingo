@@ -1,0 +1,34 @@
+{
+  "appName": "RuneBingo",
+  "languages": {
+    "en": "English",
+    "fr": "Français"
+  },
+  "languagesShort": {
+    "en": "EN",
+    "fr": "FR"
+  },
+  "meta": {
+    "title": "RuneBingo - the Open Source platform",
+    "titleTemplate": "{title} | RuneBingo",
+    "description": "A comprehensive solution for event organizers to manage complex events without hassle."
+  },
+  "navbar": {
+    "title": "RuneBingo",
+    "links": {
+      "home": "Home"
+    },
+    "buttons": {
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "dashboard": "Dashboard"
+    },
+    "userDropdown": {
+      "myAccount": "My account",
+      "myInvitations": "My invitations",
+      "myApplications": "My applications",
+      "myRequests": "My requests",
+      "signOut": "Sign out"
+    }
+  }
+}

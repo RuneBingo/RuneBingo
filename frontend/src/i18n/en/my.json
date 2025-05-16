@@ -1,0 +1,30 @@
+{
+  "account": {
+    "meta": {
+      "title": "My Account",
+      "description": "Update your account information"
+    },
+    "title": "My Account",
+    "form": {
+      "personalInformation": {
+        "title": "Personal Information",
+        "fields": {
+          "username": {
+            "label": "Username",
+            "placeholder": "Enter your username"
+          },
+          "language": {
+            "label": "Language",
+            "placeholder": "Select your language"
+          }
+        },
+        "avatarPopover": {
+          "text": "You can update your avatar on ",
+          "link": "Gravatar.com"
+        }
+      },
+      "submit": "Save changes",
+      "success": "Your account has been updated successfully!"
+    }
+  }
+}
