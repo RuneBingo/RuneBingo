@@ -88,7 +88,27 @@ describe('AddBingoParticipantHandler', () => {
     );
   });
 
-  it('removes a bingo participant if self', async () => {
+  it('removes a bingo participant if user is a moderator and not a participant', async () => {
+    const requester = seedingService.getEntity(User, 'zezima');
+    const bingo = seedingService.getEntity(Bingo, 'german-osrs');
+    const userToRemove = seedingService.getEntity(User, 'didiking');
+
+    const command = new RemoveBingoParticipantCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      username: userToRemove.usernameNormalized,
+    });
+
+    await handler.execute(command);
+
+    const participant = await dataSource
+      .getRepository(BingoParticipant)
+      .findOneBy({ bingoId: bingo.id, userId: userToRemove.id });
+
+    expect(participant).toBeNull();
+  });
+
+  it('removes a bingo participant is self', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
     const userToRemove = seedingService.getEntity(User, 'dee420');

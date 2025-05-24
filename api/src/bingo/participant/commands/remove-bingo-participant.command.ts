@@ -38,33 +38,34 @@ export class RemoveBingoParticipantHandler {
   ) {}
 
   async execute(command: RemoveBingoParticipantCommand): Promise<void> {
-    const { requester, bingoId, username } = command.params;
+    const { requester, bingoId, username: usernameToRemove } = command.params;
 
-    const bingo = await this.bingoRepository.findOne({
-      where: { bingoId },
-      relations: ['participants', 'participants.user'],
-    });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));
     }
 
-    const participants = await bingo.participants;
+    const participants = await this.bingoParticipantRepository
+      .createQueryBuilder('bingo_participant')
+      .innerJoin('bingo_participant.user', 'user')
+      .where('(bingo_participant.bingo_id = :bingoId AND user.username_normalized IN (:...usernames))', {
+        bingoId: bingo.id,
+        usernames: [requester.usernameNormalized, usernameToRemove],
+      })
+      .getMany();
 
-    const requesterParticipant = participants.find((participant) => participant.userId === requester.id);
-
-    if (!requesterParticipant) {
-      throw new ForbiddenException(
-        this.i18nService.t('bingo-participant.removeBingoParticipant.notParticipantOfTheBingo'),
-      );
-    }
-
+    let requesterParticipant: BingoParticipant | undefined;
     let participantToRemove: BingoParticipant | undefined;
+
     for (const participant of participants) {
       const user = await participant.user;
-      if (user.usernameNormalized !== username) continue;
-      participantToRemove = participant;
-      break;
+      if (user.usernameNormalized === usernameToRemove) {
+        participantToRemove = participant;
+      }
+      if (user.usernameNormalized === requester.usernameNormalized) {
+        requesterParticipant = participant;
+      }
     }
 
     if (!participantToRemove) {

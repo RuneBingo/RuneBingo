@@ -9,11 +9,17 @@ import { participantHasBingoRole } from './roles/bingo-roles.utils';
 export class BingoParticipantPolicies {
   constructor(private readonly requester: User) {}
 
-  canRemove(requesterParticipant: BingoParticipant, participantToRemove: BingoParticipant) {
+  canRemove(requesterParticipant: BingoParticipant | undefined, participantToRemove: BingoParticipant) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+    if (requesterIsModerator) return true;
+
+    if (!requesterParticipant) return false;
+
+    if (participantToRemove.userId === this.requester.id) {
+      return participantToRemove.role !== BingoRoles.Organizer;
+    }
 
     if (
-      !requesterIsModerator &&
       !participantHasBingoRole(requesterParticipant, BingoRoles.Organizer) &&
       requesterParticipant.userId !== participantToRemove.userId
     ) {
@@ -23,15 +29,22 @@ export class BingoParticipantPolicies {
     return true;
   }
 
-  canUpdate(requesterParticipant: BingoParticipant, participantToUpdate: BingoParticipant, role?: BingoRoles) {
+  canUpdate(
+    requesterParticipant: BingoParticipant | undefined,
+    participantToUpdate: BingoParticipant,
+    role?: BingoRoles,
+  ) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+
+    if (requesterIsModerator) return true;
+
+    if (!requesterParticipant) return false;
 
     if (role && !participantHasBingoRole(requesterParticipant, BingoRoles.Owner)) {
       return false;
     }
 
     if (
-      !requesterIsModerator &&
       !participantHasBingoRole(requesterParticipant, BingoRoles.Organizer) &&
       requesterParticipant.userId !== participantToUpdate.userId
     ) {

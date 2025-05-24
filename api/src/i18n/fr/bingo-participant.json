@@ -1,6 +1,6 @@
 {
     "addBingoParticipants": {
-    "conflict": "L'utilisateur que vous essayz d'ajouter est déjà un participant."
+    "conflict": "L'utilisateur que vous essayez d'ajouter est déjà un participant."
   },
   "searchBingoParticipants": {
     "bingoNotFound": "Aucun bingo avec ce slug n'a été trouvé."

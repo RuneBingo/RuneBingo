@@ -66,7 +66,11 @@ describe('AddBingoParticipantHandler', () => {
       role: expectedRole,
     });
 
-    await handler.execute(command);
+    const bingoParticipant = await handler.execute(command);
+
+    expect(bingoParticipant).toBeDefined();
+    expect(bingoParticipant.bingoId).toBe(bingo.id);
+    expect(bingoParticipant.userId).toBe(userToAdd.id);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(

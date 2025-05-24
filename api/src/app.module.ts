@@ -28,7 +28,6 @@ import { UserModule } from './user/user.module';
     i18nModule,
     RedisModule,
     SeedingModule,
-    SeedingModule,
     SessionModule,
     UserModule,
     AuthModule,

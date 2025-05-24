@@ -112,6 +112,27 @@ describe('AddBingoParticipantHandler', () => {
     expect(toUpdate.role).toBe(expectedBingoRole);
   });
 
+  it('updates the bingo participant role if requesters is moderator but not participant', async () => {
+    const requester = seedingService.getEntity(User, 'zezima');
+    const bingo = seedingService.getEntity(Bingo, 'german-osrs');
+    const userToUpdate = seedingService.getEntity(User, 'didiking');
+    const expectedBingoRole = BingoRoles.Organizer;
+
+    const command = new UpdateBingoParticipantCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      username: userToUpdate.usernameNormalized,
+      updates: {
+        role: expectedBingoRole,
+      },
+    });
+
+    const toUpdate = await handler.execute(command);
+    expect(toUpdate).toBeDefined();
+    expect(toUpdate.bingoId).toBe(bingo.id);
+    expect(toUpdate.role).toBe(expectedBingoRole);
+  });
+
   it('updates the bingo participant team if self and not organizer', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');

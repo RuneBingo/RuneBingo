@@ -16,11 +16,9 @@ export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
   }
   resolve() {
     if (!this.requester) {
-      if (!this.bingo.private) {
-        return this.query;
-      } else {
-        return this.query.andWhere('1 = 0');
-      }
+      if (this.bingo.private) return this.query.andWhere('1 = 0');
+
+      return this.query;
     }
 
     if (!this.bingo.private) {

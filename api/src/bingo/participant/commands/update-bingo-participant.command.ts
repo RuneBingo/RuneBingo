@@ -41,44 +41,39 @@ export class UpdateBingoParticipantHandler {
     private readonly bingoParticipantRepository: Repository<BingoParticipant>,
     @InjectRepository(BingoTeam)
     private readonly bingoTeamRepository: Repository<BingoTeam>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     private readonly i18nService: I18nService<I18nTranslations>,
     private readonly eventBus: EventBus,
   ) {}
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
-    const { requester, bingoId, username, updates } = command.params;
+    const { requester, bingoId, username: usernameToUpdate, updates } = command.params;
 
-    const bingo = await this.bingoRepository.findOne({
-      where: { bingoId },
-      relations: ['participants', 'participants.user'],
-    });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
-      throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotFound'));
+      throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));
     }
 
-    if (!bingo.isPending()) {
-      throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotPending'));
-    }
+    const participants = await this.bingoParticipantRepository
+      .createQueryBuilder('bingo_participant')
+      .innerJoin('bingo_participant.user', 'user')
+      .where('(bingo_participant.bingo_id = :bingoId AND user.username_normalized IN (:...usernames))', {
+        bingoId: bingo.id,
+        usernames: [requester.usernameNormalized, usernameToUpdate],
+      })
+      .getMany();
 
-    const participants = await bingo.participants;
-
-    const requesterParticipant = participants.find((participant) => participant.userId === requester.id);
-
-    if (!requesterParticipant) {
-      throw new ForbiddenException(
-        this.i18nService.t('bingo-participant.removeBingoParticipant.notParticipantOfTheBingo'),
-      );
-    }
-
+    let requesterParticipant: BingoParticipant | undefined;
     let participantToUpdate: BingoParticipant | undefined;
+
     for (const participant of participants) {
       const user = await participant.user;
-      if (user.usernameNormalized !== username) continue;
-      participantToUpdate = participant;
-      break;
+      if (user.usernameNormalized === usernameToUpdate) {
+        participantToUpdate = participant;
+      }
+      if (user.usernameNormalized === requester.usernameNormalized) {
+        requesterParticipant = participant;
+      }
     }
 
     if (!participantToUpdate) {
