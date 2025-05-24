@@ -22,6 +22,8 @@ import {
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 
+import SelectBingo from './select-bingo';
+
 const SITE_LINKS = [
   {
     label: 'links.home',
@@ -97,6 +99,11 @@ export default function Navbar({ mode }: NavbarProps) {
                 {t(link.label)}
               </Link>
             ))}
+          </div>
+        )}
+        {mode === 'app' && user?.hasBingos && (
+          <div className="hidden md:block">
+            <SelectBingo />
           </div>
         )}
       </div>

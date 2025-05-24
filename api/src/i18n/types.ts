@@ -60,7 +60,11 @@ export type I18nTranslations = {
             "bingoNotFound": string;
         };
         "findBingoByTitleSlug": {
-            "bingoNotFound": string;
+            "bingoNotFound": {
+                "all": string;
+                "participating": string;
+                "nonParticipating": string;
+            };
         };
         "activity": {
             "created": {
@@ -109,6 +113,12 @@ export type I18nTranslations = {
         "createSessionForUser": {
             "userDisabled": string;
             "forbidden": string;
+        };
+        "setSessionCurrentBingo": {
+            "sessionNotFound": string;
+            "sessionSignedOut": string;
+            "cantSetCurrentBingo": string;
+            "bingoNotFound": string;
         };
         "signOutSessionByUuid": {
             "forbidden": string;

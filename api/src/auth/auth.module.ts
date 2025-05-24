@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Bingo } from '@/bingo/bingo.entity';
 import { EmailerModule } from '@/emailer/emailer.module';
 import { RedisModule } from '@/redis/redis.module';
 import { User } from '@/user/user.entity';
@@ -11,7 +12,7 @@ import { SignUpWithEmailHandler } from './commands/sign-up-with-email.handler';
 import { VerifyAuthCodeHandler } from './queries/verify-auth-code.handler';
 
 @Module({
-  imports: [RedisModule, EmailerModule, TypeOrmModule.forFeature([User])],
+  imports: [RedisModule, EmailerModule, TypeOrmModule.forFeature([Bingo, User])],
   controllers: [AuthController],
   providers: [
     // Commands

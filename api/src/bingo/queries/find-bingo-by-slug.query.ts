@@ -8,11 +8,14 @@ import { I18nTranslations } from '@/i18n/types';
 import { User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
+import { NonParticipatingBingoScope } from '../scopes/non-participating-bingo.scope';
+import { ParticipatingBingoScope } from '../scopes/participating-bingo.scope';
 import { ViewBingoScope } from '../scopes/view-bingo.scope';
 
 export type FindBingoBySlugParams = {
   slug: string;
   requester: User | undefined;
+  participating?: boolean;
 };
 
 export type FindBingoBySlugResult = Bingo;
@@ -32,14 +35,30 @@ export class FindBingoBySlugHandler {
   ) {}
 
   async execute(query: FindBingoBySlugQuery): Promise<FindBingoBySlugResult> {
-    const { slug, requester } = query.params;
+    const { slug, requester, participating } = query.params;
 
-    const scope = this.bingoRepository.createQueryBuilder('bingo').where('bingo.slug = :slug', { slug: slug });
+    let notFoundKey: 'all' | 'participating' | 'nonParticipating';
+    let scope = this.bingoRepository.createQueryBuilder('bingo').where('bingo.slug = :slug', { slug: slug });
 
-    const bingo = await new ViewBingoScope(requester, scope).resolve().getOne();
+    switch (participating) {
+      case undefined:
+        notFoundKey = 'all';
+        scope = new ViewBingoScope(requester, scope).resolve();
+        break;
+      case true:
+        notFoundKey = 'participating';
+        scope = new ParticipatingBingoScope(requester, scope).resolve();
+        break;
+      case false:
+        notFoundKey = 'nonParticipating';
+        scope = new NonParticipatingBingoScope(requester, scope).resolve();
+        break;
+    }
+
+    const bingo = await scope.getOne();
 
     if (!bingo) {
-      throw new NotFoundException(this.i18nService.t('bingo.findBingoByTitleSlug.bingoNotFound'));
+      throw new NotFoundException(this.i18nService.t(`bingo.findBingoByTitleSlug.bingoNotFound.${notFoundKey}`));
     }
 
     return bingo;

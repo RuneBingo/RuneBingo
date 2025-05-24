@@ -91,6 +91,7 @@ export class BingoController {
     @Query('search') search: string = '',
     @Query('status') status: string | undefined = undefined,
     @Query('private') isPrivate: string | undefined = undefined,
+    @Query('participating') participating: string | undefined = undefined,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ): Promise<PaginatedBingosDto> {
@@ -99,7 +100,9 @@ export class BingoController {
       search,
       status,
       isPrivate: isPrivate !== undefined ? isPrivate === 'true' : undefined,
+      participating: participating !== undefined ? participating === 'true' : undefined,
       offset: offset ? parseInt(offset) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
     } satisfies SearchBingosParams;
 
     const { items, ...pagination } = await this.queryBus.execute(new SearchBingosQuery(params));

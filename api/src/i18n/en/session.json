@@ -3,6 +3,12 @@
     "userDisabled": "User is disabled",
     "forbidden": "You don't have permission to create a session for this user."
   },
+  "setSessionCurrentBingo": {
+    "sessionNotFound": "The session you are trying to update does not exist.",
+    "sessionSignedOut": "The session you are trying to update is signed out.",
+    "cantSetCurrentBingo": "You don't have permission to update this session.",
+    "bingoNotFound": "The bingo you are trying to set as current does not exist or you are not participating to it."
+  },
   "signOutSessionByUuid": {
     "forbidden": "You don't have permission to sign out this session."
   }

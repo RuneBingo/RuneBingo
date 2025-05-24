@@ -2,6 +2,11 @@ import { getLocale as getLocaleIntl } from 'next-intl/server';
 
 import { DEFAULT_LOCALE } from '@/i18n';
 
+export type PaginatedQueryParams<T> = T & {
+  limit?: number;
+  offset?: number;
+};
+
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export type ApiResult<TResult> = {
@@ -97,8 +102,11 @@ export async function _delete<TResult = unknown>(url: string) {
   return execute<never, TResult>('DELETE', url);
 }
 
-export async function get<TResult = unknown>(url: string) {
-  return await execute<never, TResult>('GET', url);
+export async function get<TResult = unknown>(url: string, params?: Record<string, string>) {
+  const queryString = params ? new URLSearchParams(params).toString() : '';
+  const urlWithParams = queryString ? `${url}?${queryString}` : url;
+
+  return await execute<never, TResult>('GET', urlWithParams);
 }
 
 export async function post<TData, TResult = unknown>(url: string, data?: TData) {
