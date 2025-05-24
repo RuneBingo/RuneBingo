@@ -5,6 +5,8 @@ import { Scope } from '@/db/scope';
 import { type User } from '@/user/user.entity';
 
 import { type BingoParticipant } from '../bingo-participant.entity';
+import { userHasRole } from '@/auth/roles/roles.utils';
+import { Roles } from '@/auth/roles/roles.constants';
 
 export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
   constructor(
@@ -21,7 +23,7 @@ export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
       return this.query;
     }
 
-    if (!this.bingo.private) {
+    if (!this.bingo.private || userHasRole(this.requester, Roles.Moderator)) {
       return this.query;
     }
 

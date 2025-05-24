@@ -148,6 +148,26 @@ describe('AddBingoParticipantHandler', () => {
     assertExpectedBingos(result, expectedParticipants);
   });
 
+  it('should return participants if requester is moderator but not participant of private bingo', async () => {
+    const requester = seedingService.getEntity(User, 'zezima');
+    const expectedParticipants = [
+      seedingService.getEntity(BingoParticipant, 'char0o'),
+      seedingService.getEntity(BingoParticipant, 'didiking-osrs'),
+      seedingService.getEntity(BingoParticipant, 'dee420'),
+    ];
+
+    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const query = new SearchBingoParticipantsQuery({
+      requester,
+      bingoId: searchBingo.bingoId,
+    });
+
+    const result = await handler.execute(query);
+
+    assertExpectedBingos(result, expectedParticipants);
+  });
+
   const assertExpectedBingos = (result: SearchBingoParticipantsResult, expectedParticipants: BingoParticipant[]) => {
     expect(result.items.length).toBe(expectedParticipants.length);
     result.items.forEach((item, i) => {
