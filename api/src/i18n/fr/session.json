@@ -3,6 +3,12 @@
     "userDisabled": "L'utilisateur est désactivé",
     "forbidden": "Vous n'avez pas les permissions pour créer une session pour cet utilisateur."
   },
+  "setSessionCurrentBingo": {
+    "sessionNotFound": "La session que vous essayez de mettre à jour n'existe pas.",
+    "sessionSignedOut": "La session que vous essayez de mettre à jour est déconnectée.",
+    "cantSetCurrentBingo": "Vous n'avez pas les permissions pour mettre à jour cette session.",
+    "bingoNotFound": "Le bingo que vous essayez de définir comme actif n'existe pas ou vous n'y participez pas."
+  },
   "signOutSessionByUuid": {
     "forbidden": "Vous n'avez pas les permissions pour déconnecter cette session."
   }

@@ -6,6 +6,13 @@ export enum BingoRoles {
   Owner = 'owner',
 }
 
+export enum BingoStatus {
+  Pending = 'pending',
+  Ongoing = 'ongoing',
+  Completed = 'completed',
+  Cancelled = 'cancelled',
+}
+
 export enum Roles {
   User = 'user',
   Moderator = 'moderator',
@@ -61,6 +68,13 @@ export type UpdateBingoDto = {
   maxRegistrationDate: string;
 };
 
+export type ShortBingoDto = {
+  slug: string;
+  title: string;
+  status: BingoStatus;
+  role: BingoRoles;
+};
+
 export type PaginatedBingosDto = {
   items: BingoDto[];
 };
@@ -85,6 +99,7 @@ export type BingoDto = {
   title: string;
   slug: string;
   description: string;
+  status: BingoStatus;
   private: boolean;
   width: number;
   height: number;
@@ -113,6 +128,20 @@ export type SignUpWithEmailDto = {
 
 export type SignInWithEmailDto = {
   email: string;
+};
+
+export type SetCurrentBingoDto = {
+  slug: string;
+};
+
+export type AuthenticationDetailsDto = {
+  username: string;
+  usernameNormalized: string;
+  gravatarHash: string | null;
+  language: string;
+  role: string;
+  hasBingos: boolean;
+  currentBingo: ShortBingoDto | null;
 };
 
 export type PaginatedActivitiesDto = {

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@/redis/redis.module';
 
 import { CreateSessionForUserHandler } from './commands/create-session-for-user.handler';
+import { SetSessionCurrentBingoHandler } from './commands/set-session-current-bingo.command';
 import { SignOutSessionByUuidHandler } from './commands/sign-out-session-by-uuid.handler';
 import { SessionCreatedHandler } from './events/session-created.handler';
 import { SessionSignedOutHandler } from './events/session-signed-out.handler';
@@ -15,6 +16,7 @@ import { Session } from './session.entity';
   providers: [
     // Commands
     CreateSessionForUserHandler,
+    SetSessionCurrentBingoHandler,
     SignOutSessionByUuidHandler,
     // Events
     SessionCreatedHandler,

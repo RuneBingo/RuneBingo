@@ -10,6 +10,8 @@ import {
 import { type User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
+import { NonParticipatingBingoScope } from '../scopes/non-participating-bingo.scope';
+import { ParticipatingBingoScope } from '../scopes/participating-bingo.scope';
 import { ViewBingoScope } from '../scopes/view-bingo.scope';
 
 export type SearchBingosParams = PaginatedQueryParams<{
@@ -17,6 +19,7 @@ export type SearchBingosParams = PaginatedQueryParams<{
   search?: string;
   status?: string;
   isPrivate?: boolean;
+  participating?: boolean;
 }>;
 
 export type SearchBingosResult = PaginatedResultWithoutTotal<Bingo>;
@@ -35,7 +38,7 @@ export class SearchBingosHandler {
   ) {}
 
   async execute(query: SearchBingosQuery): Promise<SearchBingosResult> {
-    const { requester, search, status, isPrivate, ...pagination } = query.params;
+    const { requester, search, status, isPrivate, participating, ...pagination } = query.params;
 
     let scope = this.bingoRepository.createQueryBuilder('bingo');
     if (search) {
@@ -46,7 +49,7 @@ export class SearchBingosHandler {
 
     this.applyIsPrivate(scope, isPrivate);
     this.applyStatus(scope, status);
-    scope = new ViewBingoScope(requester, scope).resolve();
+    scope = this.applyParticipating(scope, requester, participating);
 
     return resolvePaginatedQueryWithoutTotal(scope, pagination);
   }
@@ -69,6 +72,21 @@ export class SearchBingosHandler {
   private applyIsPrivate(scope: SelectQueryBuilder<Bingo>, isPrivate: SearchBingosParams['isPrivate']) {
     if (isPrivate !== undefined) {
       return scope.andWhere('bingo.private = :isPrivate', { isPrivate: isPrivate });
+    }
+  }
+
+  private applyParticipating(
+    scope: SelectQueryBuilder<Bingo>,
+    requester: SearchBingosParams['requester'],
+    participating: SearchBingosParams['participating'],
+  ) {
+    switch (participating) {
+      case undefined:
+        return new ViewBingoScope(requester, scope).resolve();
+      case true:
+        return new ParticipatingBingoScope(requester, scope).resolve();
+      case false:
+        return new NonParticipatingBingoScope(requester, scope).resolve();
     }
   }
 }

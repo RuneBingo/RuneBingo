@@ -18,6 +18,14 @@ export class SessionPolicies {
   }
 
   canSignOut(session: Session) {
+    return this.canManage(session);
+  }
+
+  canSetCurrentBingo(session: Session) {
+    return this.canManage(session);
+  }
+
+  private canManage(session: Session) {
     if (!this.requester) return false;
 
     if (userHasRole(this.requester, Roles.Admin)) return true;

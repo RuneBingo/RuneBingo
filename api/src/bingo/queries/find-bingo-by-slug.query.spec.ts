@@ -39,70 +39,152 @@ describe('FindBingoBySlugHandler', () => {
     return module.close();
   });
 
-  it('throws NotFoundException if no user searches a private bingo', async () => {
-    const requester = undefined;
+  describe('when searching for all bingos', () => {
+    it('throws NotFoundException if no user searches a private bingo', async () => {
+      const requester = undefined;
 
-    const query = new FindBingoBySlugQuery({
-      requester,
-      slug: 'osrs-qc',
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+      });
+
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
     });
 
-    await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
+    it('throws NotFoundException a non participant user searches a private bingo', async () => {
+      const requester = seedingService.getEntity(User, 'b0aty');
+
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+      });
+
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
+    });
+
+    it('returns the bingo if public and non-auth user', async () => {
+      const requester = undefined;
+      const expectedBingo = seedingService.getEntity(Bingo, 'german-osrs');
+
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'german-osrs',
+      });
+
+      const bingo = await handler.execute(query);
+
+      expect(bingo).toBeDefined();
+      expect(bingo.slug).toBe(expectedBingo.slug);
+    });
+
+    it('returns the bingo if private and non-participant moderator user', async () => {
+      const requester = seedingService.getEntity(User, 'zezima');
+      const expectedBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+      });
+
+      const bingo = await handler.execute(query);
+
+      expect(bingo).toBeDefined();
+      expect(bingo.slug).toBe(expectedBingo.slug);
+    });
+
+    it('returns the bingo if private and non-moderator participant user', async () => {
+      const requester = seedingService.getEntity(User, 'dee420');
+      const expectedBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+      });
+
+      const bingo = await handler.execute(query);
+
+      expect(bingo).toBeDefined();
+      expect(bingo.slug).toBe(expectedBingo.slug);
+    });
   });
 
-  it('throws NotFoundException a non participant user searches a private bingo', async () => {
-    const requester = seedingService.getEntity(User, 'b0aty');
+  describe('when searching for participating bingos', () => {
+    it('throws NotFoundException if no user searches any bingo', async () => {
+      const requester = undefined;
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'german-osrs',
+        participating: true,
+      });
 
-    const query = new FindBingoBySlugQuery({
-      requester,
-      slug: 'osrs-qc',
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
     });
 
-    await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
+    it('throws NotFoundException a user searches for a bingo that he is not participating to', async () => {
+      const requester = seedingService.getEntity(User, 'zezima');
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'german-osrs',
+        participating: true,
+      });
+
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
+    });
+
+    it('returns the bingo if user searches for a bingo that he is participating to', async () => {
+      const requester = seedingService.getEntity(User, 'dee420');
+      const expectedBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+        participating: true,
+      });
+
+      const bingo = await handler.execute(query);
+
+      expect(bingo).toBeDefined();
+      expect(bingo.slug).toBe(expectedBingo.slug);
+    });
   });
 
-  it('returns the bingo if public and non-auth user', async () => {
-    const requester = undefined;
-    const expectedBingo = seedingService.getEntity(Bingo, 'german-osrs');
+  describe('when searching for non-participating bingos', () => {
+    it('throws NotFoundException if no user searches any bingo', async () => {
+      const requester = undefined;
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'german-osrs',
+        participating: false,
+      });
 
-    const query = new FindBingoBySlugQuery({
-      requester,
-      slug: 'german-osrs',
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
     });
 
-    const bingo = await handler.execute(query);
+    it('throws NotFoundException a user searches for a bingo that he is participating to', async () => {
+      const requester = seedingService.getEntity(User, 'dee420');
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'osrs-qc',
+        participating: false,
+      });
 
-    expect(bingo).toBeDefined();
-    expect(bingo.slug).toBe(expectedBingo.slug);
-  });
-
-  it('returns the bingo if private and non-participant moderator user', async () => {
-    const requester = seedingService.getEntity(User, 'zezima');
-    const expectedBingo = seedingService.getEntity(Bingo, 'osrs-qc');
-
-    const query = new FindBingoBySlugQuery({
-      requester,
-      slug: 'osrs-qc',
+      await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
     });
 
-    const bingo = await handler.execute(query);
+    it('returns the bingo if user searches for a bingo that he is not participating to', async () => {
+      const requester = seedingService.getEntity(User, 'zezima');
+      const expectedBingo = seedingService.getEntity(Bingo, 'german-osrs');
 
-    expect(bingo).toBeDefined();
-    expect(bingo.slug).toBe(expectedBingo.slug);
-  });
+      const query = new FindBingoBySlugQuery({
+        requester,
+        slug: 'german-osrs',
+        participating: false,
+      });
 
-  it('returns the bingo if private and non-moderator participant user', async () => {
-    const requester = seedingService.getEntity(User, 'dee420');
-    const expectedBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+      const bingo = await handler.execute(query);
 
-    const query = new FindBingoBySlugQuery({
-      requester,
-      slug: 'osrs-qc',
+      expect(bingo).toBeDefined();
+      expect(bingo.slug).toBe(expectedBingo.slug);
     });
-
-    const bingo = await handler.execute(query);
-
-    expect(bingo).toBeDefined();
-    expect(bingo.slug).toBe(expectedBingo.slug);
   });
 });
