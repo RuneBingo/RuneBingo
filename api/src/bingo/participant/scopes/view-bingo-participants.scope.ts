@@ -1,12 +1,12 @@
 import { type SelectQueryBuilder } from 'typeorm';
 
+import { Roles } from '@/auth/roles/roles.constants';
+import { userHasRole } from '@/auth/roles/roles.utils';
 import { type Bingo } from '@/bingo/bingo.entity';
 import { Scope } from '@/db/scope';
 import { type User } from '@/user/user.entity';
 
 import { type BingoParticipant } from '../bingo-participant.entity';
-import { userHasRole } from '@/auth/roles/roles.utils';
-import { Roles } from '@/auth/roles/roles.constants';
 
 export class ViewBingoParticipantsScope extends Scope<BingoParticipant> {
   constructor(
