@@ -1,5 +1,6 @@
 import { Column, Entity, Generated, Index, JoinColumn, ManyToOne } from 'typeorm';
 
+import { Bingo } from '@/bingo/bingo.entity';
 import { StrongEntity } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
@@ -52,8 +53,15 @@ export class Session extends StrongEntity {
   @JoinColumn({ name: 'user_id' })
   user: Promise<User>;
 
+  @ManyToOne(() => Bingo)
+  @JoinColumn({ name: 'current_bingo_id' })
+  currentBingo: Promise<Bingo | null>;
+
   @Column()
   userId: number;
+
+  @Column({ nullable: true })
+  currentBingoId: number | null = null;
 
   get isSignedOut() {
     return this.signedOutAt !== null || (this.expiresAt !== null && this.expiresAt < new Date());

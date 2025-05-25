@@ -62,7 +62,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoCreatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.created.title', {
       args: { username: requesterName },
     });
@@ -72,7 +72,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoUpdatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.updated.title', {
       args: { username: requesterName },
     });
@@ -121,7 +121,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoDeletedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.deleted.title', {
       args: { username: requesterName },
     });
@@ -131,7 +131,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoCanceledActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.canceled.title', {
       args: { username: requesterName },
     });
@@ -141,7 +141,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
 
     const userId = activity.parameters?.userId as number | undefined;
 
@@ -157,7 +157,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantRemovedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const removedUsername = activity.parameters!.username;
 
     const title = this.i18nService.t('bingo-participant.activity.removed', {
@@ -169,7 +169,7 @@ export class FormatBingoActivitiesHandler {
 
   private formatBingoParticipantUpdatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('bingo.activity.system');
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const updatedUsername = activity.parameters!.username;
     const title = this.i18nService.t('bingo.activity.updated.title', {
       args: { username: requesterName },

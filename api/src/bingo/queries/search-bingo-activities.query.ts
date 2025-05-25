@@ -54,7 +54,7 @@ export class SearchBingoActivitiesHandler {
     });
 
     if (!new BingoPolicies(requester).canViewActivities(bingoParticipant)) {
-      throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
+      throw new ForbiddenException(); // this.i18nService.t('bingo.activity.forbidden')
     }
 
     const q = this.activityRepository

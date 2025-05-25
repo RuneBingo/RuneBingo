@@ -1,0 +1,18 @@
+{
+  "roles": {
+    "owner": "Owner",
+    "organizer": "Organizer",
+    "participant": "Participant"
+  },
+  "status": {
+    "pending": "Pending",
+    "ongoing": "Ongoing",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "selectBingo": {
+    "empty": "No bingos found...",
+    "searchPlaceholder": "Search bingos",
+    "noValue": "No bingo selected"
+  }
+}

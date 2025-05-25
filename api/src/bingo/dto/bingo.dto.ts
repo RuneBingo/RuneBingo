@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { UserDto } from '@/user/dto/user.dto';
 
+import { BingoStatus } from '../bingo-status.enum';
 import { Bingo } from '../bingo.entity';
 
 export class BingoDto {
@@ -19,6 +20,7 @@ export class BingoDto {
     this.title = bingo.title;
     this.bingoId = bingo.bingoId;
     this.description = bingo.description;
+    this.status = bingo.status;
     this.private = bingo.private;
     this.width = bingo.width;
     this.height = bingo.height;
@@ -53,6 +55,9 @@ export class BingoDto {
 
   @ApiProperty()
   description: string;
+
+  @ApiProperty({ enum: BingoStatus })
+  status: BingoStatus;
 
   @ApiProperty()
   private: boolean;

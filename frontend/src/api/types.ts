@@ -1,5 +1,12 @@
 /* This file is auto-generated. Do not edit it manually. */
 
+export enum BingoStatus {
+  Pending = 'pending',
+  Ongoing = 'ongoing',
+  Completed = 'completed',
+  Cancelled = 'cancelled',
+}
+
 export enum BingoRoles {
   Participant = 'participant',
   Organizer = 'organizer',
@@ -79,6 +86,13 @@ export type UpdateBingoDto = {
   maxRegistrationDate: string;
 };
 
+export type ShortBingoDto = {
+  id: string;
+  title: string;
+  status: BingoStatus;
+  role: BingoRoles;
+};
+
 export type PaginatedBingosDto = {
   items: BingoDto[];
 };
@@ -103,6 +117,7 @@ export type BingoDto = {
   title: string;
   bingoId: string;
   description: string;
+  status: BingoStatus;
   private: boolean;
   width: number;
   height: number;
@@ -131,6 +146,20 @@ export type SignUpWithEmailDto = {
 
 export type SignInWithEmailDto = {
   email: string;
+};
+
+export type SetCurrentBingoDto = {
+  bingoId: string;
+};
+
+export type AuthenticationDetailsDto = {
+  username: string;
+  usernameNormalized: string;
+  gravatarHash: string | null;
+  language: string;
+  role: string;
+  hasBingos: boolean;
+  currentBingo: ShortBingoDto | null;
 };
 
 export type PaginatedActivitiesDto = {

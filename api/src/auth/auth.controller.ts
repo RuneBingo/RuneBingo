@@ -7,32 +7,49 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Put,
+  Query,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { I18n, I18nLang, I18nService } from 'nestjs-i18n';
 
+import { ShortBingoDto } from '@/bingo/dto/short-bingo.dto';
+import { GetUserBingoParticipationsQuery } from '@/bingo/participant/queries/get-user-bingo-participations.query';
+import { ListMyBingoParticipationsQuery } from '@/bingo/participant/queries/list-my-bingo-participations.query';
+import { type AppConfig } from '@/config';
 import { EmailerService } from '@/emailer/emailer.service';
 import { VerificationEmail } from '@/emailer/templates/verification-email';
 import type { I18nTranslations } from '@/i18n/types';
 import { CreateSessionForUserCommand } from '@/session/commands/create-session-for-user.command';
+import { SetSessionCurrentBingoCommand } from '@/session/commands/set-session-current-bingo.command';
 import { SignOutSessionByUuidCommand } from '@/session/commands/sign-out-session-by-uuid.command';
 import type { SessionMethod } from '@/session/session.entity';
 import { CreateUserCommand } from '@/user/commands/create-user.command';
 import { FindUserByEmailQuery } from '@/user/queries/find-user-by-email.query';
 import type { User } from '@/user/user.entity';
 
-import { type AppConfig } from '../config';
 import type { SignUpCodePayload } from './auth-codes.types';
 import { SignInWithEmailCommand } from './commands/sign-in-with-email.command';
 import { SignUpWithEmailCommand } from './commands/sign-up-with-email.command';
+import { AuthenticationDetailsDto } from './dto/authentication-details.dto';
+import { SetCurrentBingoDto } from './dto/set-current-bingo.dto';
 import { SignInWithEmailDto } from './dto/sign-in-with-email.dto';
 import { SignUpWithEmailDto } from './dto/sign-up-with-email.dto';
 import { VerifyAuthCodeDto } from './dto/verify-auth-code.dto';
+import { AuthGuard } from './guards/auth.guard';
 import { VerifyAuthCodeQuery } from './queries/verify-auth-code.query';
-import { UserDto } from '../user/dto/user.dto';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -46,18 +63,25 @@ export class AuthController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get the current authenticated user' })
+  @ApiOperation({ summary: 'Get the current authenticated user details' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'The current authenticated user, or null if not authenticated.',
-    type: [UserDto],
+    description: 'The current authenticated user details, or null if not authenticated.',
+    type: [AuthenticationDetailsDto],
   })
-  me(@Request() req: Request) {
+  async me(@Request() req: Request) {
     const user = req.userEntity;
 
     if (!user) return null;
 
-    return new UserDto(user);
+    const session = req.sessionEntity!;
+    const { hasBingos, currentBingo, currentBingoParticipant } = await this.queryBus.execute(
+      new GetUserBingoParticipationsQuery({ userId: user.id, bingoId: session.currentBingoId }),
+    );
+
+    const currentBingoRole = currentBingoParticipant?.role;
+
+    return new AuthenticationDetailsDto({ user, hasBingos, currentBingo, currentBingoRole });
   }
 
   @Post('sign-out')
@@ -165,6 +189,33 @@ export class AuthController {
     if (!user || !createSession) return;
 
     await this.createSessionForUser(req, user, 'email');
+  }
+
+  @Get('my-bingos')
+  @ApiOperation({ summary: "Get the user's bingo participations" })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiOkResponse({ description: "The user's bingo participations", type: [ShortBingoDto] })
+  @ApiQuery({ name: 'search', required: false })
+  @UseGuards(AuthGuard)
+  async listMyBingos(@Request() req: Request, @Query('search') search: string = '') {
+    const user = req.userEntity!;
+
+    return this.queryBus.execute(new ListMyBingoParticipationsQuery({ requester: user, search }));
+  }
+
+  @Put('current-bingo')
+  @ApiOperation({ summary: 'Set the current bingo for the user' })
+  @ApiNoContentResponse({ description: 'The current bingo has been set' })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to set this bingo as current because ' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  async setCurrentBingo(@Request() req: Request, @Body() body: SetCurrentBingoDto) {
+    const user = req.userEntity!;
+    const session = req.sessionEntity!;
+    const { bingoId } = body;
+
+    await this.commandBus.execute(new SetSessionCurrentBingoCommand({ uuid: session.uuid, requester: user, bingoId }));
   }
 
   private async createSessionForUser(req: Request, user: User, method: SessionMethod) {

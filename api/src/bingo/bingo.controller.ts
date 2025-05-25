@@ -101,6 +101,7 @@ export class BingoController {
     @Query('search') search: string = '',
     @Query('status') status: string | undefined = undefined,
     @Query('private') isPrivate: string | undefined = undefined,
+    @Query('participating') participating: string | undefined = undefined,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
   ): Promise<PaginatedBingosDto> {
@@ -109,8 +110,9 @@ export class BingoController {
       search,
       status,
       isPrivate: isPrivate !== undefined ? isPrivate === 'true' : undefined,
-      limit: limit ? parseInt(limit) : undefined,
+      participating: participating !== undefined ? participating === 'true' : undefined,
       offset: offset ? parseInt(offset) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
     } satisfies SearchBingosParams;
 
     const { items, ...pagination } = await this.queryBus.execute(new SearchBingosQuery(params));
@@ -126,7 +128,7 @@ export class BingoController {
   @ApiOperation({ summary: 'Find a bingo by its Bingo Id' })
   @ApiOkResponse({ description: 'The bingo has been found.', type: BingoDto })
   @ApiNotFoundResponse({ description: 'The bingo does not exist.' })
-  async findByTitleSlug(@Param('bingoId') bingoId: string, @Req() req: Request): Promise<BingoDto> {
+  async findByBingoId(@Param('bingoId') bingoId: string, @Req() req: Request): Promise<BingoDto> {
     const params: FindBingoByBingoIdParams = { bingoId: bingoId, requester: req.userEntity! };
     const bingo = await this.queryBus.execute(new FindBingoByBingoIdQuery(params));
 
