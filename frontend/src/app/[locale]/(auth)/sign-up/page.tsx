@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
 
-import { requestSignUp } from '@/api/auth';
+import { signUpWithEmail } from '@/api/auth';
 import { transformApiError } from '@/common/utils/transform-api-error';
 import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
@@ -24,7 +24,7 @@ export default function SignUpPage() {
   const t = useTranslations('auth.signUp');
 
   const onSubmit = async (values: SignUpFormValues, { setErrors }: FormikHelpers<SignUpFormValues>) => {
-    const response = await requestSignUp(values.email, values.username);
+    const response = await signUpWithEmail(values.email, values.username);
     if ('error' in response) {
       const { message, validationErrors } = transformApiError(response);
       if (validationErrors) setErrors(validationErrors);

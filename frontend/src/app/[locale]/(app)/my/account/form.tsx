@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 
-import { type GetAuthenticatedUserResult } from '@/api/auth';
+import { type UserDto } from '@/api/types';
 import { updateUserByUsername } from '@/api/user';
 import { useAppContext } from '@/common/context';
 import { transformApiError } from '@/common/utils/transform-api-error';
@@ -22,7 +22,7 @@ import { Link } from '@/i18n/navigation';
 import { usePathname, useRouter } from '@/i18n/navigation';
 
 type MyAccountFormProps = {
-  user: GetAuthenticatedUserResult;
+  user: UserDto;
 };
 
 type AccountFormValues = {
@@ -97,9 +97,7 @@ export default function MyAccountForm({ user }: MyAccountFormProps) {
 
   // Determine which fields are actually updated to avoid unnecessary API calls
   const actualUpdates = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== user[key as keyof GetAuthenticatedUserResult]),
-    );
+    return Object.fromEntries(Object.entries(values).filter(([key, value]) => value !== user[key as keyof UserDto]));
   }, [values, user]);
 
   return (
