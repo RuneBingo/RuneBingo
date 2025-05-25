@@ -46,10 +46,16 @@ Both `config.json` and `config.local.json` follow the same schema. Please refer 
 
 This project uses Redis as a session store, as well as for caching and temporary code storage. It also uses PostgreSQL as the main database.
 
-The databases should be started prior to running the application. Then, run the migrations to set up the database schema:
+The databases should be started prior to running the application. A `docker-compose.yml` file is available at the root of the repository to streamline the development environment setup process. To start the databases, run the following command at the root of the repository:
 
 ```bash
-npm run migrate
+docker compose up -d
+```
+
+Then, run the migrations to set up the database schema:
+
+```bash
+npm run db:migrate
 ```
 
 ## Compile and run the project
@@ -90,7 +96,7 @@ The database is controlled via the TypeORM CLI. Since the entity files are writt
 Apply all pending migrations to the database:
 
 ```sh
-npm run migrate
+npm run db:migrate
 ```
 
 ### Reverting the Last Migration

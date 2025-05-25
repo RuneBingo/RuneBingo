@@ -40,6 +40,11 @@ Since this project is a monorepo, you must install the dependencies **at the roo
 npm install
 ```
 
-You may now refer to project-specific documentation to configure the projects:
+### Documentation
+
+You should read our [Developer's Guide](/docs/README.md) to understand the overall architecture and view our ongoing project specifications.
+
+You should also refer to project-specific documentation to configure the different projects:
 
 - [API](/api/README.md)
+- [Frontend](/frontend/README.md)

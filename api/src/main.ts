@@ -5,7 +5,6 @@ import { type NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { I18nValidationExceptionFilter } from 'nestjs-i18n';
-
 import '@/extensions/express.extensions';
 
 import { setupOpenApi } from '@/extensions/swagger.extensions';
@@ -28,6 +27,10 @@ async function bootstrap() {
   const sessionSecret = configService.getOrThrow('session.secret', { infer: true });
   const isProduction = env !== 'development' && env !== 'test';
 
+  app.enableCors({
+    ...configService.get('cors', { infer: true }),
+    credentials: true,
+  });
   app.use(cookieParser(sessionSecret));
   app.set('trust proxy', isProduction);
   app.useGlobalPipes(i18nValidationPipe, validationPipe);
