@@ -1,15 +1,8 @@
 import { get, post } from '.';
-
-export type GetAuthenticatedUserResult = {
-  username: string;
-  usernameNormalized: string;
-  gravatarHash: string;
-  language: string;
-  role: string;
-};
+import type { SignInWithEmailDto, SignUpWithEmailDto, UserDto, VerifyAuthCodeDto } from './types';
 
 export async function getAuthenticatedUser() {
-  const response = await get<GetAuthenticatedUserResult>('/auth');
+  const response = await get<UserDto>('/auth');
   if ('error' in response) {
     return null;
   }
@@ -21,14 +14,14 @@ export async function signOut() {
   await post('/auth/sign-out');
 }
 
-export async function requestSignIn(email: string) {
-  return post('/auth/sign-in', { email });
+export async function signInWithEmail(email: string) {
+  return post<SignInWithEmailDto>('/auth/sign-in', { email });
 }
 
-export async function requestSignUp(email: string, username: string) {
-  return post('/auth/sign-up', { email, username });
+export async function signUpWithEmail(email: string, username: string) {
+  return post<SignUpWithEmailDto>('/auth/sign-up', { email, username });
 }
 
 export async function verifyCode(email: string, code: string) {
-  return post('/auth/verify-code', { email, code });
+  return post<VerifyAuthCodeDto>('/auth/verify-code', { email, code });
 }
