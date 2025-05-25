@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { User } from '@/user/user.entity';
 
@@ -14,7 +14,7 @@ import { BingoCanceledEvent } from '../events/bingo-canceled.event';
 
 export type CancelBingoParams = {
   requester: User;
-  slug: string;
+  bingoId: string;
 };
 
 export type CancelBingoResult = Bingo;
@@ -37,9 +37,9 @@ export class CancelBingoHandler {
   ) {}
 
   async execute(command: CancelBingoCommand): Promise<Bingo> {
-    const { requester, slug } = command.params;
+    const { requester, bingoId } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
@@ -60,7 +60,6 @@ export class CancelBingoHandler {
 
     bingo.canceledAt = new Date();
     bingo.canceledById = requester.id;
-    bingo.canceledBy = Promise.resolve(requester);
 
     const canceledBingo = await this.bingoRepository.save(bingo);
 

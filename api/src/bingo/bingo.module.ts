@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Activity } from '@/activity/activity.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
-import { AddBingoParticipantHandler } from '@/bingo-participant/commands/add-bingo-participant.handler';
-import { GetBingoParticipantsHandler } from '@/bingo-participant/queries/get-bingo-participants.handler';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
+import { AddBingoParticipantHandler } from '@/bingo/participant/commands/add-bingo-participant.command';
+import { RemoveBingoParticipantHandler } from '@/bingo/participant/commands/remove-bingo-participant.command';
+import { UpdateBingoParticipantHandler } from '@/bingo/participant/commands/update-bingo-participant.command';
+import { SearchBingoParticipantsHandler } from '@/bingo/participant/queries/search-bingo-participants.query';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoController } from './bingo.controller';
@@ -18,12 +21,12 @@ import { BingoCanceledHandler } from './events/bingo-canceled.event';
 import { BingoCreatedHandler } from './events/bingo-created.event';
 import { BingoDeletedHandler } from './events/bingo-deleted.event';
 import { BingoUpdatedHandler } from './events/bingo-updated.event';
-import { FindBingoBySlugHandler } from './queries/find-bingo-by-slug.query';
+import { FindBingoByBingoIdHandler } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.query';
 import { SearchBingosHandler } from './queries/search-bingos.query';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant])],
+  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam])],
   controllers: [BingoController],
   providers: [
     //Commands
@@ -32,13 +35,15 @@ import { SearchBingosHandler } from './queries/search-bingos.query';
     DeleteBingoHandler,
     FormatBingoActivitiesHandler,
     AddBingoParticipantHandler,
+    RemoveBingoParticipantHandler,
+    UpdateBingoParticipantHandler,
     CancelBingoHandler,
 
     //Queries
-    FindBingoBySlugHandler,
+    FindBingoByBingoIdHandler,
     SearchBingosHandler,
     SearchBingoActivitiesHandler,
-    GetBingoParticipantsHandler,
+    SearchBingoParticipantsHandler,
 
     //Events
     BingoCreatedHandler,

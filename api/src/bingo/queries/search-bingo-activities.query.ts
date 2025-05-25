@@ -5,7 +5,7 @@ import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
 import { Activity } from '@/activity/activity.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { type PaginatedDtoWithoutTotal } from '@/db/dto/paginated.dto';
 import { resolvePaginatedQueryWithoutTotal, type PaginatedQueryParams } from '@/db/paginated-query.utils';
 import { I18nTranslations } from '@/i18n/types';
@@ -16,7 +16,7 @@ import { BingoPolicies } from '../bingo.policies';
 
 export type SearchBingoActivitiesParams = PaginatedQueryParams<{
   requester: User;
-  slug: string;
+  bingoId: string;
 }>;
 
 export type SearchBingoActivitiesResult = PaginatedDtoWithoutTotal<Activity>;
@@ -40,9 +40,9 @@ export class SearchBingoActivitiesHandler {
   ) {}
 
   async execute(query: SearchBingoActivitiesQuery): Promise<SearchBingoActivitiesResult> {
-    const { requester, slug, ...pagination } = query.params;
+    const { requester, bingoId, ...pagination } = query.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.searchBingoActivities.bingoNotFound'));
@@ -57,12 +57,11 @@ export class SearchBingoActivitiesHandler {
       throw new ForbiddenException(this.i18nService.t('bingo.activity.forbidden'));
     }
 
-    // TODO: [#22] Adjust this to not have a key prefix and all bingo activities must use trackable 'Bingo'.
     const q = this.activityRepository
       .createQueryBuilder('activity')
-      .where('activity.trackable_id = :trackableId AND activity.key LIKE :keyPrefix ', {
+      .where('activity.trackable_id = :trackableId AND activity.trackable_type = :activityType', {
         trackableId: bingo.id,
-        keyPrefix: 'bingo%',
+        activityType: 'Bingo',
       })
       .orderBy('activity.createdAt', 'DESC');
 

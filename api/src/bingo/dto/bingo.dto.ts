@@ -17,7 +17,7 @@ export class BingoDto {
   ) {
     this.language = bingo.language;
     this.title = bingo.title;
-    this.slug = bingo.slug;
+    this.bingoId = bingo.bingoId;
     this.description = bingo.description;
     this.private = bingo.private;
     this.width = bingo.width;
@@ -49,7 +49,7 @@ export class BingoDto {
   title: string;
 
   @ApiProperty()
-  slug: string;
+  bingoId: string;
 
   @ApiProperty()
   description: string;

@@ -3,8 +3,9 @@ import { EventBus } from '@nestjs/cqrs';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';
@@ -61,7 +62,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -73,7 +74,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -84,7 +85,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: 'wtf-is-a-slug',
+      bingoId: uuidV4(),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -96,7 +97,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
@@ -108,7 +109,7 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const toDelete = await handler.execute(command);
@@ -120,13 +121,8 @@ describe('DeleteBingoHandler', () => {
       where: {
         bingoId: bingo.id,
       },
-      withDeleted: true,
     });
-    expect(updatedBingoParticipants.length).toBe(3);
-    updatedBingoParticipants.forEach((participant) => {
-      expect(participant.deletedAt).toBeDefined();
-      expect(participant.deletedById).toBe(requester.id);
-    });
+    expect(updatedBingoParticipants.length).toBe(0);
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
@@ -143,25 +139,12 @@ describe('DeleteBingoHandler', () => {
 
     const command = new DeleteBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const toDelete = await handler.execute(command);
     expect(toDelete).toBeDefined();
     expect(toDelete.deletedAt).toBeDefined();
     expect(toDelete.deletedById).toBe(requester.id);
-    const updatedBingoParticipant = await dataSource.getRepository(BingoParticipant).findOne({
-      where: {
-        bingoId: bingo.id,
-        userId: requester.id,
-      },
-      withDeleted: true,
-    });
-    if (updatedBingoParticipant) {
-      expect(updatedBingoParticipant.deletedAt).toBeDefined();
-      expect(updatedBingoParticipant.deletedById).toBe(requester.id);
-    } else {
-      fail('BingoParticipant was not found, but it was expected to exist.');
-    }
   });
 });

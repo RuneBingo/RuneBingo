@@ -2,8 +2,9 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { EventBus } from '@nestjs/cqrs';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';
@@ -58,7 +59,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -70,7 +71,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
@@ -82,7 +83,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
@@ -94,7 +95,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const canceledBingo = await handler.execute(command);
@@ -117,7 +118,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
     });
 
     const canceledBingo = await handler.execute(command);
@@ -131,7 +132,7 @@ describe('CancelBingoHandler', () => {
 
     const command = new CancelBingoCommand({
       requester,
-      slug: 'Little slug',
+      bingoId: uuidV4(),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);

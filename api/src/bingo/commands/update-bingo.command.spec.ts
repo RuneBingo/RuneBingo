@@ -2,8 +2,9 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 as uuidV4 } from 'uuid';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';
@@ -58,7 +59,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         title: 'New title',
       },
@@ -73,7 +74,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         endDate: '2025-03-01',
       },
@@ -88,7 +89,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         startDate: '2025-04-10',
         endDate: '2025-04-05',
@@ -104,7 +105,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         startDate: '2025-05-01',
       },
@@ -119,7 +120,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         maxRegistrationDate: '2025-04-10',
       },
@@ -134,7 +135,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         startDate: '2025-03-05',
         maxRegistrationDate: '2025-03-25',
@@ -150,7 +151,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         description: 'Test description',
       },
@@ -159,7 +160,6 @@ describe('UpdateBingoHandler', () => {
     const toUpdate = await handler.execute(command);
     expect(toUpdate).toBeDefined();
     expect(toUpdate.title).toBe('OSRS QC');
-    expect(toUpdate.slug).toBe('osrs-qc');
     expect(toUpdate.description).toBe('Test description');
     expect(toUpdate.private).toBe(true);
     expect(toUpdate.width).toBe(5);
@@ -193,7 +193,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         description: 'Test description',
       },
@@ -202,7 +202,6 @@ describe('UpdateBingoHandler', () => {
     const toUpdate = await handler.execute(command);
     expect(toUpdate).toBeDefined();
     expect(toUpdate.title).toBe('OSRS QC');
-    expect(toUpdate.slug).toBe('osrs-qc');
     expect(toUpdate.description).toBe('Test description');
     expect(toUpdate.private).toBe(true);
     expect(toUpdate.width).toBe(5);
@@ -225,7 +224,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         title: 'New title',
       },
@@ -239,7 +238,7 @@ describe('UpdateBingoHandler', () => {
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: 'this-bingo-doesnt-exist',
+      bingoId: uuidV4(),
       updates: {
         title: 'New title',
       },
@@ -248,61 +247,13 @@ describe('UpdateBingoHandler', () => {
     await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
   });
 
-  it('throws BadRequest if slug collides with existing bingo', async () => {
-    const requester = seedingService.getEntity(User, 'char0o');
-    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
-
-    const command = new UpdateBingoCommand({
-      requester,
-      slug: bingo.slug,
-      updates: {
-        title: 'German OSRS',
-      },
-    });
-
-    await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
-  });
-
-  // Uncomment when the slug partial index issue is fixed
-  /*it('change title even tho slug collides with deleted bingo', async () => {
-    const requester = seedingService.getEntity(User, 'char0o');
-    const bingo = seedingService.getEntity(Bingo, 'osrs-qc')
-
-    const command = new UpdateBingoCommand({
-      requester,
-      slug: bingo.slug,
-      updates: {
-        title: 'Deleted bingo',
-      },
-    });
-
-    const toUpdate = await handler.execute(command);
-    expect(toUpdate).toBeDefined();
-    expect(toUpdate.title).toBe('Deleted bingo');
-    expect(toUpdate.slug).toBe('deleted-bingo');
-    expect(toUpdate.description).toBe('Les quebec');
-    expect(toUpdate.private).toBe(true);
-    expect(toUpdate.width).toBe(5);
-    expect(toUpdate.createdById).toBe(1);
-    expect(toUpdate.height).toBe(5);
-    expect(toUpdate.fullLineValue).toBe(100);
-    expect(toUpdate.startDate).toBe('2025-04-01');
-    expect(toUpdate.endDate).toBe('2025-04-30');
-    expect(toUpdate.language).toBe('en');
-    expect(toUpdate.isDeleted).toBe(false);
-    expect(toUpdate.createdAt).toBeDefined();
-    expect(toUpdate.updatedAt).toBeDefined();
-    expect(toUpdate.updatedById).toBe(requester.id);
-    expect(toUpdate.maxRegistrationDate).toBe('2025-03-31');
-  });*/
-
   it('should update every value', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new UpdateBingoCommand({
       requester,
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       updates: {
         title: 'Mon bingo',
         language: 'fr',
@@ -318,7 +269,6 @@ describe('UpdateBingoHandler', () => {
     const toUpdate = await handler.execute(command);
     expect(toUpdate).toBeDefined();
     expect(toUpdate.title).toBe('Mon bingo');
-    expect(toUpdate.slug).toBe('mon-bingo');
     expect(toUpdate.description).toBe('My custom bingo');
     expect(toUpdate.private).toBe(false);
     expect(toUpdate.width).toBe(5);

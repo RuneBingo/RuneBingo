@@ -5,6 +5,7 @@ import type { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 
 import { entities } from '..';
 import { BingoParticipantSeeder } from './bingo-participant.seeder';
+import { BingoTeamSeeder } from './bingo-team.seeder';
 import { BingoSeeder } from './bingo.seeder';
 import { Seeder } from './seeder';
 import { SessionSeeder } from './session.seeder';
@@ -21,6 +22,7 @@ export class SeedingService {
     UserSeeder,
     SessionSeeder,
     BingoSeeder,
+    BingoTeamSeeder,
     BingoParticipantSeeder,
     // Weak entities
     // Add more seeders here

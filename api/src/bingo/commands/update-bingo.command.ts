@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { type User } from '@/user/user.entity';
 
@@ -13,7 +13,7 @@ import { BingoPolicies } from '../bingo.policies';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
 
 export type UpdateBingoParams = {
-  slug: string;
+  bingoId: string;
   requester: User;
   updates: {
     language?: string;
@@ -32,7 +32,7 @@ export type UpdateBingoParams = {
 export type UpdateBingoResult = Bingo;
 
 export class UpdateBingoCommand extends Command<Bingo> {
-  public readonly slug: string;
+  public readonly bingoId: string;
   public readonly requester: User;
   public readonly updates: {
     language?: string;
@@ -46,9 +46,9 @@ export class UpdateBingoCommand extends Command<Bingo> {
     endDate?: string;
     maxRegistrationDate?: string;
   };
-  constructor({ slug, requester, updates }: UpdateBingoParams) {
+  constructor({ bingoId, requester, updates }: UpdateBingoParams) {
     super();
-    this.slug = slug;
+    this.bingoId = bingoId;
     this.requester = requester;
     this.updates = updates;
   }
@@ -66,9 +66,9 @@ export class UpdateBingoHandler {
   ) {}
 
   async execute(command: UpdateBingoCommand): Promise<UpdateBingoResult> {
-    const { slug, requester } = command;
+    const { bingoId, requester } = command;
 
-    let bingo = await this.bingoRepository.findOneBy({ slug });
+    let bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.updateBingo.bingoNotFound'));
@@ -110,17 +110,6 @@ export class UpdateBingoHandler {
 
     if (updates.maxRegistrationDate && new Date(updates.maxRegistrationDate) >= newStartDate) {
       throw new BadRequestException(this.i18nService.t('bingo.updateBingo.registrationDateAfterStartDate'));
-    }
-
-    if (updates.title) {
-      const titleSlug = Bingo.slugifyTitle(updates.title);
-
-      const existingBingo = await this.bingoRepository.findOneBy({ slug: titleSlug });
-
-      if (existingBingo) {
-        throw new BadRequestException(this.i18nService.t('bingo.updateBingo.titleNotUnique'));
-      }
-      bingo.slug = titleSlug;
     }
 
     Object.assign(bingo, updates);

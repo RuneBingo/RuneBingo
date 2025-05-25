@@ -8,21 +8,27 @@ export class BingoParticipantDto {
   constructor(bingoParticipant: BingoParticipant) {
     this.user = null;
     this.role = bingoParticipant.role;
+    this.teamName = '';
+    this.teamNameNormalized = '';
   }
 
   static async fromBingoParticipant(bingoParticipant: BingoParticipant): Promise<BingoParticipantDto> {
     const dto = new BingoParticipantDto(bingoParticipant);
 
-    const [user] = await Promise.all([bingoParticipant.user]);
+    const [user, team] = await Promise.all([bingoParticipant.user, bingoParticipant.team]);
 
     dto.user = user;
-    //dto.team = team;
+    dto.teamName = team ? team.name : null;
+    dto.teamNameNormalized = team ? team.nameNormalized : null;
 
     return dto;
   }
-  // To implement
-  //@ApiProperty()
-  //team: TeamDto | null;
+
+  @ApiProperty()
+  teamName: string | null;
+
+  @ApiProperty()
+  teamNameNormalized: string | null;
 
   @ApiProperty()
   user: UserDto | null;

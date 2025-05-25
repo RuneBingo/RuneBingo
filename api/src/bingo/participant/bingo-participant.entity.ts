@@ -1,13 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
-import { BaseEntityParanoid } from '@/db/base.entity';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoRoles } from './roles/bingo-roles.constants';
 
 @Entity()
-export class BingoParticipant extends BaseEntityParanoid {
+export class BingoParticipant {
   @PrimaryColumn({ name: 'user_id', type: 'int' })
   userId: number;
 
@@ -25,7 +25,9 @@ export class BingoParticipant extends BaseEntityParanoid {
   @Column({ type: 'varchar', default: 'participant' })
   role: BingoRoles;
 
-  // To implement when bingoTeam is done
   @Column({ name: 'team_id', type: 'int', nullable: true })
   teamId: number | null;
+
+  @ManyToOne(() => BingoTeam)
+  team: Promise<BingoTeam | null>;
 }

@@ -1,9 +1,10 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { type TestingModule, Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { v4 } from 'uuid';
 
 import { Activity } from '@/activity/activity.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { configModule } from '@/config';
 import { dbModule } from '@/db';
 import { SeedingService } from '@/db/seeding/seeding.service';
@@ -35,11 +36,11 @@ describe('SearchUserActivitiesHandler', () => {
     return module.close();
   });
 
-  it('throws NotFoundException if the user does not exist', async () => {
+  it('throws NotFoundException if the bingo does not exist', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: 'this-slug-doesnt-exist',
+      bingoId: v4(),
       requester,
     });
 
@@ -51,7 +52,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -63,7 +64,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -75,7 +76,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 
@@ -87,7 +88,7 @@ describe('SearchUserActivitiesHandler', () => {
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const query = new SearchBingoActivitiesQuery({
-      slug: bingo.slug,
+      bingoId: bingo.bingoId,
       requester,
     });
 

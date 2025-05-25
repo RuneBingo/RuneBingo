@@ -1,0 +1,33 @@
+{
+  "addBingoParticipants": {
+    "conflict": "The user you are trying to add is already a participant."
+  },
+  "searchBingoParticipants": {
+    "bingoNotFound": "No bingo with this slug was found."
+  },
+  "removeBingoParticipant": {
+    "bingoNotFound": "No bingo with this slug was found.",
+    "userNotFound": "No user with this username was found.",
+    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
+    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
+    "notAuthorizedToDelete": "You are not authorized to delete this user from the bingo"
+  },
+  "updateBingoParticipant": {
+    "bingoNotFound": "No bingo with this slug was found.",
+    "userNotFound": "No user with this username was found.",
+    "bingoNotPending": "You cannot modify a user in a started bingo.",
+    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
+    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
+    "notAuthorizedToUpdate": "You are not authorized to update this user of the bingo",
+    "roleInvalid": "The role specified is invalid.",
+    "teamNotFound": "No team with this name was found in this bingo."
+  },
+  "activity": {
+    "added": "{username} was added to the bingo by {requester}",
+    "removed": "{username} was removed from the bingo by {requester}",
+    "updated": {
+      "role": "{requester} set the role of {username} to {role}",
+      "teamName": "{requester} set the team of {username} to {role}"
+    }
+  }
+}

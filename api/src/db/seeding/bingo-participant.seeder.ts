@@ -1,8 +1,9 @@
 import Joi from 'joi';
 
 import { Bingo } from '@/bingo/bingo.entity';
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
-import { BingoRoles } from '@/bingo-participant/roles/bingo-roles.constants';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
+import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
+import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { User } from '@/user/user.entity';
 
 import { Seeder } from './seeder';
@@ -11,7 +12,7 @@ type BingoParticipantSeed = {
   user: string;
   bingo: string;
   role: BingoRoles;
-  teamId: number | null;
+  team?: string;
   deletedAt?: Date;
 };
 
@@ -23,7 +24,7 @@ const bingoParticipantSchema = Joi.object<Record<string, BingoParticipantSeed>>(
     role: Joi.string()
       .valid(...Object.values(BingoRoles))
       .required(),
-    teamId: Joi.number().optional(),
+    team: Joi.string().optional(),
     deletedAt: Joi.date().optional(),
   }),
 );
@@ -36,6 +37,7 @@ export class BingoParticipantSeeder extends Seeder<BingoParticipant, BingoPartic
   protected deserialize(seed: BingoParticipantSeed): BingoParticipant {
     const user = this.seedingService.getEntity(User, seed.user);
     const bingo = this.seedingService.getEntity(Bingo, seed.bingo);
+    const team = seed.team ? this.seedingService.getEntity(BingoTeam, seed.team) : null;
 
     const bingoParticipant = new BingoParticipant();
     bingoParticipant.userId = user.id;
@@ -43,8 +45,8 @@ export class BingoParticipantSeeder extends Seeder<BingoParticipant, BingoPartic
     bingoParticipant.bingo = Promise.resolve(bingo);
     bingoParticipant.user = Promise.resolve(user);
     bingoParticipant.role = seed.role;
-    bingoParticipant.teamId = seed.teamId;
-    bingoParticipant.deletedAt = seed.deletedAt ?? null;
+    bingoParticipant.teamId = team ? team.id : null;
+    bingoParticipant.team = team ? Promise.resolve(team) : Promise.resolve(null);
 
     return bingoParticipant;
   }

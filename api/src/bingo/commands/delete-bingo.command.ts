@@ -4,7 +4,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { DataSource, Repository } from 'typeorm';
 
-import { BingoParticipant } from '@/bingo-participant/bingo-participant.entity';
+import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { User } from '@/user/user.entity';
 
@@ -14,7 +14,7 @@ import { BingoDeletedEvent } from '../events/bingo-deleted.event';
 
 export type DeleteBingoParams = {
   requester: User;
-  slug: string;
+  bingoId: string;
 };
 
 export type DeleteBingoResult = Bingo;
@@ -39,9 +39,9 @@ export class DeleteBingoHandler {
   ) {}
 
   async execute(command: DeleteBingoCommand): Promise<DeleteBingoResult> {
-    const { requester, slug } = command.params;
+    const { requester, bingoId } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ slug });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.deleteBingo.bingoNotFound'));
@@ -64,11 +64,8 @@ export class DeleteBingoHandler {
     try {
       await queryRunner.manager
         .createQueryBuilder()
-        .update('bingo_participant')
-        .set({
-          deletedAt: () => 'CURRENT_TIMESTAMP',
-          deletedById: requester.id,
-        })
+        .delete()
+        .from('bingo_participant')
         .where('bingoId = :bingoId', { bingoId: bingo.id })
         .execute();
 
