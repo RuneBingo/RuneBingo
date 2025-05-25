@@ -33,7 +33,7 @@ export type Configuration = {
     maxAge?: number;
   };
 
-  email: {
+  email?: {
     user: string;
     pass: string;
     name: string;

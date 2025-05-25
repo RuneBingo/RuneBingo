@@ -11,12 +11,15 @@ import { EmailTemplate } from './templates/email-template';
 @Injectable()
 export class EmailerService {
   private readonly logger = new Logger(EmailerService.name);
+  private readonly emailSendingDisabled: boolean;
 
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService<AppConfig>,
     private readonly i18nService: I18nService<I18nTranslations>,
-  ) {}
+  ) {
+    this.emailSendingDisabled = this.configService.get('email', { infer: true }) === undefined;
+  }
 
   async sendEmail(emailTemplate: EmailTemplate) {
     const env = this.configService.get('NODE_ENV', { infer: true });
@@ -25,6 +28,11 @@ export class EmailerService {
     context['i18nLang'] = emailTemplate.lang;
 
     const subject: string = this.i18nService.translate(subjectKey, { lang });
+
+    if (this.emailSendingDisabled) {
+      this.logger.log(`Email sending is disabled - skipping ${subject} email to ${to}`);
+      return;
+    }
 
     try {
       await this.mailerService.sendMail({
