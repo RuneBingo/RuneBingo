@@ -16,7 +16,11 @@ import { type AppConfig } from '../config';
       imports: [ConfigModule],
       inject: [ConfigService, I18nService],
       useFactory: (configService: ConfigService<AppConfig>, i18n: I18nService) => {
-        const { user, pass, name } = configService.getOrThrow('email', { infer: true });
+        const emailConfig = configService.get('email', { infer: true });
+
+        const user = emailConfig?.user ?? '';
+        const pass = emailConfig?.pass ?? '';
+        const name = emailConfig?.name ?? '';
         const from = `"${name}" ${user}`;
 
         return {
