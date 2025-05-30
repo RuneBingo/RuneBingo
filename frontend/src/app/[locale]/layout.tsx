@@ -44,17 +44,6 @@ export default async function RootLayout({
   }
 
   const user = await getAuthenticatedUser();
-  console.log('req 1', user);
-  const user2 = await getAuthenticatedUser();
-  console.log('req 2', user2);
-  const user3 = await getAuthenticatedUser();
-  console.log('req 3', user3);
-  const user4 = await getAuthenticatedUser();
-  console.log('req 4', user4);
-  const user5 = await getAuthenticatedUser();
-  console.log('req 5', user5);
-  const user6 = await getAuthenticatedUser();
-  console.log('req 6', user6);
   await redirectToPreferredLocale(user);
 
   return (
