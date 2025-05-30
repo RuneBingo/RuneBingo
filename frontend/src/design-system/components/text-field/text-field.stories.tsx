@@ -23,6 +23,7 @@ const meta = {
     (Story) => (
       <div className="w-full max-w-md">
         <Story />
+        <TextField label="Test number" type="number" min={0} max={10} step={1} />
       </div>
     ),
   ],
