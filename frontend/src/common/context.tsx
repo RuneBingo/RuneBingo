@@ -3,11 +3,11 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { getAuthenticatedUser } from '@/api/auth';
-import type { UserDto } from '@/api/types';
+import type { AuthenticationDetailsDto } from '@/api/types';
 
 export type AppContextType = {
-  user: UserDto | null;
-  refreshUser: () => Promise<UserDto | null>;
+  user: AuthenticationDetailsDto | null;
+  refreshUser: () => Promise<AuthenticationDetailsDto | null>;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -17,7 +17,7 @@ const AppContext = createContext<AppContextType>({
 
 type AppContextProviderProps = {
   children: React.ReactNode;
-  user: UserDto | null;
+  user: AuthenticationDetailsDto | null;
 };
 
 export default function AppContextProvider({ children, user: userProp }: AppContextProviderProps) {

@@ -1,19 +1,19 @@
 {
-    "addBingoParticipants": {
+  "addBingoParticipants": {
     "conflict": "L'utilisateur que vous essayez d'ajouter est déjà un participant."
   },
   "searchBingoParticipants": {
-    "bingoNotFound": "Aucun bingo avec ce slug n'a été trouvé."
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
   },
   "removeBingoParticipant": {
-    "bingoNotFound": "Aucun bingo avec ce slug n'a été trouvé.",
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
     "userNotFound": "Aucun utilisateur avec ce nom n'a été trouvé.",
     "bingoParticipantNotFound": "L'utilisateur que vous tentez d'enlever ne fait pas partie de ce Bingo.",
     "notParticipantOfTheBingo": "Vous n'êtes pas un participant de ce bingo.",
     "notAuthorizedToDelete": "Vous n'êtes pas autorisé à enlever cet utilisateur du bingo."
   },
   "updateBingoParticipant": {
-    "bingoNotFound": "Aucun bingo avec ce slug n'a été trouvé.",
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
     "bingoNotPending": "Vous ne pouvez modifier un utilisateur dans un bingo qui est déjà commencé.",
     "userNotFound": "Aucun utilisateur avec ce nom n'a été trouvé.",
     "bingoParticipantNotFound": "L'utilisateur que vous tentez d'enlever ne fait pas partie de ce Bingo.",

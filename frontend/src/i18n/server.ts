@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 
-import type { UserDto } from '@/api/types';
+import type { AuthenticationDetailsDto } from '@/api/types';
 
 import { type SupportedLocale, MESSAGE_MODULES } from '.';
 export async function loadMessages(locale: SupportedLocale) {
@@ -15,7 +15,7 @@ export async function loadMessages(locale: SupportedLocale) {
   );
 }
 
-export async function redirectToPreferredLocale(user: UserDto | null) {
+export async function redirectToPreferredLocale(user: AuthenticationDetailsDto | null) {
   const locale = await getLocale();
   if (!user?.language || user.language === locale) return;
 
@@ -28,7 +28,6 @@ export async function redirectToPreferredLocale(user: UserDto | null) {
   const newPath = pathname.replace(`/${urlLocale}`, `/${user.language}`);
 
   if (newPath !== pathname) {
-    console.log('redirectToPreferredLocale:', pathname, '→', newPath);
     redirect(newPath);
   }
 }

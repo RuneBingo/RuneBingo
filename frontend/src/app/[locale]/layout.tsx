@@ -5,13 +5,12 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
 import { getAuthenticatedUser } from '@/api/auth';
-import AppContextProvider from '@/common/context';
-import { Toaster } from '@/design-system/ui/sonner';
 import { type SupportedLocale } from '@/i18n';
 import { routing } from '@/i18n/routing';
 import { redirectToPreferredLocale } from '@/i18n/server';
 
 import './globals.css';
+import ClientProviders from './client-providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -51,8 +50,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>
-          <AppContextProvider user={user}>{children}</AppContextProvider>
-          <Toaster />
+          <ClientProviders user={user}>{children}</ClientProviders>
         </NextIntlClientProvider>
       </body>
     </html>

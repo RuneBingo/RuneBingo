@@ -89,12 +89,6 @@ export type I18nTranslations = {
         "searchBingoActivities": {
             "bingoNotFound": string;
         };
-        "findBingoById": {
-            "bingoNotFound": string;
-        };
-        "findBingoByTitleSlug": {
-            "bingoNotFound": string;
-        };
         "activity": {
             "created": {
                 "title": string;
@@ -119,11 +113,61 @@ export type I18nTranslations = {
             "canceled": {
                 "title": string;
             };
-            "forbidden": string;
-            "system": string;
+            "cancelBingo": {
+                "bingoNotFound": string;
+                "forbidden": string;
+                "alreadyCanceled": string;
+            };
+            "searchBingoActivities": {
+                "bingoNotFound": string;
+            };
+            "findBingoByBingoId": {
+                "bingoNotFound": {
+                    "all": string;
+                    "participating": string;
+                    "nonParticipating": string;
+                };
+            };
+            "activity": {
+                "created": {
+                    "title": string;
+                };
+                "updated": {
+                    "title": string;
+                    "body": {
+                        "language": string;
+                        "title": string;
+                        "description": string;
+                        "private": string;
+                        "width": string;
+                        "height": string;
+                        "fullLineValue": string;
+                        "startDate": string;
+                        "endDate": string;
+                    };
+                };
+                "deleted": {
+                    "title": string;
+                };
+                "canceled": {
+                    "title": string;
+                };
+                "forbidden": string;
+                "system": string;
+            };
+            "formatBingoActivities": {
+                "title": string;
+            };
         };
         "formatBingoActivities": {
             "title": string;
+        };
+        "findBingoByBingoId": {
+            "bingoNotFound": {
+                "all": string;
+                "participating": string;
+                "nonParticipating": string;
+            };
         };
     };
     "email": {
@@ -138,11 +182,18 @@ export type I18nTranslations = {
             "en": string;
             "fr": string;
         };
+        "system": string;
     };
     "session": {
         "createSessionForUser": {
             "userDisabled": string;
             "forbidden": string;
+        };
+        "setSessionCurrentBingo": {
+            "sessionNotFound": string;
+            "sessionSignedOut": string;
+            "cantSetCurrentBingo": string;
+            "bingoNotFound": string;
         };
         "signOutSessionByUuid": {
             "forbidden": string;

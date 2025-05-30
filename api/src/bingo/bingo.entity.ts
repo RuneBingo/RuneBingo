@@ -5,6 +5,8 @@ import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
+import { BingoStatus } from './bingo-status.enum';
+
 @Entity()
 export class Bingo extends StrongEntityParanoid {
   @Column({ type: 'uuid', nullable: false, unique: true })
@@ -94,7 +96,12 @@ export class Bingo extends StrongEntityParanoid {
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
 
-  isPending(): boolean {
-    return this.startedAt === null;
+  public get status() {
+    const now = new Date();
+    if (this.canceledAt && this.canceledAt < now) return BingoStatus.Cancelled;
+    if (this.endedAt && this.endedAt < now) return BingoStatus.Completed;
+    if (this.startedAt && this.startedAt < now) return BingoStatus.Ongoing;
+
+    return BingoStatus.Pending;
   }
 }

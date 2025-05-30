@@ -85,7 +85,7 @@ export class FormatUserActivitiesHandler {
         return this.i18nService.t('user.activity.created.title.self', { args: { username: user.username } });
       }
 
-      const requesterName = requester?.username ?? 'System';
+      const requesterName = requester?.username ?? this.i18nService.t('general.system');
 
       return this.i18nService.t('user.activity.created.title.other', {
         args: { requesterName, username: user.username },
@@ -112,7 +112,7 @@ export class FormatUserActivitiesHandler {
         return this.i18nService.t('user.activity.updated.title.self', { args: { username: user.username } });
       }
 
-      const requesterName = requester?.username ?? 'System';
+      const requesterName = requester?.username ?? this.i18nService.t('general.system');
 
       return this.i18nService.t('user.activity.updated.title.other', {
         args: { requesterName, username: user.username },

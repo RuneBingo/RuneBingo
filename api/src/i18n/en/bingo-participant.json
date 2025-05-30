@@ -3,17 +3,17 @@
     "conflict": "The user you are trying to add is already a participant."
   },
   "searchBingoParticipants": {
-    "bingoNotFound": "No bingo with this slug was found."
+    "bingoNotFound": "No bingo with this id was found."
   },
   "removeBingoParticipant": {
-    "bingoNotFound": "No bingo with this slug was found.",
+    "bingoNotFound": "No bingo with this id was found.",
     "userNotFound": "No user with this username was found.",
     "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
     "notParticipantOfTheBingo": "You are not a participant of this bingo.",
     "notAuthorizedToDelete": "You are not authorized to delete this user from the bingo"
   },
   "updateBingoParticipant": {
-    "bingoNotFound": "No bingo with this slug was found.",
+    "bingoNotFound": "No bingo with this id was found.",
     "userNotFound": "No user with this username was found.",
     "bingoNotPending": "You cannot modify a user in a started bingo.",
     "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
