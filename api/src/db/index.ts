@@ -3,18 +3,18 @@ import { configDotenv } from 'dotenv';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
+import { Activity } from '@/activity/activity.entity';
 import { Bingo } from '@/bingo/bingo.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { BingoTeam } from '@/bingo/team/bingo-team.entity';
-
-import { Activity } from '../activity/activity.entity';
-import { dotenvPath } from '../config';
-import { Session } from '../session/session.entity';
-import { User } from '../user/user.entity';
+import { dotenvPath } from '@/config';
+import { Media } from '@/media/media.entity';
+import { Session } from '@/session/session.entity';
+import { User } from '@/user/user.entity';
 
 configDotenv({ path: dotenvPath });
 
-export const entities = [Activity, Session, User, Bingo, BingoParticipant, BingoTeam];
+export const entities = [Activity, Session, User, Bingo, BingoParticipant, BingoTeam, Media];
 export const migrations = [__dirname + '/migrations/**/*.ts', __dirname + '/migrations/**/*.js'];
 export const subscribers = [__dirname + '/subscribers/**/*.ts', __dirname + '/subscribers/**/*.js'];
 

@@ -4,7 +4,7 @@ import TextField from './text-field';
 
 const meta = {
   component: TextField,
-  title: 'components/Form/TextField',
+  title: 'Design System/Form/TextField',
   args: {
     label: 'Email',
     placeholder: 'Enter your email',

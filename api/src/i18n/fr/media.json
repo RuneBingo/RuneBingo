@@ -1,0 +1,8 @@
+{
+  "validation": {
+    "noFileUploaded": "Aucun fichier n'a été téléversé avec cette requête.",
+    "tooLarge": "Le fichier téléversé dépasse la taille maximale de {size}.",
+    "invalidType": "Le type du fichier téléversé est invalide.",
+    "mimeTypeMismatch": "Le type du fichier téléchargé ne correspond pas au type attendu."
+  }
+}

@@ -5,7 +5,7 @@ import DateField from './date-field';
 
 const meta = {
   component: DateField,
-  title: 'components/Form/DateField',
+  title: 'Design System/Form/DateField',
   args: {
     label: 'Birth Date',
     placeholder: 'Pick a date',
