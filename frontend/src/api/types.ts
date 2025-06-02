@@ -37,6 +37,24 @@ export type PaginatedUsersDto = {
   items: UserDto[];
 };
 
+export type UploadMediaDto = {
+  file: File;
+};
+
+export type MediaDto = {
+  id: string;
+  url: string;
+  format: string;
+  originalName: string;
+  size: number;
+  width: number;
+  height: number;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string | UserDto;
+  updatedBy?: UserDto;
+};
+
 export type PaginatedDto<T extends object> = {
   items: T[];
   limit: number;

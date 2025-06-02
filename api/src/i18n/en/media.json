@@ -1,0 +1,8 @@
+{
+  "validation": {
+    "noFileUploaded": "No file uploaded with this request.",
+    "tooLarge": "The uploaded file exceeds the maximum size of {size}.",
+    "invalidType": "The type of the uploaded file is invalid.",
+    "mimeTypeMismatch": "The uploaded file type does not match the expected type."
+  }
+}

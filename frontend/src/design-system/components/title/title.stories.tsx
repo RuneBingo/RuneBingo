@@ -10,7 +10,7 @@ const Lorem = () => (
 );
 
 const meta = {
-  title: 'components/title',
+  title: 'Design System/Title',
   args: {},
   argTypes: {},
   decorators: [

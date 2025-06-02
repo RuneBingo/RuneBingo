@@ -159,3 +159,26 @@ npm run db:seed
 > This command should only be run in development environments, as it will add/overwrite existing data and cannot be undone.
 
 This will add seeding data to the database from the `src/db/seeding/seeds/development` directory. You don't need to reset the database before seeding it, as it will automatically overwrite any existing data with the updated seed data.
+
+### Generating Types
+
+This command gathers all DTOs and enums from the API and generates a TypeScript file at the specified path with the types and enums.
+
+```sh
+npm run generate-types <path>
+```
+
+### Running a Job
+
+> [!NOTE]
+> You must have the API running in the background so that the job can be executed.
+
+This command will run a job from the specified job queue. Find the queue name associated with the job in the [jobs.constants.ts](src/jobs/jobs.constants.ts) file.
+
+```sh
+# Base
+npm run cli -- run-job <JOB NAME>
+
+# With params
+npm run cli -- run-job <JOB NAME> -- -p '{ "some": ["json", "params"] }'
+```

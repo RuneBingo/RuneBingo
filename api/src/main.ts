@@ -5,8 +5,9 @@ import { type NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { I18nValidationExceptionFilter } from 'nestjs-i18n';
-import '@/extensions/express.extensions';
+import 'multer';
 
+import '@/extensions/express.extensions';
 import { setupOpenApi } from '@/extensions/swagger.extensions';
 import '@/extensions/number.extensions';
 import { i18nValidationPipe } from '@/i18n/i18n-validation.pipe';

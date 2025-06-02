@@ -3,5 +3,8 @@
     "en": "English",
     "fr": "French"
   },
-  "system": "System"
+  "system": "System",
+  "error": {
+    "unexpected": "An unexpected error has occurred. Please try again later."
+  }
 }

@@ -3,5 +3,8 @@
     "en": "anglais",
     "fr": "français"
   },
-  "system": "Système"
+  "system": "Système",
+  "error": {
+    "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
+  }
 }

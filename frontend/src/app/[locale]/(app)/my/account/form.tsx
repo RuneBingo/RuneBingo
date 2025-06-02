@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { type UserDto } from '@/api/types';
 import { updateUserByUsername } from '@/api/user';
 import { useAppContext } from '@/common/context';
-import { transformApiError } from '@/common/utils/transform-api-error';
+import transformApiError from '@/common/utils/transform-api-error';
 import Avatar from '@/design-system/components/avatar';
 import SelectField from '@/design-system/components/select-field';
 import TextField from '@/design-system/components/text-field';

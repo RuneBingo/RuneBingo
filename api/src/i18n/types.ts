@@ -183,6 +183,17 @@ export type I18nTranslations = {
             "fr": string;
         };
         "system": string;
+        "error": {
+            "unexpected": string;
+        };
+    };
+    "media": {
+        "validation": {
+            "noFileUploaded": string;
+            "tooLarge": string;
+            "invalidType": string;
+            "mimeTypeMismatch": string;
+        };
     };
     "session": {
         "createSessionForUser": {

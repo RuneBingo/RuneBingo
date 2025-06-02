@@ -26,8 +26,28 @@ export type ValidationError = {
   children?: ValidationError[];
 };
 
+export type RequestOptions = {
+  contentType?: 'application/json' | 'multipart/form-data';
+};
+
 const baseUrl = process.env.NEXT_PUBLIC_API_URL!;
 const isServer = typeof window === 'undefined';
+const defaultOptions = {
+  contentType: 'application/json',
+} as const satisfies RequestOptions;
+
+function createFormData<TData>(data: TData) {
+  const formData = new FormData();
+  for (const key in data) {
+    const value = data[key];
+    if (value instanceof Blob || typeof value === 'string') {
+      formData.append(key, value);
+    } else {
+      formData.append(key, String(value));
+    }
+  }
+  return formData;
+}
 
 let cookiesFn: () => Promise<string>;
 async function getServerCookies() {
@@ -53,18 +73,25 @@ async function execute<TData, TResult>(
   method: RequestMethod,
   path: string,
   data?: TData,
+  options?: RequestOptions,
 ): Promise<ApiResult<TResult> | ApiError> {
   const locale = await getLocale();
+
+  const { contentType } = { ...defaultOptions, ...options };
 
   const headers = new Headers();
   headers.set('Accept-Language', locale);
 
-  let body: string | undefined;
+  const body = (() => {
+    if (!data) return undefined;
 
-  if (data) {
-    body = JSON.stringify(data);
-    headers.set('Content-Type', 'application/json; charset=utf-8');
-  }
+    if (contentType === 'application/json') {
+      headers.set('Content-Type', 'application/json');
+      return JSON.stringify(data);
+    }
+
+    return createFormData(data);
+  })();
 
   const cookieHeader = isServer ? await getServerCookies() : undefined;
   if (cookieHeader) {
@@ -109,10 +136,10 @@ export async function get<TResult = unknown>(url: string, params?: Record<string
   return await execute<never, TResult>('GET', urlWithParams);
 }
 
-export async function post<TData, TResult = unknown>(url: string, data?: TData) {
-  return await execute<TData, TResult>('POST', url, data);
+export async function post<TData, TResult = unknown>(url: string, data?: TData, options?: RequestOptions) {
+  return await execute<TData, TResult>('POST', url, data, options);
 }
 
-export async function put<TData, TResult = unknown>(url: string, data?: TData) {
-  return await execute<TData, TResult>('PUT', url, data);
+export async function put<TData, TResult = unknown>(url: string, data?: TData, options?: RequestOptions) {
+  return await execute<TData, TResult>('PUT', url, data, options);
 }

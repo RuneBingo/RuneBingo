@@ -2,7 +2,10 @@ import type { FormikErrors } from 'formik';
 
 import type { ApiError } from '@/api';
 
-export function transformApiError<T>(error: ApiError): { message?: string; validationErrors?: FormikErrors<T> } {
+export default function transformApiError<T>(error: ApiError): {
+  message?: string;
+  validationErrors?: FormikErrors<T>;
+} {
   if (error.statusCode !== 400 || !Array.isArray(error.message)) return { message: error.message as string };
 
   const entries = error.message

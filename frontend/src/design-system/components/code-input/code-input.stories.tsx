@@ -4,7 +4,7 @@ import CodeInput from './code-input';
 
 const meta = {
   component: CodeInput,
-  title: 'components/Form/CodeInput',
+  title: 'Design System/Form/CodeInput',
 } satisfies Meta<typeof CodeInput>;
 
 type Story = StoryObj<typeof meta>;
