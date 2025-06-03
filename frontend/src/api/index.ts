@@ -129,8 +129,19 @@ export async function _delete<TResult = unknown>(url: string) {
   return execute<never, TResult>('DELETE', url);
 }
 
-export async function get<TResult = unknown>(url: string, params?: Record<string, string>) {
-  const queryString = params ? new URLSearchParams(params).toString() : '';
+export async function get<TResult = unknown>(
+  url: string,
+  params?: Record<string, string | number | boolean | undefined>,
+) {
+  const queryParams = new URLSearchParams();
+  for (const key in params) {
+    const value = params[key];
+    if (value === undefined) continue;
+
+    queryParams.set(key, value.toString());
+  }
+
+  const queryString = queryParams.toString();
   const urlWithParams = queryString ? `${url}?${queryString}` : url;
 
   return await execute<never, TResult>('GET', urlWithParams);
