@@ -6,7 +6,7 @@ import { Fragment } from 'react';
 import { toast } from 'sonner';
 
 import { signUpWithEmail } from '@/api/auth';
-import { transformApiError } from '@/common/utils/transform-api-error';
+import transformApiError from '@/common/utils/transform-api-error';
 import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
 import { Button } from '@/design-system/ui/button';

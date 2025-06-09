@@ -4,7 +4,7 @@ import TextAreaField from './text-area-field';
 
 const meta = {
   component: TextAreaField,
-  title: 'components/Form/TextAreaField',
+  title: 'Design System/Form/TextAreaField',
   args: {
     label: 'Description',
     placeholder: 'Enter your description',

@@ -1,12 +1,23 @@
+import 'multer';
 import { CommandFactory } from 'nest-commander';
+
+import '@/extensions/number.extensions';
 
 import { CliModule } from './cli/cli.module';
 
 async function bootstrap() {
-  await CommandFactory.runWithoutClosing(CliModule, {
-    logger: ['log', 'error', 'warn', 'debug'],
-  });
+  try {
+    await CommandFactory.runWithoutClosing(CliModule, {
+      logger: ['log', 'error', 'warn', 'debug'],
+    });
+    process.exit(0);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-bootstrap();
+bootstrap().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

@@ -20,6 +20,12 @@ export type Environment = {
 
 /** Typed config for `config.json` and `config.local.json` */
 export type Configuration = {
+  cloudinary: {
+    apiKey: string;
+    apiSecret: string;
+    cloudName: string;
+  };
+
   cors?: {
     origin?: string | string[] | RegExp | boolean;
     methods?: string | string[];
@@ -28,15 +34,15 @@ export type Configuration = {
     credentials?: boolean;
   };
 
-  session: {
-    secret: string;
-    maxAge?: number;
-  };
-
   email?: {
     user: string;
     pass: string;
     name: string;
+  };
+
+  session: {
+    secret: string;
+    maxAge?: number;
   };
 
   server: {

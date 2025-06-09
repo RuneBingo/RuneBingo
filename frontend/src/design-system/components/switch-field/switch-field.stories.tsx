@@ -5,7 +5,7 @@ import SwitchField from './switch-field';
 
 const meta = {
   component: SwitchField,
-  title: 'components/Form/SwitchField',
+  title: 'Design System/Form/SwitchField',
   args: {
     label: 'Enable notifications',
     value: false,
