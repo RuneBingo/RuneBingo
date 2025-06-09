@@ -62,7 +62,13 @@ export class UploadImageHandler {
       media.createdById = requester.id;
       media.createdBy = Promise.resolve(requester);
 
-      await this.mediaRepository.save(media);
+      try {
+        await this.mediaRepository.save(media);
+      } catch (error) {
+        this.logger.error(`Error while saving media to database: ${error}. Deleting media from Cloudinary...`);
+        await this.cloudinaryService.deleteMany([media.publicId]);
+        throw error;
+      }
 
       return media;
     } catch (error) {

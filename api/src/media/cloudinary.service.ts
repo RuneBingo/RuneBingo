@@ -16,6 +16,10 @@ export class CloudinaryService {
     });
   }
 
+  public async delete(id: string): Promise<void> {
+    await cloudinary.api.delete_resources([id]);
+  }
+
   public async deleteMany(ids: string[]): Promise<void> {
     await cloudinary.api.delete_resources(ids);
   }

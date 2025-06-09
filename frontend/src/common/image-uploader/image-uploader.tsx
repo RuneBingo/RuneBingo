@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/design-system/ui/tool
 import { getImageAspectRatio } from '../utils/image';
 import transformApiError from '../utils/transform-api-error';
 
-export const IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/gif', 'image/png', 'image/apng', 'image/tiff'];
+export const IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export type ImageUploaderProps = {
   value: MediaDto | null;
