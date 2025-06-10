@@ -93,22 +93,58 @@ export class GenerateTypesCommand extends CommandRunner {
       const className = classDecl.getName();
       if (!className) continue;
 
-      const props = classDecl.getProperties();
-      const objectFields: string[] = [];
-
-      for (const prop of props) {
-        const name = prop.getName();
-        const isOptional = prop.hasQuestionToken();
-        const type = prop.getType();
-
-        let field = `  ${name}${isOptional ? '?' : ''}: ${type.getText(prop)};`;
-        if (isOptional) field = field.replace(' | undefined', '');
-        objectFields.push(field);
-      }
-
+      const baseClass = classDecl.getExtends();
       const typeParams = classDecl.getTypeParameters().map((p) => p.getText());
       const typeParamString = typeParams.length > 0 ? `<${typeParams.join(', ')}>` : '';
-      this.typeLines.push(`export type ${className}${typeParamString} = {\n${objectFields.join('\n')}\n};\n\n`);
+
+      if (baseClass) {
+        // Handle class extension
+        const baseClassName = baseClass.getText();
+
+        // Get overridden properties
+        const overriddenProps = classDecl.getProperties().filter((prop) => {
+          // A property is considered overridden if it has a 'declare' modifier or explicit type annotation
+          return prop.hasModifier('declare') || prop.getTypeNode() !== undefined;
+        });
+
+        if (overriddenProps.length === 0) {
+          // Simple extension with no property overrides
+          this.typeLines.push(`export type ${className}${typeParamString} = ${baseClassName};\n\n`);
+        } else {
+          // Extension with property overrides - use intersection type
+          const overrideFields: string[] = [];
+
+          for (const prop of overriddenProps) {
+            const name = prop.getName();
+            const isOptional = prop.hasQuestionToken();
+            const type = prop.getType();
+
+            let field = `  ${name}${isOptional ? '?' : ''}: ${type.getText(prop)};`;
+            if (isOptional) field = field.replace(' | undefined', '');
+            overrideFields.push(field);
+          }
+
+          this.typeLines.push(
+            `export type ${className}${typeParamString} = ${baseClassName} & {\n${overrideFields.join('\n')}\n};\n\n`,
+          );
+        }
+      } else {
+        // Handle regular class without extension
+        const props = classDecl.getProperties();
+        const objectFields: string[] = [];
+
+        for (const prop of props) {
+          const name = prop.getName();
+          const isOptional = prop.hasQuestionToken();
+          const type = prop.getType();
+
+          let field = `  ${name}${isOptional ? '?' : ''}: ${type.getText(prop)};`;
+          if (isOptional) field = field.replace(' | undefined', '');
+          objectFields.push(field);
+        }
+
+        this.typeLines.push(`export type ${className}${typeParamString} = {\n${objectFields.join('\n')}\n};\n\n`);
+      }
     }
   }
 

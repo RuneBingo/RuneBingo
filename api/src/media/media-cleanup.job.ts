@@ -3,10 +3,9 @@ import { Injectable, Logger } from '@nestjs/common';
 // eslint-disable-next-line import/named -- I don't know why it's complaining here...
 import { DataSource, In, LessThan, Not, QueryRunner } from 'typeorm';
 
+import type { Job } from '@/jobs/job';
 import { CloudinaryService } from '@/media/cloudinary.service';
 import { Media } from '@/media/media.entity';
-
-import type { Job } from '../jobs/job';
 
 export type MediaCleanupParams = object;
 

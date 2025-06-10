@@ -33,8 +33,22 @@ export type UpdateUserDto = {
   role?: Roles;
 };
 
-export type PaginatedUsersDto = {
+export type PaginatedUsersDto = PaginatedDtoWithoutTotal<UserDto> & {
   items: UserDto[];
+};
+
+export type PaginatedOsrsItemsDto = PaginatedDto<OsrsItemDto> & {
+  items: OsrsItemDto[];
+};
+
+export type OsrsItemDto = {
+  id: number;
+  name: string;
+  configName: string;
+  exchangeable: boolean;
+  members: boolean;
+  examine: string;
+  imageUrl: string;
 };
 
 export type UploadMediaDto = {
@@ -82,7 +96,7 @@ export type UpdateBingoParticipantDto = {
   role?: BingoRoles;
 };
 
-export type PaginatedBingoParticipantsDto = {
+export type PaginatedBingoParticipantsDto = PaginatedDtoWithoutTotal<BingoParticipantDto> & {
   items: BingoParticipantDto[];
 };
 
@@ -111,7 +125,7 @@ export type ShortBingoDto = {
   role: BingoRoles;
 };
 
-export type PaginatedBingosDto = {
+export type PaginatedBingosDto = PaginatedDtoWithoutTotal<BingoDto> & {
   items: BingoDto[];
 };
 
@@ -180,7 +194,7 @@ export type AuthenticationDetailsDto = {
   currentBingo: ShortBingoDto | null;
 };
 
-export type PaginatedActivitiesDto = {
+export type PaginatedActivitiesDto = PaginatedDtoWithoutTotal<ActivityDto> & {
   items: ActivityDto[];
 };
 

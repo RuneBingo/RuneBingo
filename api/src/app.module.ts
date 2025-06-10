@@ -16,6 +16,7 @@ import { i18nModule } from './i18n';
 import { bullModule } from './jobs/bull';
 import { JobsModule } from './jobs/jobs.module';
 import { MediaModule } from './media/media.module';
+import { OsrsModule } from './osrs/osrs.module';
 import { RedisModule } from './redis/redis.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
@@ -40,6 +41,7 @@ import { UserModule } from './user/user.module';
     BingoParticipantModule,
     BingoTeamModule,
     MediaModule,
+    OsrsModule,
   ],
   providers: [EmailerService],
   controllers: [AppController],
