@@ -134,11 +134,10 @@ export async function get<TResult = unknown>(
   params?: Record<string, string | number | boolean | undefined>,
 ) {
   const queryParams = new URLSearchParams();
-  for (const key in params) {
-    const value = params[key];
+  for (const [key, value] of Object.entries(params ?? {})) {
     if (value === undefined) continue;
 
-    queryParams.set(key, value.toString());
+    queryParams.set(key, String(value));
   }
 
   const queryString = queryParams.toString();
