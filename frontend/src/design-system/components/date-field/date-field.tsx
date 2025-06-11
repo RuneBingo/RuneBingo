@@ -35,7 +35,7 @@ export default function DateField({
   const displayText = selectedDate ? format(selectedDate, 'PPP', { locale: dateFnsLocale }) : placeholder;
 
   return (
-    <div className="mb-5">
+    <div className="mb-5 w-full">
       {label && (
         <Label htmlFor={id} className="mb-2">
           {label}

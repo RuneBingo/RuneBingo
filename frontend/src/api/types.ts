@@ -94,14 +94,14 @@ export type BingoParticipantDto = {
 };
 
 export type UpdateBingoDto = {
-  language: string;
-  title: string;
-  description: string;
-  private: boolean;
-  fullLineValue: number;
-  startDate: string;
-  endDate: string;
-  maxRegistrationDate: string;
+  language?: string;
+  title?: string;
+  description?: string;
+  private?: boolean;
+  fullLineValue?: number;
+  startDate?: string;
+  endDate?: string;
+  maxRegistrationDate?: string;
 };
 
 export type ShortBingoDto = {

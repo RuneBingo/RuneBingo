@@ -132,7 +132,9 @@ export class BingoController {
     const params: FindBingoByBingoIdParams = { bingoId: bingoId, requester: req.userEntity! };
     const bingo = await this.queryBus.execute(new FindBingoByBingoIdQuery(params));
 
-    return new BingoDto(bingo);
+    const createdByUser = await bingo.createdBy;
+    const createdBy = createdByUser ? new UserDto(createdByUser) : undefined;
+    return new BingoDto(bingo, { createdBy });
   }
 
   @Put(':bingoId')

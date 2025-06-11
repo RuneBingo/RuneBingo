@@ -14,5 +14,39 @@
     "empty": "Aucun bingo trouvé...",
     "searchPlaceholder": "Rechercher un bingo",
     "noValue": "Aucun bingo sélectionné"
+  },
+  "bingoCard": {
+    "dateRangeHtml": "Du <b>{startDate}</b> à <b>{endDate}</b>.",
+    "maxRegistrationDateHtml": "Fermeture des inscriptions le <b>{maxRegistrationDate}</b>.",
+    "createdByHtml": "Organisé par <b>{username}</b>",
+    "actionsDropdown": {
+      "title": "Actions",
+      "editDetails": "Modifier les détails",
+      "delete": "Supprimer l'événement",
+      "reset": "Réinitialiser l'événement",
+      "startNow": "Démarrer maintenant",
+      "endNow": "Terminer maintenant",
+      "cancel": "Annuler l'événement"
+    },
+    "editDetails": {
+      "title": "Modifier les détails de l'événement",
+      "form": {
+        "language": "Langue",
+        "title": "Titre",
+        "description": "Description",
+        "public": "Rendre cet événement public aux autres utilisateurs",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "maxRegistrationDate": "Date limite d'inscription (optionnel)",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "fullLineValue": "Points obtenus par ligne complète",
+        "submit": "Modifier les détails",
+        "cancel": "Annuler"
+      }
+    },
+    "messages": {
+      "updateDetailsSuccess": "Les détails de l'événement ont été modifiés avec succès."
+    }
   }
 }

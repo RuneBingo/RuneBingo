@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/design-system/ui/tool
 import { useRouter } from '@/i18n/navigation';
 
 import { useAppContext } from './context';
-import { transformApiError } from './utils/transform-api-error';
+import transformApiError from './utils/transform-api-error';
 
 type SelectBingoValueDisplayProps = {
   title: string;

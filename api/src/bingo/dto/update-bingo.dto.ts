@@ -3,32 +3,37 @@ import { IsISO8601, IsOptional } from 'class-validator';
 
 export class UpdateBingoDto {
   @ApiProperty()
-  language: string;
+  @IsOptional()
+  language?: string;
 
   @ApiProperty()
-  title: string;
+  @IsOptional()
+  title?: string;
 
   @ApiProperty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @ApiProperty()
-  private: boolean;
+  @IsOptional()
+  private?: boolean;
 
   @ApiProperty()
-  fullLineValue: number;
+  @IsOptional()
+  fullLineValue?: number;
 
   @ApiProperty()
   @IsOptional()
   @IsISO8601()
-  startDate: string;
+  startDate?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsISO8601()
-  endDate: string;
+  endDate?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsISO8601()
-  maxRegistrationDate: string;
+  maxRegistrationDate?: string;
 }

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
+import { UpdateBingoDto } from '@/bingo/dto/update-bingo.dto';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { type User } from '@/user/user.entity';
@@ -34,18 +35,7 @@ export type UpdateBingoResult = Bingo;
 export class UpdateBingoCommand extends Command<Bingo> {
   public readonly bingoId: string;
   public readonly requester: User;
-  public readonly updates: {
-    language?: string;
-    title?: string;
-    description?: string;
-    private?: boolean;
-    width?: number;
-    height?: number;
-    fullLineValue?: number;
-    startDate?: string;
-    endDate?: string;
-    maxRegistrationDate?: string;
-  };
+  public readonly updates: UpdateBingoDto;
   constructor({ bingoId, requester, updates }: UpdateBingoParams) {
     super();
     this.bingoId = bingoId;
