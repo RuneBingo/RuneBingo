@@ -17,5 +17,6 @@ export type SelectFieldProps = {
   value: string;
   className?: string;
   containerClassName?: string;
+  modal?: boolean;
   onChange: (value: string) => void;
 } & React.ComponentProps<typeof Select>;

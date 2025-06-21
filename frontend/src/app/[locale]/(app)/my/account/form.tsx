@@ -2,14 +2,14 @@
 
 import { Form, FormikContext, type FormikHelpers, useFormik } from 'formik';
 import { CameraIcon } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { toast } from 'sonner';
 
 import { type UserDto } from '@/api/types';
 import { updateUserByUsername } from '@/api/user';
 import { useAppContext } from '@/common/context';
+import useSuccessMessages from '@/common/hooks/use-success-messages';
 import transformApiError from '@/common/utils/transform-api-error';
 import Avatar from '@/design-system/components/avatar';
 import SelectField from '@/design-system/components/select-field';
@@ -44,23 +44,7 @@ export default function MyAccountForm({ user }: MyAccountFormProps) {
     value: locale,
   }));
 
-  const sendSuccessMessage = useCallback(() => {
-    toast.success(t('success'), {
-      richColors: true,
-      dismissible: true,
-      position: 'bottom-center',
-    });
-  }, [t]);
-
-  // Send a toast message after the page is loaded if there is a language change in the account settings
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const message = searchParams.get('message');
-    if (message === 'success') {
-      setTimeout(() => sendSuccessMessage(), 100);
-      router.replace(pathname);
-    }
-  }, [router, pathname, searchParams, sendSuccessMessage]);
+  useSuccessMessages('my.account.form', ['success']);
 
   const onSubmit = async (_: AccountFormValues, { setErrors }: FormikHelpers<AccountFormValues>) => {
     if (!Object.keys(actualUpdates).length) return;
@@ -82,7 +66,11 @@ export default function MyAccountForm({ user }: MyAccountFormProps) {
     }
 
     router.refresh();
-    sendSuccessMessage();
+    toast.success(t('success'), {
+      richColors: true,
+      dismissible: true,
+      position: 'bottom-center',
+    });
   };
 
   const formik = useFormik<AccountFormValues>({

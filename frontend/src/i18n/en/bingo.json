@@ -8,11 +8,47 @@
     "pending": "Pending",
     "ongoing": "Ongoing",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "canceled": "Canceled"
   },
   "selectBingo": {
     "empty": "No bingos found...",
     "searchPlaceholder": "Search bingos",
     "noValue": "No bingo selected"
+  },
+  "bingoCard": {
+    "dateRangeHtml": "From <b>{startDate}</b> to <b>{endDate}</b>.",
+    "maxRegistrationDateHtml": "Applications close <b>{maxRegistrationDate}</b>.",
+    "createdByHtml": "Organized by <b>{username}</b>",
+    "actionsDropdown": {
+      "title": "Actions",
+      "editDetails": "Edit details",
+      "delete": "Delete event",
+      "reset": "Reset event",
+      "startNow": "Start now",
+      "endNow": "End now",
+      "cancel": "Cancel event"
+    },
+    "editDetails": {
+      "title": "Edit event details",
+      "form": {
+        "language": "Language",
+        "title": "Title",
+        "description": "Description",
+        "public": "Make this event public to other users",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "maxRegistrationDate": "Registration deadline (optional)",
+        "width": "Width",
+        "height": "Height",
+        "fullLineValue": "Points earned for a full line",
+        "submit": "Edit event details",
+        "cancel": "Discard changes"
+      },
+      "success": "Event details updated successfully."
+    }
+  },
+  "notCurrentBingoTip": {
+    "title": "You are an organizer of this bingo.",
+    "description": "You may manage it by <button>making it your current bingo</button>."
   }
 }

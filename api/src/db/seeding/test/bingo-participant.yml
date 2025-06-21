@@ -20,7 +20,17 @@ dee420:
   role: 'participant'
   team: 'les-boys'
 
-paul:
+char0o-started:
   user: char0o
   bingo: started-bingo
-  role: 'participant'
+  role: 'organizer'
+
+char0o-ended:
+  user: char0o
+  bingo: ended-bingo
+  role: 'organizer'
+
+char0o-canceled:
+  user: char0o
+  bingo: canceled-bingo
+  role: 'organizer'

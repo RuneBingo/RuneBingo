@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Check, ChevronsUpDownIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { listMyBingos, setCurrentBingo as setCurrentBingoApi } from '@/api/auth';
@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/design-system/ui/tool
 import { useRouter } from '@/i18n/navigation';
 
 import { useAppContext } from './context';
-import { transformApiError } from './utils/transform-api-error';
+import transformApiError from './utils/transform-api-error';
 
 type SelectBingoValueDisplayProps = {
   title: string;
@@ -31,7 +31,7 @@ type SelectBingoValueDisplayProps = {
 function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps) {
   const statusColor = (() => {
     switch (status) {
-      case BingoStatus.Cancelled:
+      case BingoStatus.Canceled:
         return 'bg-gray-500';
       case BingoStatus.Completed:
         return 'bg-red-500';
@@ -65,6 +65,12 @@ export default function SelectBingo() {
   const [open, setOpen] = useState(false);
   const [selectedBingo, setSelectedBingo] = useState<ShortBingoDto | null>(null);
   const t = useTranslations('bingo');
+
+  useEffect(() => {
+    if (user?.currentBingo?.id) {
+      setSelectedBingo(user.currentBingo);
+    }
+  }, [user?.currentBingo]);
 
   const { data: myBingos } = useQuery({
     queryKey: ['search-bingos'],

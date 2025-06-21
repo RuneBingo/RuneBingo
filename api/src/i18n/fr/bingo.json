@@ -14,7 +14,8 @@
     "titleNotUnique": "Un bingo avec ce titre existe déjà.",
     "startDateAfterEndDate": "La date de début doit être avant la date de fin.",
     "endDateBeforeStartDate": "La date de fin doit être après la date de début.",
-    "registrationDateAfterStartDate": "La date limite d'enregistrement doit être avant la date de début."
+    "registrationDateAfterStartDate": "La date limite d'enregistrement doit être avant la date de début.",
+    "statusRestricted": "Vous ne pouvez le/la {field} pendant que le bingo est {status}."
   },
   "deleteBingo": {
     "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
@@ -72,33 +73,24 @@
     },
     "formatBingoActivities": {
       "title": "Bingo {action} par {username}."
-    },
-    "activity": {
-      "created": {
-        "title": "{username} a créé le bingo."
-      },
-      "updated": {
-        "title": "{username} a mis à jour le bingo.",
-        "body": {
-          "language": "A mis à jour le langage à {language}.",
-          "title": "A mis à jour le titre à {title}.",
-          "description": "A mis à jour la description à {description}.",
-          "private": "A mis à jour la confidentialité à {private}.",
-          "width": "A mis à jour la largeur à {width}.",
-          "height": "A mis à jour la hauteur à {height}.",
-          "fullLineValue": "A mis à jour la valeur de ligne complète à {fullLineValue}.",
-          "startDate": "A mis à jour la date de début au {startDate}.",
-          "endDate": "A mis à jour le date de fin au {endDate}."
-        }
-      },
-      "deleted": {
-        "title": "{username} a supprimé le bingo."
-      },
-      "canceled": {
-        "title": "{username} a annulé le bingo."
-      },
-      "forbidden": "Vous n'avez pas les permissions pour voir les activités de ce bingo.",
-      "system": "Système"
     }
+  },
+  "entity": {
+    "language": "Langue",
+    "title": "Titre",
+    "description": "Description",
+    "private": "Privé",
+    "width": "Largeur",
+    "height": "Hauteur",
+    "fullLineValue": "Valeur de ligne complète",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "maxRegistrationDate": "Date limite d'enregistrement"
+  },
+  "status": {
+    "pending": "en attente",
+    "ongoing": "en cours",
+    "completed": "terminé",
+    "canceled": "annulé"
   }
 }

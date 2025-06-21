@@ -11,11 +11,12 @@
   },
   "updateBingo": {
     "bingoNotFound": "No bingo with this id was found.",
-    "forbidden": "You don't have permission to update this user or some of the requested fields.",
+    "forbidden": "You don't have permission to update this bingo or some of the requested fields.",
     "titleNotUnique": "A bingo with this title already exists.",
     "startDateAfterEndDate": "The start date must be earlier than the end date.",
     "endDateBeforeStartDate": "The end date must be later than the start date.",
-    "registrationDateAfterStartDate": "The registration date must be before the start date."
+    "registrationDateAfterStartDate": "The registration date must be before the start date.",
+    "statusRestricted": "You cannot update {field} while the bingo is {status}."
   },
   "deleteBingo": {
     "bingoNotFound": "No bingo with this id was found.",
@@ -67,33 +68,24 @@
         "participating": "No bingo with the specified id to which you are participating was found.",
         "nonParticipating": "No bingo with the specified id to which you are not participating was found."
       }
-    },
-    "activity": {
-      "created": {
-        "title": "{username} has created the bingo."
-      },
-      "updated": {
-        "title": "{username} has updated the bingo.",
-        "body": {
-          "language": "Set the language to {language}.",
-          "title": "Set the title to {title}.",
-          "description": "Set the description to {description}.",
-          "private": "Set the private to {private}.",
-          "width": "Set the width to {width}.",
-          "height": "Set the height to {height}.",
-          "fullLineValue": "Set the full line value to {fullLineValue}.",
-          "startDate": "Set the start date to {startDate}.",
-          "endDate": "Set the end date to {endDate}."
-        }
-      },
-      "deleted": {
-        "title": "{username} has deleted the bingo."
-      },
-      "canceled": {
-        "title": "{username} has canceled the bingo."
-      },
-      "forbidden": "You don't have permission to see this bingo's activities.",
-      "system": "System"
     }
+  },
+  "entity": {
+    "language": "Language",
+    "title": "Title",
+    "description": "Description",
+    "private": "Private",
+    "width": "Width",
+    "height": "Height",
+    "fullLineValue": "Full line value",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "maxRegistrationDate": "Max registration date"
+  },
+  "status": {
+    "pending": "pending",
+    "ongoing": "ongoing",
+    "completed": "completed",
+    "canceled": "canceled"
   }
 }

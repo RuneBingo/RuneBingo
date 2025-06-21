@@ -6,15 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function assignSubComponents<Component extends React.FC, SubComponents extends Record<string, React.FC>>(
-  component: Component,
-  subComponents: SubComponents,
-) {
-  const ComponentWithSubComponents = component as Component & SubComponents;
-
+export function assignSubComponents<Component, SubComponents>(component: Component, subComponents: SubComponents) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ComponentWithSubComponents = component as any;
   Object.assign(ComponentWithSubComponents, subComponents);
-
-  return ComponentWithSubComponents;
+  return ComponentWithSubComponents as Component & SubComponents;
 }
 
 /**

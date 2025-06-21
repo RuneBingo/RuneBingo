@@ -1,5 +1,6 @@
 {
   "appName": "RuneBingo",
+  "language": "Language",
   "languages": {
     "en": "English",
     "fr": "Français"

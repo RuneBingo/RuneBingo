@@ -98,7 +98,7 @@ export class Bingo extends StrongEntityParanoid {
 
   public get status() {
     const now = new Date();
-    if (this.canceledAt && this.canceledAt < now) return BingoStatus.Cancelled;
+    if (this.canceledAt && this.canceledAt < now) return BingoStatus.Canceled;
     if (this.endedAt && this.endedAt < now) return BingoStatus.Completed;
     if (this.startedAt && this.startedAt < now) return BingoStatus.Ongoing;
 
