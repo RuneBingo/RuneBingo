@@ -2,9 +2,10 @@ import { CalendarCheckIcon, CalendarDaysIcon } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { getAuthenticatedUser } from '@/api/auth';
+import { getAuthenticatedUser, listMyBingos } from '@/api/auth';
 import { getBingo } from '@/api/bingo';
 import { BingoRoles } from '@/api/types';
+import NotCurrentBingoTip from '@/common/bingo/not-current-bingo-tip';
 import { type ServerSideRootProps } from '@/common/types';
 import { formatDateToLocale } from '@/common/utils/date';
 import Avatar from '@/design-system/components/avatar';
@@ -26,19 +27,30 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
   const t = await getTranslations('bingo.bingoCard');
   const locale = await getLocale();
   const user = await getAuthenticatedUser();
-  const isBingoOrganizer = (() => {
-    if (!user?.currentBingo) return false;
-    if (user.currentBingo?.id !== bingoId) return false;
+  const userParticipations = await listMyBingos();
+  const currentBingoParticipation = userParticipations.find((participation) => participation.id === bingoId);
 
-    return [BingoRoles.Owner, BingoRoles.Organizer].includes(user.currentBingo.role);
+  const [isCurrentBingoOrganizer, isBingoOrganizer] = (() => {
+    if (!user) return [false, false];
+    const isCurrentBingoOrganizer =
+      user.currentBingo?.id === bingoId && [BingoRoles.Owner, BingoRoles.Organizer].includes(user.currentBingo.role);
+    if (isCurrentBingoOrganizer) return [true, true];
+
+    const isBingoOrganizer =
+      currentBingoParticipation &&
+      (currentBingoParticipation?.role === BingoRoles.Owner ||
+        currentBingoParticipation?.role === BingoRoles.Organizer);
+
+    return [isCurrentBingoOrganizer, isBingoOrganizer];
   })();
 
   return (
     <div className="max-w-5xl">
+      <NotCurrentBingoTip bingoId={bingoId} visible={Boolean(!isCurrentBingoOrganizer && isBingoOrganizer)} />
       <StatusBadge status={bingo.status} className="mb-2" />
       <div className="w-full flex items-center justify-between mb-8">
         <Title.Primary className="!mb-0">{bingo.title}</Title.Primary>
-        {isBingoOrganizer && <Actions bingo={bingo} />}
+        {isCurrentBingoOrganizer && <Actions bingo={bingo} />}
       </div>
       <div className="flex items-center gap-2.5 mb-2">
         <CalendarDaysIcon className="size-4" />

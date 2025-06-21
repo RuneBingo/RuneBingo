@@ -46,5 +46,9 @@
       },
       "success": "Event details updated successfully."
     }
+  },
+  "notCurrentBingoTip": {
+    "title": "You are an organizer of this bingo.",
+    "description": "You may manage it by <button>making it your current bingo</button>."
   }
 }

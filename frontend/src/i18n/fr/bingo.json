@@ -45,5 +45,9 @@
         "cancel": "Annuler"
       }
     }
+  },
+  "notCurrentBingoTip": {
+    "title": "Vous êtes un organisateur de ce bingo.",
+    "description": "Vous pouvez le gérer en <button>le définissant comme votre bingo actuel</button>."
   }
 }
