@@ -31,7 +31,7 @@ type SelectBingoValueDisplayProps = {
 function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps) {
   const statusColor = (() => {
     switch (status) {
-      case BingoStatus.Cancelled:
+      case BingoStatus.Canceled:
         return 'bg-gray-500';
       case BingoStatus.Completed:
         return 'bg-red-500';

@@ -20,6 +20,14 @@ export class UpdateBingoDto {
 
   @ApiProperty()
   @IsOptional()
+  width?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  height?: number;
+
+  @ApiProperty()
+  @IsOptional()
   fullLineValue?: number;
 
   @ApiProperty()

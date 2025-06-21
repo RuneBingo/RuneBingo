@@ -8,7 +8,7 @@
     "pending": "Pending",
     "ongoing": "Ongoing",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "canceled": "Canceled"
   },
   "selectBingo": {
     "empty": "No bingos found...",
@@ -43,10 +43,8 @@
         "fullLineValue": "Points earned for a full line",
         "submit": "Edit event details",
         "cancel": "Discard changes"
-      }
-    },
-    "messages": {
-      "updateDetailsSuccess": "Event details updated successfully."
+      },
+      "success": "Event details updated successfully."
     }
   }
 }

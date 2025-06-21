@@ -7,17 +7,26 @@ import { type User } from '@/user/user.entity';
 
 import { type Bingo } from './bingo.entity';
 
+type FieldUpdateRestriction = {
+  owner?: boolean;
+  moderatorBypass?: boolean;
+};
+
 export class BingoPolicies {
   constructor(private readonly requester: User) {}
 
-  canUpdate(participant: BingoParticipant | null, bingo: Bingo) {
+  canUpdate(participant: BingoParticipant | null, updates: Partial<Bingo>) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 
-    if (
-      !requesterIsModerator &&
-      (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer) || bingo.startedAt)
-    ) {
-      return false;
+    for (const field of Object.keys(updates)) {
+      const restriction = this.fieldUpdateRestrictions[field] as FieldUpdateRestriction | undefined;
+      if (!restriction) return false;
+
+      if (restriction.moderatorBypass && requesterIsModerator) continue;
+
+      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return false;
+
+      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return false;
     }
 
     return true;
@@ -56,4 +65,18 @@ export class BingoPolicies {
 
     return true;
   }
+
+  /** Determines which fields can be updated and in which conditions for the `canUpdate` policy. */
+  private readonly fieldUpdateRestrictions: Readonly<{ [key in keyof Bingo]?: FieldUpdateRestriction }> = {
+    language: { moderatorBypass: true },
+    title: { moderatorBypass: true },
+    description: { moderatorBypass: true },
+    private: { moderatorBypass: true },
+    startDate: { moderatorBypass: true },
+    endDate: { moderatorBypass: true },
+    maxRegistrationDate: { moderatorBypass: true },
+    fullLineValue: { moderatorBypass: true },
+    width: { moderatorBypass: true },
+    height: { moderatorBypass: true },
+  };
 }

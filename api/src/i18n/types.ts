@@ -76,6 +76,7 @@ export type I18nTranslations = {
             "startDateAfterEndDate": string;
             "endDateBeforeStartDate": string;
             "registrationDateAfterStartDate": string;
+            "statusRestricted": string;
         };
         "deleteBingo": {
             "bingoNotFound": string;
@@ -128,36 +129,27 @@ export type I18nTranslations = {
                     "nonParticipating": string;
                 };
             };
-            "activity": {
-                "created": {
-                    "title": string;
-                };
-                "updated": {
-                    "title": string;
-                    "body": {
-                        "language": string;
-                        "title": string;
-                        "description": string;
-                        "private": string;
-                        "width": string;
-                        "height": string;
-                        "fullLineValue": string;
-                        "startDate": string;
-                        "endDate": string;
-                    };
-                };
-                "deleted": {
-                    "title": string;
-                };
-                "canceled": {
-                    "title": string;
-                };
-                "forbidden": string;
-                "system": string;
-            };
             "formatBingoActivities": {
                 "title": string;
             };
+        };
+        "entity": {
+            "language": string;
+            "title": string;
+            "description": string;
+            "private": string;
+            "width": string;
+            "height": string;
+            "fullLineValue": string;
+            "startDate": string;
+            "endDate": string;
+            "maxRegistrationDate": string;
+        };
+        "status": {
+            "pending": string;
+            "ongoing": string;
+            "completed": string;
+            "canceled": string;
         };
         "formatBingoActivities": {
             "title": string;

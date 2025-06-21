@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { updateBingo } from '@/api/bingo';
 import { type UpdateBingoDto } from '@/api/types';
 import transformApiError from '@/common/utils/transform-api-error';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 
 import { ACTIONS } from './constants';
 import type { ActionHandler, ActionKey, ActionsContextType, ActionsProviderProps } from './types';
@@ -14,8 +15,9 @@ const ActionsContext = createContext<ActionsContextType | undefined>(undefined);
 
 export default function ActionsProvider({ children, bingo }: ActionsProviderProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const [currentAction, setCurrentAction] = useState<ActionKey | null>(null);
+  const t = useTranslations('bingo.bingoCard');
+
   const callAction = useCallback(
     (actionKey: ActionKey) => {
       if (currentAction) return;
@@ -44,7 +46,10 @@ export default function ActionsProvider({ children, bingo }: ActionsProviderProp
       }
 
       closeAction();
-      router.push({ pathname, query: { message: 'updateDetailsSuccess' } });
+
+      toast.success(t('editDetails.success'), { richColors: true, dismissible: true, position: 'bottom-center' });
+
+      router.refresh();
     }) satisfies ActionHandler<UpdateBingoDto>,
   });
 

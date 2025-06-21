@@ -33,3 +33,9 @@ export type ActionsProviderProps = PropsWithChildren<{
 }>;
 
 export type ErrorHandler = (errors: FormikErrors<unknown>) => void;
+
+export type FormValues = Exclude<UpdateBingoDto, 'width' | 'height' | 'fullLineValue'> & {
+  width: number | null;
+  height: number | null;
+  fullLineValue: number | null;
+};

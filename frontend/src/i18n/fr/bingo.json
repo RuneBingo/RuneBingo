@@ -8,7 +8,7 @@
     "pending": "En attente",
     "ongoing": "En cours",
     "completed": "Terminé",
-    "cancelled": "Annulé"
+    "canceled": "Annulé"
   },
   "selectBingo": {
     "empty": "Aucun bingo trouvé...",
@@ -44,9 +44,6 @@
         "submit": "Modifier les détails",
         "cancel": "Annuler"
       }
-    },
-    "messages": {
-      "updateDetailsSuccess": "Les détails de l'événement ont été modifiés avec succès."
     }
   }
 }

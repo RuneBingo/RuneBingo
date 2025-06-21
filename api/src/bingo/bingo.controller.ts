@@ -216,9 +216,9 @@ export class BingoController {
   @Post(':bingoId/cancel')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
-  @ApiOkResponse({ description: 'The bingo event has been successfully cancelled.' })
+  @ApiOkResponse({ description: 'The bingo event has been successfully canceled.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
-  @ApiBadRequestResponse({ description: 'The bingo event was already cancelled or has ended.' })
+  @ApiBadRequestResponse({ description: 'The bingo event was already canceled or has ended.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to cancel the bingo event.' })
   async cancel(@Req() req: Request, @Param('bingoId') bingoId: string) {
     const bingo = await this.commandBus.execute(

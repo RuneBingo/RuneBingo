@@ -11,8 +11,9 @@ import { SeedingService } from '@/db/seeding/seeding.service';
 import { i18nModule } from '@/i18n';
 import { User } from '@/user/user.entity';
 
-import { UpdateBingoCommand, UpdateBingoHandler } from './update-bingo.command';
 import { Bingo } from '../bingo.entity';
+import { UpdateBingoCommand, UpdateBingoHandler } from './update-bingo.command';
+import { BingoStatus } from '../bingo-status.enum';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
 
 describe('UpdateBingoHandler', () => {
@@ -283,5 +284,172 @@ describe('UpdateBingoHandler', () => {
     expect(toUpdate.updatedAt).toBeDefined();
     expect(toUpdate.updatedById).toBe(requester.id);
     expect(toUpdate.maxRegistrationDate).toBe('2024-12-31');
+  });
+
+  it('allows organizer to update fields that require organizer role', async () => {
+    const requester = seedingService.getEntity(User, 'didiking'); // organizer
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        title: 'Organizer Update',
+      },
+    });
+
+    const result = await handler.execute(command);
+    expect(result.title).toBe('Organizer Update');
+  });
+
+  it('allows owner to update fields that require organizer role', async () => {
+    const requester = seedingService.getEntity(User, 'char0o'); // owner
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        title: 'Owner Update',
+      },
+    });
+
+    const result = await handler.execute(command);
+    expect(result.title).toBe('Owner Update');
+  });
+
+  it('allows moderator to bypass organizer role requirement', async () => {
+    const requester = seedingService.getEntity(User, 'zezima'); // moderator
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        title: 'Moderator Update',
+        description: 'Moderator description',
+        language: 'fr',
+        private: false,
+        startDate: '2025-05-01',
+        endDate: '2025-05-31',
+        maxRegistrationDate: '2025-04-30',
+        fullLineValue: 75,
+        width: 7,
+        height: 7,
+      },
+    });
+
+    const result = await handler.execute(command);
+    expect(result.title).toBe('Moderator Update');
+    expect(result.description).toBe('Moderator description');
+    expect(result.language).toBe('fr');
+    expect(result.private).toBe(false);
+    expect(result.startDate).toBe('2025-05-01');
+    expect(result.endDate).toBe('2025-05-31');
+    expect(result.maxRegistrationDate).toBe('2025-04-30');
+    expect(result.fullLineValue).toBe(75);
+    expect(result.width).toBe(7);
+    expect(result.height).toBe(7);
+  });
+
+  it('allows moderator to update even when not a participant', async () => {
+    const requester = seedingService.getEntity(User, 'zezima'); // moderator, not participant
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        title: 'Moderator Update Without Participation',
+      },
+    });
+
+    const result = await handler.execute(command);
+    expect(result.title).toBe('Moderator Update Without Participation');
+  });
+
+  it('throws ForbiddenException when trying to update non-existent field', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        // @ts-expect-error - Testing invalid field
+        invalidField: 'value',
+      },
+    });
+
+    await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('throws ForbiddenException when trying to update non-updatable field', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        // @ts-expect-error - Testing non-updatable field
+        bingoId: 'new-id',
+      },
+    });
+
+    await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('throws ForbiddenException when one field is invalid in mixed update', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const command = new UpdateBingoCommand({
+      requester,
+      bingoId: bingo.bingoId,
+      updates: {
+        title: 'Valid Update',
+        // @ts-expect-error - Testing invalid field in mixed update
+        invalidField: 'value',
+      },
+    });
+
+    await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
+  });
+
+  const BINGO_AND_FIELDS_TO_TEST_BY_STATUS = {
+    [BingoStatus.Ongoing]: {
+      bingo: 'started-bingo',
+      fields: ['language', 'private', 'startDate', 'maxRegistrationDate'],
+    },
+    [BingoStatus.Completed]: {
+      bingo: 'ended-bingo',
+      fields: ['language', 'title', 'description', 'private', 'startDate', 'endDate', 'maxRegistrationDate'],
+    },
+    [BingoStatus.Canceled]: {
+      bingo: 'canceled-bingo',
+      fields: ['language', 'title', 'description', 'private', 'startDate', 'endDate', 'maxRegistrationDate'],
+    },
+  };
+
+  Object.entries(BINGO_AND_FIELDS_TO_TEST_BY_STATUS).forEach(([status, { bingo: bingoKey, fields }]) => {
+    describe(`when the bingo is ${status}`, () => {
+      fields.forEach((field) => {
+        it(`throws BadRequestException when trying to update ${field}`, async () => {
+          const requester = seedingService.getEntity(User, 'char0o');
+          const bingo = seedingService.getEntity(Bingo, bingoKey);
+
+          const command = new UpdateBingoCommand({
+            requester,
+            bingoId: bingo.bingoId,
+            updates: {
+              [field]: 'value',
+            },
+          });
+
+          await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
+        });
+      });
+    });
   });
 });

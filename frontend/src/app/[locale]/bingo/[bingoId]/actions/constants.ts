@@ -15,7 +15,7 @@ export const EDIT_DETAILS = {
 export const RESET_EVENT = {
   key: 'reset',
   icon: RecycleIcon,
-  visible: ({ status }: BingoDto) => status === BingoStatus.Cancelled,
+  visible: ({ status }: BingoDto) => status === BingoStatus.Canceled,
 } as const satisfies Action;
 
 export const START_NOW = {
