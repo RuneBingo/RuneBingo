@@ -16,7 +16,7 @@
     "startDateAfterEndDate": "The start date must be earlier than the end date.",
     "endDateBeforeStartDate": "The end date must be later than the start date.",
     "registrationDateAfterStartDate": "The registration date must be before the start date.",
-    "statusRestricted": "You cannot update this bingo's field: {field} while it's {status}."
+    "statusRestricted": "You cannot update {field} while the bingo is {status}."
   },
   "deleteBingo": {
     "bingoNotFound": "No bingo with this id was found.",

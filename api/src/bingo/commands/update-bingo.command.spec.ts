@@ -420,15 +420,37 @@ describe('UpdateBingoHandler', () => {
   const BINGO_AND_FIELDS_TO_TEST_BY_STATUS = {
     [BingoStatus.Ongoing]: {
       bingo: 'started-bingo',
-      fields: ['language', 'private', 'startDate', 'maxRegistrationDate'],
+      fields: ['language', 'private', 'startDate', 'maxRegistrationDate', 'width', 'height', 'fullLineValue'],
     },
     [BingoStatus.Completed]: {
       bingo: 'ended-bingo',
-      fields: ['language', 'title', 'description', 'private', 'startDate', 'endDate', 'maxRegistrationDate'],
+      fields: [
+        'language',
+        'title',
+        'description',
+        'private',
+        'startDate',
+        'endDate',
+        'maxRegistrationDate',
+        'width',
+        'height',
+        'fullLineValue',
+      ],
     },
     [BingoStatus.Canceled]: {
       bingo: 'canceled-bingo',
-      fields: ['language', 'title', 'description', 'private', 'startDate', 'endDate', 'maxRegistrationDate'],
+      fields: [
+        'language',
+        'title',
+        'description',
+        'private',
+        'startDate',
+        'endDate',
+        'maxRegistrationDate',
+        'width',
+        'height',
+        'fullLineValue',
+      ],
     },
   };
 

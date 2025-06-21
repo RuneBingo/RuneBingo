@@ -145,5 +145,8 @@ export class UpdateBingoHandler {
     startDate: [BingoStatus.Pending],
     endDate: [BingoStatus.Pending, BingoStatus.Ongoing],
     maxRegistrationDate: [BingoStatus.Pending],
+    width: [BingoStatus.Pending],
+    height: [BingoStatus.Pending],
+    fullLineValue: [BingoStatus.Pending],
   };
 }
