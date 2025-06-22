@@ -28,11 +28,11 @@ export default function NumberField({ label, decimal, value, error, onChange, ..
   };
 
   const clampValue = (value: number) => {
-    if (props.min && value < Number(props.min)) {
+    if (props.min !== undefined && value < props.min) {
       return props.min;
     }
 
-    if (props.max && value > props.max) {
+    if (props.max !== undefined && value > props.max) {
       return props.max;
     }
 
