@@ -1,0 +1,24 @@
+osrs-qc_3-1_berserker_ring:
+  index: 0
+  tile: osrs-qc_3-1
+  item: berserker_ring
+
+osrs-qc_3-1_seers_ring:
+  index: 1
+  tile: osrs-qc_3-1
+  item: seers_ring
+
+osrs-qc_3-1_archers_ring:
+  index: 2
+  tile: osrs-qc_3-1
+  item: archers_ring
+
+osrs-qc_3-1_warrior_ring:
+  index: 3
+  tile: osrs-qc_3-1
+  item: warrior_ring
+
+osrs-qc_4-1_abyssal_whip:
+  index: 0
+  tile: osrs-qc_4-1
+  item: abyssal_whip

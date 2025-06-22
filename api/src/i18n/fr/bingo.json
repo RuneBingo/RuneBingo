@@ -92,5 +92,61 @@
     "ongoing": "en cours",
     "completed": "terminé",
     "canceled": "annulé"
+  },
+  "tile": {
+    "listBingoTiles": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé."
+    },
+    "findBingoTileByCoordinates": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "tileNotFound": "Aucun bingo avec les coordonnées spécifiées n'a été trouvé."
+    },
+    "createOrEditBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "forbidden": "Vous n'êtes pas autorisé à supprimer cette case.",
+      "missingFieldsOnCreate": "Vous devez fournir un titre, une valeur, une confidentialité, et un mode de complétion lors de la création d'une nouveau case.",
+      "mediaNotFound": "Aucun média avec l'id '{mediaId}' n'a été trouvé.",
+      "itemNotFound": "Aucun item avec l'id '{itemId}' n'a été trouvé."
+    },
+    "deleteBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "forbidden": "Vous n'êtes pas autorisé à supprimer cette case.",
+      "tileNotFound": "Aucune case avec les coordonnées spécifiées n'a été trouvée."
+    },
+    "moveBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "sameCoordinates": "Les nouvelles coordonnées sont les mêmes que les coordonnées actuelles.",
+      "forbidden": "Vous n'êtes pas autorisé à déplacer cette case.",
+      "tileNotFound": "Aucune case avec les coordonnées spécifiées n'a été trouvée."
+    },
+    "activity": {
+      "set": {
+        "title": "{username} a défini une case à ({x}, {y}).",
+        "body": {
+          "title": "A défini le titre à {title}.",
+          "description": "A défini la description à {description}.",
+          "value": "A défini la valeur à {value}.",
+          "free": {
+            "true": "A défini la case comme gratuite.",
+            "false": "A défini la case comme non-gratuite."
+          },
+          "completionMode": "A défini le mode de complétion à {completionMode}.",
+          "mediaAdded": "A défini l'image de la case.",
+          "mediaRemoved": "A supprimé l'image de la case."
+        }
+      },
+      "deleted": {
+        "title": "{username} a supprimé une case à ({x}, {y})."
+      },
+      "moved": {
+        "title": "{username} a déplacé une case de ({x}, {y}) à ({toX}, {toY})."
+      },
+      "swapped": {
+        "title": "{username} a échangé une case à ({x}, {y}) avec une case à ({toX}, {toY})."
+      }
+    }
   }
 }

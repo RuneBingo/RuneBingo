@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
 import { updateBingo } from '@/api/bingo';
 import { type UpdateBingoDto } from '@/api/types';
+import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import { useRouter } from '@/i18n/navigation';
 
@@ -40,14 +40,14 @@ export default function ActionsProvider({ children, bingo }: ActionsProviderProp
       const response = await updateBingo(bingo.bingoId, input);
       if ('error' in response) {
         const { message, validationErrors } = transformApiError(response);
-        if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+        if (message) toast.error(message);
         if (validationErrors) setErrors?.(validationErrors);
         return;
       }
 
       closeAction();
 
-      toast.success(t('editDetails.success'), { richColors: true, dismissible: true, position: 'bottom-center' });
+      toast.success(t('editDetails.success'));
 
       router.refresh();
     }) satisfies ActionHandler<UpdateBingoDto>,

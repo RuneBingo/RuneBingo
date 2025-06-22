@@ -50,6 +50,12 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoParticipantRemovedActivity(activity);
           case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
+          case 'bingo.tile.set':
+            return this.formatBingoTileSetActivity(activity);
+          case 'bingo.tile.deleted':
+            return this.formatBingoTileDeletedActivity(activity);
+          case 'bingo.tile.moved':
+            return this.formatBingoTileMovedActivity(activity);
           default:
             this.logger.error(`Unsupported activity key: ${activity.key}`);
             return null;
@@ -200,6 +206,83 @@ export class FormatBingoActivitiesHandler {
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoTileSetActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo.tile.activity.set.title', {
+      args: { username: requesterName, x: activity.parameters?.x, y: activity.parameters?.y },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'title':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.title', { args: { title: value } }));
+          break;
+        case 'description':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.description', { args: { description: value } }));
+          break;
+        case 'value':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.value', { args: { value: value } }));
+          break;
+        case 'free':
+          body.push(
+            this.i18nService.t(`bingo.tile.activity.set.body.free.${value as 'true' | 'false'}`, {
+              args: { free: value },
+            }),
+          );
+          break;
+        case 'completionMode':
+          body.push(
+            this.i18nService.t('bingo.tile.activity.set.body.completionMode', { args: { completionMode: value } }),
+          );
+          break;
+        case 'media':
+          if (value !== null) {
+            body.push(this.i18nService.t('bingo.tile.activity.set.body.mediaAdded', { args: { media: value } }));
+          } else {
+            body.push(this.i18nService.t('bingo.tile.activity.set.body.mediaRemoved'));
+          }
+          break;
+        case 'items':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.items'));
+          break;
+        default:
+          break;
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoTileDeletedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo.tile.activity.deleted.title', {
+      args: { username: requesterName, x: activity.parameters?.x, y: activity.parameters?.y },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoTileMovedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const key = activity.parameters?.swapped ? 'swapped' : 'moved';
+    const title = this.i18nService.t(`bingo.tile.activity.${key}.title`, {
+      args: {
+        username: requesterName,
+        x: activity.parameters?.x,
+        y: activity.parameters?.y,
+        toX: activity.parameters?.toX,
+        toY: activity.parameters?.toY,
+      },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
   }
 
   private async preloadUsers(activities: Activity[]): Promise<void> {

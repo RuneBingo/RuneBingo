@@ -5,6 +5,7 @@ import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { participantHasBingoRole } from '@/bingo/participant/roles/bingo-roles.utils';
 import { type User } from '@/user/user.entity';
 
+import { BingoStatus } from './bingo-status.enum';
 import { type Bingo } from './bingo.entity';
 
 type FieldUpdateRestriction = {
@@ -15,21 +16,24 @@ type FieldUpdateRestriction = {
 export class BingoPolicies {
   constructor(private readonly requester: User) {}
 
-  canUpdate(participant: BingoParticipant | null, updates: Partial<Bingo>) {
+  canUpdate(
+    participant: BingoParticipant | null,
+    updates: Partial<Bingo>,
+  ): { allowed: boolean; bypassStatusRestrictions?: boolean } {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 
     for (const field of Object.keys(updates)) {
       const restriction = this.fieldUpdateRestrictions[field] as FieldUpdateRestriction | undefined;
-      if (!restriction) return false;
+      if (!restriction) return { allowed: false };
 
       if (restriction.moderatorBypass && requesterIsModerator) continue;
 
-      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return false;
+      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return { allowed: false };
 
-      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return false;
+      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return { allowed: false };
     }
 
-    return true;
+    return { allowed: true, bypassStatusRestrictions: requesterIsModerator };
   }
 
   canDelete(participant: BingoParticipant | null) {
@@ -64,6 +68,25 @@ export class BingoPolicies {
     }
 
     return true;
+  }
+
+  canCreateOrEditTile(participant: BingoParticipant | null, bingo: Bingo): boolean {
+    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+    if (requesterIsModerator) return true;
+
+    if (
+      bingo.status !== BingoStatus.Pending ||
+      !participant ||
+      !participantHasBingoRole(participant, BingoRoles.Organizer)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  canDeleteTile(participant: BingoParticipant | null, bingo: Bingo): boolean {
+    return this.canCreateOrEditTile(participant, bingo);
   }
 
   /** Determines which fields can be updated and in which conditions for the `canUpdate` policy. */

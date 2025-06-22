@@ -22,6 +22,9 @@ export class OsrsItemDto {
   examine: string;
 
   @ApiProperty()
+  iconUrl: string;
+
+  @ApiProperty()
   imageUrl: string;
 
   static fromOsrsItem(entity: OsrsItem) {
@@ -32,6 +35,7 @@ export class OsrsItemDto {
     dto.exchangeable = entity.exchangeable;
     dto.members = entity.members;
     dto.examine = entity.examine;
+    dto.iconUrl = entity.iconUrl;
     dto.imageUrl = entity.imageUrl;
 
     return dto;

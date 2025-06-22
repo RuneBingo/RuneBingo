@@ -2,10 +2,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Check, ChevronsUpDownIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
 import { listMyBingos, setCurrentBingo as setCurrentBingoApi } from '@/api/auth';
 import { BingoRoles, BingoStatus, type ShortBingoDto } from '@/api/types';
+import toast from '@/common/utils/toast';
 import { cn } from '@/design-system/lib/utils';
 import { Button } from '@/design-system/ui/button';
 import {
@@ -86,7 +86,7 @@ export default function SelectBingo() {
       const response = await setCurrentBingoApi(bingo.id);
       if ('error' in response) {
         const { message } = transformApiError(response);
-        if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+        if (message) toast.error(message);
 
         return;
       }

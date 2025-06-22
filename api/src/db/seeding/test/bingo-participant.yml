@@ -25,6 +25,11 @@ char0o-started:
   bingo: started-bingo
   role: 'organizer'
 
+didiking-started:
+  user: didiking
+  bingo: started-bingo
+  role: 'organizer'
+
 char0o-ended:
   user: char0o
   bingo: ended-bingo

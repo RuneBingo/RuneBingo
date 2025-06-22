@@ -5,8 +5,17 @@ import { Textarea } from '@/design-system/ui/textarea';
 
 import type { TextAreaFieldProps } from './types';
 
-export default function TextAreaField({ label, onChange, error, ...props }: TextAreaFieldProps) {
+export default function TextAreaField({ label, error, readOnly, onChange, ...props }: TextAreaFieldProps) {
   const id = useId();
+
+  if (readOnly) {
+    return (
+      <div className="mb-5">
+        {label && <Label className="mb-2">{label}</Label>}
+        <p className="text-sm">{props.value}</p>
+      </div>
+    );
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(event.target.value);

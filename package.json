@@ -5,7 +5,8 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "docker compose up -d && concurrently -n Codegen,API,Frontend -c magenta,green,blue \"npm run generate-types ../frontend/src/api/types.ts -w api\" \"npm run start:dev -w api\" \"npm run dev -w frontend\""
+    "dev": "docker compose up -d && concurrently -n Codegen,API,Frontend -c magenta,green,blue \"npm run generate-types\" \"npm run start:dev -w api\" \"npm run dev -w frontend\"",
+    "generate-types": "npm run generate-types ../frontend/src/api/types.ts -w api"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

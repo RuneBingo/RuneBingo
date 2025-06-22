@@ -4,12 +4,12 @@ import { Form, FormikContext, type FormikHelpers, useFormik } from 'formik';
 import { CameraIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import { toast } from 'sonner';
 
 import { type UserDto } from '@/api/types';
 import { updateUserByUsername } from '@/api/user';
 import { useAppContext } from '@/common/context';
 import useSuccessMessages from '@/common/hooks/use-success-messages';
+import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import Avatar from '@/design-system/components/avatar';
 import SelectField from '@/design-system/components/select-field';
@@ -53,7 +53,7 @@ export default function MyAccountForm({ user }: MyAccountFormProps) {
     if ('error' in response) {
       const { message, validationErrors } = transformApiError(response);
       if (validationErrors) setErrors(validationErrors);
-      if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+      if (message) toast.error(message);
 
       return;
     }
@@ -66,11 +66,7 @@ export default function MyAccountForm({ user }: MyAccountFormProps) {
     }
 
     router.refresh();
-    toast.success(t('success'), {
-      richColors: true,
-      dismissible: true,
-      position: 'bottom-center',
-    });
+    toast.success(t('success'));
   };
 
   const formik = useFormik<AccountFormValues>({

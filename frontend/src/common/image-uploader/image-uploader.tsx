@@ -2,12 +2,13 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { X } from 'lucide-react';
-import NextImage from 'next/image';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { uploadMedia } from '@/api/media';
 import type { MediaDto } from '@/api/types';
+import toast from '@/common/utils/toast';
 import { Button } from '@/design-system/ui/button';
 import { Input } from '@/design-system/ui/input';
 import { Skeleton } from '@/design-system/ui/skeleton';
@@ -20,11 +21,14 @@ export const IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/
 
 export type ImageUploaderProps = {
   value: MediaDto | null;
+  readOnly?: boolean;
+  emptyMessage?: string;
   onChange: (value: MediaDto | null) => void;
 };
 
-export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
+export default function ImageUploader({ value, readOnly, emptyMessage, onChange }: ImageUploaderProps) {
   const [aspectRatio, setAspectRatio] = useState(1);
+  const t = useTranslations('common.imageUploader');
 
   const { mutate: handleUpload, isPending: isUploading } = useMutation({
     mutationKey: ['uploadImage'],
@@ -32,7 +36,7 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
       const response = await uploadMedia(file);
       if ('error' in response) {
         const { message } = transformApiError(response);
-        if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+        if (message) toast.error(message);
 
         return;
       }
@@ -41,13 +45,19 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
     },
   });
 
-  const handleRemove = () => {
-    onChange(null);
-  };
+  if (readOnly) {
+    if (!value) return <p>{emptyMessage || t('noImage')}</p>;
+
+    return <Image width={value.width} height={value.height} src={value.url} alt={value.originalName} />;
+  }
 
   if (isUploading) {
     return <Skeleton className="w-full" style={{ aspectRatio }} />;
   }
+
+  const handleRemove = () => {
+    onChange(null);
+  };
 
   if (value) {
     return (
@@ -55,7 +65,7 @@ export default function ImageUploader({ value, onChange }: ImageUploaderProps) {
         <div className="relative w-fit min-w-16 min-h-8 max-w-full group">
           <TooltipTrigger asChild>
             <a href={value.url} target="_blank" rel="noopener noreferrer">
-              <NextImage
+              <Image
                 src={value.url}
                 alt="Uploaded image"
                 width={value.width}

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, Unique } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
@@ -24,7 +24,7 @@ export class BingoTeam extends StrongEntityParanoid {
   @Column({ name: 'captain_id', type: 'int' })
   captainId: number;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'captain_id' })
   captain: Promise<User>;
 
