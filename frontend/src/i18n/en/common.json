@@ -1,6 +1,9 @@
 {
   "appName": "RuneBingo",
   "language": "Language",
+  "error": {
+    "unexpected": "An unexpected error has occurred. Please try again later."
+  },
   "languages": {
     "en": "English",
     "fr": "Français"
@@ -30,6 +33,19 @@
       "myApplications": "My applications",
       "myRequests": "My requests",
       "signOut": "Sign out"
+    }
+  },
+  "noResults": "No results found",
+  "selectItem": {
+    "addItemButton": "Add Item",
+    "popover": {
+      "title": "Add an item",
+      "search": {
+        "placeholder": "Search an item"
+      },
+      "pager": {
+        "page": "Page "
+      }
     }
   }
 }
