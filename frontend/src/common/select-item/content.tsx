@@ -1,0 +1,62 @@
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
+import { Fragment } from 'react';
+
+import { type OsrsItemDto } from '@/api/types';
+import { cn } from '@/design-system/lib/utils';
+import { Skeleton } from '@/design-system/ui/skeleton';
+
+import { ITEMS_PER_PAGE } from './constants';
+import Pager from './pager';
+import { useSelectItemContext } from './provider';
+
+export default function Content() {
+  const t = useTranslations('common');
+  const { value, items, isError, isLoading, onChange } = useSelectItemContext();
+
+  if (isLoading)
+    return (
+      <div className="px-2 py-1.5">
+        {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+          <div className="flex gap-3 px-3 py-2 w-full" key={index}>
+            <Skeleton className="h-8 w-8 rounded-sm shrink-0" />
+            <Skeleton className="w-full h-8 rounded-md" />
+          </div>
+        ))}
+      </div>
+    );
+
+  if (isError) return <span className="text-sm font-medium">{t('error.unexpected')}</span>;
+
+  if (!items || items.length === 0) return <span className="text-sm font-medium">{t('noResults')}</span>;
+
+  const itemIsSelected = (item: OsrsItemDto) => value.some((i) => i.id === item.id);
+
+  const handleSelectItem = (item: OsrsItemDto) => {
+    if (value.some((i) => i.id === item.id)) {
+      onChange(value.filter((i) => i.id !== item.id));
+      return;
+    }
+
+    onChange([...value, item]);
+  };
+
+  return (
+    <Fragment>
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className={cn(
+            'flex gap-3 items-center px-3 py-2 hover:bg-slate-300 cursor-pointer rounded-md transition-colors',
+            itemIsSelected(item) && 'bg-slate-200',
+          )}
+          onClick={() => handleSelectItem(item)}
+        >
+          <Image src={item.imageUrl} width={32} height={32} alt={item.name} className="w-8 h-8 object-contain" />
+          <span className="text-sm font-medium">{item.name}</span>
+        </div>
+      ))}
+      <Pager />
+    </Fragment>
+  );
+}
