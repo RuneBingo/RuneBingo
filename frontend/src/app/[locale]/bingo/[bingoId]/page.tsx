@@ -6,13 +6,13 @@ import { getAuthenticatedUser, listMyBingos } from '@/api/auth';
 import { getBingo } from '@/api/bingo';
 import { BingoRoles } from '@/api/types';
 import NotCurrentBingoTip from '@/common/bingo/not-current-bingo-tip';
+import BingoStatusBadge from '@/common/bingo/status-badge';
 import { type ServerSideRootProps } from '@/common/types';
 import { formatDateToLocale } from '@/common/utils/date';
 import Avatar from '@/design-system/components/avatar';
 import { Title } from '@/design-system/components/title';
 
 import Actions from './actions';
-import StatusBadge from './status-badge';
 
 type Params = {
   bingoId: string;
@@ -30,24 +30,16 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
   const userParticipations = await listMyBingos();
   const currentBingoParticipation = userParticipations.find((participation) => participation.id === bingoId);
 
-  const [isCurrentBingoOrganizer, isBingoOrganizer] = (() => {
-    if (!user) return [false, false];
-    const isCurrentBingoOrganizer =
-      user.currentBingo?.id === bingoId && [BingoRoles.Owner, BingoRoles.Organizer].includes(user.currentBingo.role);
-    if (isCurrentBingoOrganizer) return [true, true];
+  const isBingoOrganizer =
+    currentBingoParticipation &&
+    (currentBingoParticipation?.role === BingoRoles.Owner || currentBingoParticipation?.role === BingoRoles.Organizer);
 
-    const isBingoOrganizer =
-      currentBingoParticipation &&
-      (currentBingoParticipation?.role === BingoRoles.Owner ||
-        currentBingoParticipation?.role === BingoRoles.Organizer);
-
-    return [isCurrentBingoOrganizer, isBingoOrganizer];
-  })();
+  const isCurrentBingoOrganizer = user?.currentBingo?.id === bingoId && isBingoOrganizer;
 
   return (
     <div className="max-w-5xl">
       <NotCurrentBingoTip bingoId={bingoId} visible={Boolean(!isCurrentBingoOrganizer && isBingoOrganizer)} />
-      <StatusBadge status={bingo.status} className="mb-2" />
+      <BingoStatusBadge status={bingo.status} className="mb-2" />
       <div className="w-full flex items-center justify-between mb-8">
         <Title.Primary className="!mb-0">{bingo.title}</Title.Primary>
         {isCurrentBingoOrganizer && <Actions bingo={bingo} />}

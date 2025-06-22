@@ -32,13 +32,13 @@ function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps
   const statusColor = (() => {
     switch (status) {
       case BingoStatus.Canceled:
-        return 'bg-gray-500';
+        return 'bg-destructive';
       case BingoStatus.Completed:
-        return 'bg-red-500';
+        return 'bg-success';
       case BingoStatus.Ongoing:
-        return 'bg-green-500';
+        return 'bg-active';
       case BingoStatus.Pending:
-        return 'bg-yellow-500';
+        return 'bg-warning';
       default:
         return undefined;
     }

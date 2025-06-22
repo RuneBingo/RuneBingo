@@ -4,12 +4,12 @@ import { type ComponentProps } from 'react';
 import { BingoStatus } from '@/api/types';
 import { Badge } from '@/design-system/ui/badge';
 
-export type StatusBadgeProps = {
+export type BingoStatusBadgeProps = {
   status: BingoStatus;
   className?: string;
 };
 
-export default function StatusBadge({ status, className }: StatusBadgeProps) {
+export default function BingoStatusBadge({ status, className }: BingoStatusBadgeProps) {
   const t = useTranslations('bingo.status');
 
   const badgeVariant = (() => {
@@ -17,9 +17,11 @@ export default function StatusBadge({ status, className }: StatusBadgeProps) {
       case BingoStatus.Pending:
         return 'warning';
       case BingoStatus.Ongoing:
-        return 'success';
+        return 'active';
       case BingoStatus.Completed:
-        return 'gray';
+        return 'success';
+      case BingoStatus.Canceled:
+        return 'destructive';
     }
   })() satisfies ComponentProps<typeof Badge>['variant'];
 
