@@ -20,6 +20,7 @@ export default function DateField({
   placeholder,
   locale,
   className,
+  modal,
   ...props
 }: DateFieldProps) {
   const id = useId();
@@ -41,7 +42,7 @@ export default function DateField({
           {label}
         </Label>
       )}
-      <Popover>
+      <Popover modal={modal}>
         <PopoverTrigger asChild>
           <Button
             id={id}
@@ -64,6 +65,7 @@ export default function DateField({
             onSelect={handleDateSelect}
             locale={dateFnsLocale}
             initialFocus
+            defaultMonth={selectedDate}
           />
         </PopoverContent>
       </Popover>

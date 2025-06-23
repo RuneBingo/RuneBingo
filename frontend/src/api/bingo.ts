@@ -1,6 +1,5 @@
-import type { PaginatedBingosDto } from '@/api/types';
-
-import { get, type PaginatedQueryParams } from '.';
+import { get, put, type PaginatedQueryParams } from '.';
+import type { BingoDto, PaginatedBingosDto, UpdateBingoDto } from './types';
 
 type SearchBingosParams = PaginatedQueryParams<{
   search?: string;
@@ -27,4 +26,12 @@ export async function searchBingos(params: SearchBingosParams) {
   }
 
   return response.data;
+}
+
+export async function getBingo(bingoId: string) {
+  return get<BingoDto>(`/bingo/${bingoId}`);
+}
+
+export async function updateBingo(bingoId: string, updates: UpdateBingoDto) {
+  return put<UpdateBingoDto, BingoDto>(`/bingo/${bingoId}`, updates);
 }

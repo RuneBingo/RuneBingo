@@ -4,10 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
 import { Repository } from 'typeorm';
 
+import { UpdateBingoDto } from '@/bingo/dto/update-bingo.dto';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
 import { type User } from '@/user/user.entity';
 
+import { BingoStatus } from '../bingo-status.enum';
 import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
@@ -15,18 +17,7 @@ import { BingoUpdatedEvent } from '../events/bingo-updated.event';
 export type UpdateBingoParams = {
   bingoId: string;
   requester: User;
-  updates: {
-    language?: string;
-    title?: string;
-    description?: string;
-    private?: boolean;
-    width?: number;
-    height?: number;
-    fullLineValue?: number;
-    startDate?: string;
-    endDate?: string;
-    maxRegistrationDate?: string;
-  };
+  updates: UpdateBingoDto;
 };
 
 export type UpdateBingoResult = Bingo;
@@ -34,18 +25,7 @@ export type UpdateBingoResult = Bingo;
 export class UpdateBingoCommand extends Command<Bingo> {
   public readonly bingoId: string;
   public readonly requester: User;
-  public readonly updates: {
-    language?: string;
-    title?: string;
-    description?: string;
-    private?: boolean;
-    width?: number;
-    height?: number;
-    fullLineValue?: number;
-    startDate?: string;
-    endDate?: string;
-    maxRegistrationDate?: string;
-  };
+  public readonly updates: UpdateBingoDto;
   constructor({ bingoId, requester, updates }: UpdateBingoParams) {
     super();
     this.bingoId = bingoId;
@@ -79,10 +59,6 @@ export class UpdateBingoHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, bingo)) {
-      throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
-    }
-
     const updates = Object.fromEntries(
       Object.entries(command.updates).filter(([key, value]) => {
         const current = bingo![key as keyof Bingo];
@@ -97,20 +73,11 @@ export class UpdateBingoHandler {
       return bingo;
     }
 
-    const newStartDate = new Date(updates.startDate || bingo.startDate);
-    const newEndDate = new Date(updates.endDate || bingo.endDate);
-
-    if (newStartDate >= newEndDate) {
-      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.startDateAfterEndDate'));
+    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, updates)) {
+      throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
     }
 
-    if (newEndDate <= newStartDate) {
-      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.endDateBeforeStartDate'));
-    }
-
-    if (updates.maxRegistrationDate && new Date(updates.maxRegistrationDate) >= newStartDate) {
-      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.registrationDateAfterStartDate'));
-    }
+    this.validateUpdates(bingo, updates);
 
     Object.assign(bingo, updates);
     bingo.updatedById = requester.id;
@@ -128,4 +95,58 @@ export class UpdateBingoHandler {
 
     return bingo;
   }
+
+  private validateUpdates(bingo: Bingo, updates: UpdateBingoDto) {
+    for (const [key] of Object.entries(updates)) {
+      const statusRestrictions = this.fieldUpdateStatusRestrictions[key as keyof Bingo];
+      if (!statusRestrictions || statusRestrictions.includes(bingo.status)) continue;
+
+      throw new BadRequestException(
+        this.i18nService.t('bingo.updateBingo.statusRestricted', {
+          args: {
+            field: this.i18nService.t(`bingo.entity.${key as keyof UpdateBingoDto}`),
+            status: this.i18nService.t(`bingo.status.${bingo.status}`),
+          },
+        }),
+        {
+          cause: {
+            field: key,
+            status: bingo.status,
+          },
+        },
+      );
+    }
+
+    this.validateDateUpdates(bingo, updates);
+  }
+
+  private validateDateUpdates(bingo: Bingo, updates: UpdateBingoDto) {
+    const newStartDate = new Date(updates.startDate || bingo.startDate);
+    const newEndDate = new Date(updates.endDate || bingo.endDate);
+
+    if (newStartDate >= newEndDate) {
+      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.startDateAfterEndDate'));
+    }
+
+    if (newEndDate <= newStartDate) {
+      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.endDateBeforeStartDate'));
+    }
+
+    if (updates.maxRegistrationDate && new Date(updates.maxRegistrationDate) >= newStartDate) {
+      throw new BadRequestException(this.i18nService.t('bingo.updateBingo.registrationDateAfterStartDate'));
+    }
+  }
+
+  private readonly fieldUpdateStatusRestrictions: Readonly<{ [key in keyof Bingo]?: BingoStatus[] }> = {
+    language: [BingoStatus.Pending],
+    title: [BingoStatus.Pending, BingoStatus.Ongoing],
+    description: [BingoStatus.Pending, BingoStatus.Ongoing],
+    private: [BingoStatus.Pending],
+    startDate: [BingoStatus.Pending],
+    endDate: [BingoStatus.Pending, BingoStatus.Ongoing],
+    maxRegistrationDate: [BingoStatus.Pending],
+    width: [BingoStatus.Pending],
+    height: [BingoStatus.Pending],
+    fullLineValue: [BingoStatus.Pending],
+  };
 }

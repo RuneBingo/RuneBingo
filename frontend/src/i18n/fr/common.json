@@ -1,5 +1,6 @@
 {
   "appName": "RuneBingo",
+  "language": "Langue",
   "error": {
     "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
   },

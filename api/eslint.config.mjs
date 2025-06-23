@@ -5,6 +5,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
+import eslintPluginUnusedImports from 'eslint-plugin-unused-imports';
 
 export default tseslint.config(
   {
@@ -28,6 +29,9 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
         sourceType: 'module',
       },
+    },
+    plugins: {
+      'unused-imports': eslintPluginUnusedImports,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
@@ -65,7 +69,17 @@ export default tseslint.config(
           fixStyle: 'inline-type-imports',
         },
       ],
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'after-used',
+          argsIgnorePattern: '^_',
+        },
+      ],
     },
     settings: {
       'import/resolver': {

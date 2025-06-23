@@ -1,3 +1,5 @@
+import tailwindcssAnimate from 'tailwindcss-animate';
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
@@ -30,9 +32,25 @@ module.exports = {
           DEFAULT: 'hsl(var(--success))',
           foreground: 'hsl(var(--success-foreground))',
         },
+        warning: {
+          DEFAULT: 'hsl(var(--warning))',
+          foreground: 'hsl(var(--warning-foreground))',
+        },
+        gray: {
+          DEFAULT: 'hsl(var(--gray))',
+          foreground: 'hsl(var(--gray-foreground))',
+        },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
+        },
+        tip: {
+          DEFAULT: 'hsl(var(--tip))',
+          foreground: 'hsl(var(--tip-foreground))',
+        },
+        active: {
+          DEFAULT: 'hsl(var(--active))',
+          foreground: 'hsl(var(--active-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -77,5 +95,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [tailwindcssAnimate],
 };
