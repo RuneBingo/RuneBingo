@@ -1,4 +1,5 @@
 osrs-qc:
+  bingoId: 00000000-0000-0000-0000-000000000001
   createdBy: char0o
   language: 'en'
   title: 'OSRS QC'
@@ -12,6 +13,7 @@ osrs-qc:
   maxRegistrationDate: '2025-03-31'
 
 german-osrs:
+  bingoId: 00000000-0000-0000-0000-000000000002
   createdBy: raph
   language: 'en'
   title: 'German OSRS'
@@ -25,6 +27,7 @@ german-osrs:
   maxRegistrationDate: '2025-03-31'
 
 ended-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000003
   createdBy: dee420
   language: 'en'
   title: 'ended bingo'
@@ -40,6 +43,7 @@ ended-bingo:
   maxRegistrationDate: '2025-03-31'
 
 started-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000004
   createdBy: didiking
   language: 'en'
   title: 'started bingo'
@@ -54,6 +58,7 @@ started-bingo:
   maxRegistrationDate: '2025-03-31'
 
 deleted-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000005
   createdBy: raph
   language: 'en'
   title: 'deleted bingo'
@@ -68,6 +73,7 @@ deleted-bingo:
   deletedAt: '2024-04-03'
 
 canceled-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000006
   createdBy: dee420
   language: 'en'
   title: 'canceled bingo'

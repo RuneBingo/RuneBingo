@@ -1,21 +1,42 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 
 import { searchItems } from '@/api/osrs-item';
 
 import { ITEMS_PER_PAGE } from './constants';
-import type { SelectItemProviderProps, SelectItemContextType } from './types';
+import type { SelectItemProviderProps, SelectItemContextType, SelectItemValue } from './types';
 
 const SelectItemContext = createContext<SelectItemContextType | undefined>(undefined);
 
 export default function Provider({ value, children, onChange }: SelectItemProviderProps) {
+  const valueRef = useRef<HTMLDivElement>(null);
+
   // Workaround to avoid closing the popover when the select is open
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [pagerOpen, setPagerOpen] = useState(false);
 
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState('');
+
+  const handleChange = useCallback(
+    (value: SelectItemValue[]) => {
+      onChange(value);
+      setPopoverOpen(false);
+    },
+    [onChange],
+  );
+
+  const handleFocusNewItem = useCallback((id: number) => {
+    setTimeout(() => {
+      const valueElement = valueRef.current;
+      if (!valueElement) return;
+
+      const item = valueElement.querySelector<HTMLInputElement>(`input[data-id="${id}"]`);
+      if (!item) return;
+
+      item.focus();
+    }, 200);
+  }, []);
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
@@ -31,10 +52,8 @@ export default function Provider({ value, children, onChange }: SelectItemProvid
   }, []);
 
   const handleQueryChange = useCallback((query: string) => {
-    flushSync(() => {
-      setQuery(query);
-      setPage(0);
-    });
+    setQuery(query);
+    setPage(0);
   }, []);
 
   const {
@@ -63,15 +82,17 @@ export default function Provider({ value, children, onChange }: SelectItemProvid
       query,
       value,
       items,
+      valueRef,
       isError,
       isLoading,
       pagerOpen,
       totalCount,
       setPage: handlePageChange,
       setQuery: handleQueryChange,
-      onChange,
+      onChange: handleChange,
       onOpenChange: handleOpenChange,
       setPagerOpen,
+      focusNewItem: handleFocusNewItem,
     } satisfies SelectItemContextType;
   }, [
     page,
@@ -79,13 +100,15 @@ export default function Provider({ value, children, onChange }: SelectItemProvid
     value,
     response,
     isError,
+    valueRef,
     isLoading,
     pagerOpen,
     popoverOpen,
+    handleFocusNewItem,
     handleQueryChange,
     handleOpenChange,
     handlePageChange,
-    onChange,
+    handleChange,
   ]);
 
   return <SelectItemContext.Provider value={contextValue}>{children(contextValue)}</SelectItemContext.Provider>;

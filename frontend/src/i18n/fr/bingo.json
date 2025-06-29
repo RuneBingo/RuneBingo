@@ -28,6 +28,11 @@
       "endNow": "Terminer maintenant",
       "cancel": "Annuler l'événement"
     },
+    "deleteBingoTile": {
+      "title": "Supprimer la case ({x}, {y}) ?",
+      "description": "Êtes-vous sûr de vouloir supprimer cette case ? Cette action est irréversible.",
+      "success": "La case de bingo a été supprimée avec succès."
+    },
     "editDetails": {
       "title": "Modifier les détails de l'événement",
       "form": {
@@ -44,10 +49,47 @@
         "submit": "Modifier les détails",
         "cancel": "Annuler"
       }
+    },
+    "moveBingoTileSuccess": "La case de bingo a été déplacée avec succès.",
+    "viewOrEditTile": {
+      "title": {
+        "create": "Créer la case ({x}, {y})",
+        "edit": "Modifier la case ({x}, {y})",
+        "view": "Voir la case ({x}, {y})"
+      },
+      "form": {
+        "information": "Information",
+        "title": "Titre",
+        "description": "Description",
+        "value": "Valeur",
+        "free": "Gratuit ?",
+        "image": "Image",
+        "noImage": "Cette case n'a pas d'image.",
+        "noItems": "Cette case n'a pas d'objets.",
+        "items": "Items",
+        "itemsDescription": {
+          "all": "Vous devez obtenir tous les objets suivants pour compléter cette case :",
+          "any": "Vous devez obtenir un des objets suivants pour compléter cette case :"
+        },
+        "submit": "Enregistrer la case",
+        "cancel": "Annuler"
+      },
+      "freeTip": {
+        "title": "<span>🎉</span> Cette case est gratuite !",
+        "description": "Cette case est donnée à chaque équipe gratuitement. Pas besoin de la compléter !"
+      },
+      "success": {
+        "create": "La case de bingo a été créée avec succès.",
+        "edit": "La case de bingo a été mise à jour avec succès.",
+        "delete": "La case de bingo a été supprimée avec succès."
+      }
     }
   },
   "notCurrentBingoTip": {
-    "title": "Vous êtes un organisateur de ce bingo.",
+    "title": {
+      "organizer": "Vous êtes un organisateur de ce bingo.",
+      "owner": "Vous êtes le propriétaire de ce bingo."
+    },
     "description": "Vous pouvez le gérer en <button>le définissant comme votre bingo actuel</button>."
   }
 }

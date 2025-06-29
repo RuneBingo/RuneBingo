@@ -1,0 +1,17 @@
+osrs-qc_3-1:
+  bingo: osrs-qc
+  x: 3
+  y: 1
+  value: 5
+  title: Fremennik rings set
+  description: Obtain each of the Fremennik rings
+  completionMode: all
+
+osrs-qc_4-1:
+  bingo: osrs-qc
+  x: 4
+  y: 1
+  value: 1
+  title: Obtain an Abyssal Whip
+  description: Face the Abyssal Demons to obtain an Abyssal Whip
+  completionMode: all

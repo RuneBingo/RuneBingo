@@ -90,7 +90,7 @@ export default function Navbar({ mode }: NavbarProps) {
           </Drawer>
         )}
         <Link href="/" className="flex items-center gap-2 mr-4">
-          <Image src="/logo.webp" alt="RuneBingo logo" width={48} height={48} />
+          <Image src="/images/logo.webp" alt="RuneBingo logo" width={48} height={48} />
         </Link>
         {mode === 'site' && (
           <div className="hidden md:flex items-center gap-2">

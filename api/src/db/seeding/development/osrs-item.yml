@@ -1,0 +1,59 @@
+abyssal_whip:
+  id: 4151
+  name: Abyssal Whip
+  configName: abyssal_whip
+  category: 150
+  exchangeable: true
+  members: true
+  examine: A weapon from the Abyss.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/4151.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/4151.png
+  enabled: true
+
+seers_ring:
+  id: 6731
+  name: Seers ring
+  configName: seer_ring
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A mysterious ring that can fill the wearer with magical power...
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6731.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6731.png
+  enabled: true
+
+archers_ring:
+  id: 6733
+  name: Archers ring
+  configName: ranger_ring
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A fabled ring that improves the wearer's skill with a bow...
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6733.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6733.png
+  enabled: true
+
+warrior_ring:
+  id: 6735
+  name: Warrior ring
+  configName: warrior_ring
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A legendary ring once worn by Fremennik warriors.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6735.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6735.png
+  enabled: true
+
+berserker_ring:
+  id: 6737
+  name: Berserker ring
+  configName: berzerker_ring
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A ring reputed to bring out a berserk fury in its wearer.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6737.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6737.png
+  enabled: true
