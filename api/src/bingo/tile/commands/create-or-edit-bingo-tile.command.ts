@@ -220,7 +220,7 @@ export class CreateOrEditBingoTileCommandHandler {
 
     const itemsToSave = items.map(({ itemId, quantity }, index) => {
       const osrsItem = osrsItems.find(({ id }) => id === itemId);
-      if (!osrsItem) {
+      if (!osrsItem || !osrsItem.enabled) {
         throw new NotFoundException(
           this.i18nService.t('bingo.tile.createOrEditBingoTile.itemNotFound', {
             args: { itemId },

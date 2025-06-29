@@ -193,7 +193,7 @@ describe('CreateOrEditBingoTileCommandHandler', () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
     const tile = seedingService.getEntity(BingoTile, 'osrs-qc_3-1');
-    const item = seedingService.getEntity(OsrsItem, 'disabled-item');
+    const item = seedingService.getEntity(OsrsItem, 'disabled_item');
 
     const command = new CreateOrEditBingoTileCommand({
       requester,

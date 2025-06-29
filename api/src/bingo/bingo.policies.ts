@@ -16,24 +16,21 @@ type FieldUpdateRestriction = {
 export class BingoPolicies {
   constructor(private readonly requester: User) {}
 
-  canUpdate(
-    participant: BingoParticipant | null,
-    updates: Partial<Bingo>,
-  ): { allowed: boolean; bypassStatusRestrictions?: boolean } {
+  canUpdate(participant: BingoParticipant | null, updates: Partial<Bingo>) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 
     for (const field of Object.keys(updates)) {
       const restriction = this.fieldUpdateRestrictions[field] as FieldUpdateRestriction | undefined;
-      if (!restriction) return { allowed: false };
+      if (!restriction) return false;
 
       if (restriction.moderatorBypass && requesterIsModerator) continue;
 
-      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return { allowed: false };
+      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return false;
 
-      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return { allowed: false };
+      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return false;
     }
 
-    return { allowed: true, bypassStatusRestrictions: requesterIsModerator };
+    return true;
   }
 
   canDelete(participant: BingoParticipant | null) {

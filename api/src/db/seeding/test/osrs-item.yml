@@ -57,3 +57,15 @@ berserker_ring:
   iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6737.png
   imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6737.png
   enabled: true
+
+disabled_item:
+  id: 6737000
+  name: Disabled item
+  configName: disabled_item
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A disabled item. For testing purposes only.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6737000.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6737000.png
+  enabled: false

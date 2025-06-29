@@ -73,12 +73,11 @@ export class UpdateBingoHandler {
       return bingo;
     }
 
-    const { allowed, bypassStatusRestrictions } = new BingoPolicies(requester).canUpdate(bingoParticipant, updates);
-    if (!allowed) {
+    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, updates)) {
       throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
     }
 
-    this.validateUpdates(bingo, updates, bypassStatusRestrictions);
+    this.validateUpdates(bingo, updates);
 
     Object.assign(bingo, updates);
     bingo.updatedById = requester.id;
@@ -97,27 +96,25 @@ export class UpdateBingoHandler {
     return bingo;
   }
 
-  private validateUpdates(bingo: Bingo, updates: UpdateBingoDto, bypassStatusRestrictions?: boolean) {
-    if (!bypassStatusRestrictions) {
-      for (const [key] of Object.entries(updates)) {
-        const statusRestrictions = this.fieldUpdateStatusRestrictions[key as keyof Bingo];
-        if (!statusRestrictions || statusRestrictions.includes(bingo.status)) continue;
+  private validateUpdates(bingo: Bingo, updates: UpdateBingoDto) {
+    for (const [key] of Object.entries(updates)) {
+      const statusRestrictions = this.fieldUpdateStatusRestrictions[key as keyof Bingo];
+      if (!statusRestrictions || statusRestrictions.includes(bingo.status)) continue;
 
-        throw new BadRequestException(
-          this.i18nService.t('bingo.updateBingo.statusRestricted', {
-            args: {
-              field: this.i18nService.t(`bingo.entity.${key as keyof UpdateBingoDto}`),
-              status: this.i18nService.t(`bingo.status.${bingo.status}`),
-            },
-          }),
-          {
-            cause: {
-              field: key,
-              status: bingo.status,
-            },
+      throw new BadRequestException(
+        this.i18nService.t('bingo.updateBingo.statusRestricted', {
+          args: {
+            field: this.i18nService.t(`bingo.entity.${key as keyof UpdateBingoDto}`),
+            status: this.i18nService.t(`bingo.status.${bingo.status}`),
           },
-        );
-      }
+        }),
+        {
+          cause: {
+            field: key,
+            status: bingo.status,
+          },
+        },
+      );
     }
 
     this.validateDateUpdates(bingo, updates);
