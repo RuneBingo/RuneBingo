@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 import { updateBingo } from '@/api/bingo';
 import { type UpdateBingoDto } from '@/api/types';
+import { useConfirmationModal } from '@/common/confirmation-modal';
 import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import { useRouter } from '@/i18n/navigation';
@@ -17,6 +18,7 @@ export default function ActionsProvider({ children, bingo }: ActionsProviderProp
   const router = useRouter();
   const [currentAction, setCurrentAction] = useState<ActionKey | null>(null);
   const t = useTranslations('bingo.bingoCard');
+  const { askConfirmation } = useConfirmationModal();
 
   const callAction = useCallback(
     (actionKey: ActionKey) => {
@@ -39,9 +41,28 @@ export default function ActionsProvider({ children, bingo }: ActionsProviderProp
     mutationFn: (async ({ input, setErrors }) => {
       const response = await updateBingo(bingo.bingoId, input);
       if ('error' in response) {
+        if (response.statusCode === 409) {
+          /* If we get a 409, it's because we're changing the bingo size and it would lead to some tiles being deleted.
+             In that case, we need to ask confirmation and if the user confirms, we update the bingo with the confirmTileDeletion flag. */
+          const { message } = transformApiError(response);
+          const confirmed = await askConfirmation({
+            title: t('editDetails.confirmTileDeletion.title'),
+            description: message ?? '',
+            confirmLabel: t('editDetails.confirmTileDeletion.confirm'),
+          });
+
+          if (!confirmed) return;
+
+          const updatedInput = { ...input, confirmTileDeletion: true };
+          updateBingoMutation.mutate({ input: updatedInput, setErrors });
+
+          return;
+        }
+
         const { message, validationErrors } = transformApiError(response);
         if (message) toast.error(message);
         if (validationErrors) setErrors?.(validationErrors);
+
         return;
       }
 

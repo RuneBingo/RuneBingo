@@ -44,4 +44,8 @@ export class UpdateBingoDto {
   @IsOptional()
   @IsISO8601()
   maxRegistrationDate?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  confirmTileDeletion?: boolean;
 }

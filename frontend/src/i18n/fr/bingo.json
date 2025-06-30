@@ -48,6 +48,11 @@
         "fullLineValue": "Points obtenus par ligne complète",
         "submit": "Modifier les détails",
         "cancel": "Annuler"
+      },
+      "success": "Les détails de l'événement ont été mis à jour avec succès.",
+      "confirmTileDeletion": {
+        "title": "Confirmer la suppression des cases ?",
+        "confirm": "Confirmer"
       }
     },
     "moveBingoTileSuccess": "La case de bingo a été déplacée avec succès.",

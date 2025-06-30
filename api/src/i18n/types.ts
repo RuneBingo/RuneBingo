@@ -77,6 +77,10 @@ export type I18nTranslations = {
             "endDateBeforeStartDate": string;
             "registrationDateAfterStartDate": string;
             "statusRestricted": string;
+            "tileDeletionNotConfirmed": {
+                "singular": string;
+                "plural": string;
+            };
         };
         "deleteBingo": {
             "bingoNotFound": string;

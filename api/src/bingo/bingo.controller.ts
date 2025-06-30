@@ -129,7 +129,7 @@ export class BingoController {
 
   @Put(':bingoId')
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Update a bingo event' })
+  @ApiOperation({ summary: 'Update a bingo event details' })
   @ApiOkResponse({ description: 'The bingo has been updated.', type: BingoDto })
   @ApiBadRequestResponse({ description: 'Invalid request parameters.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to modify this bingo event.' })

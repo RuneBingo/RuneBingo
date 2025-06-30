@@ -50,7 +50,11 @@
         "submit": "Edit event details",
         "cancel": "Discard changes"
       },
-      "success": "Event details updated successfully."
+      "success": "Event details updated successfully.",
+      "confirmTileDeletion": {
+        "title": "Confirm tile deletion?",
+        "confirm": "Confirm"
+      }
     },
     "moveBingoTileSuccess": "Bingo tile moved successfully.",
     "viewOrEditTile": {

@@ -15,7 +15,11 @@
     "startDateAfterEndDate": "La date de début doit être avant la date de fin.",
     "endDateBeforeStartDate": "La date de fin doit être après la date de début.",
     "registrationDateAfterStartDate": "La date limite d'enregistrement doit être avant la date de début.",
-    "statusRestricted": "Vous ne pouvez le/la {field} pendant que le bingo est {status}."
+    "statusRestricted": "Vous ne pouvez pas modifier le/la {field} pendant que le bingo est {status}.",
+    "tileDeletionNotConfirmed": {
+      "singular": "Vous êtes sur le point de changer la taille du bingo, ce qui supprimerait une case. Veuillez confirmer la suppression d'une case.",
+      "plural": "Vous êtes sur le point de changer la taille du bingo, ce qui supprimerait certaines cases. Veuillez confirmer la suppression de {count} cases."
+    }
   },
   "deleteBingo": {
     "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",

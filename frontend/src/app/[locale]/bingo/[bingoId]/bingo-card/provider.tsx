@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createContext, Fragment, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, Fragment, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { listBingoTiles } from '@/api/bingo';
 
@@ -37,6 +37,11 @@ export default function BingoCardProvider({ children, role, bingo, bingoTiles, r
     enabled: false,
     initialData: bingoTiles,
   });
+
+  // Refetch when the bingo size changes because this will lead to some tiles being deleted
+  useEffect(() => {
+    refetch();
+  }, [bingo.width, bingo.height, refetch]);
 
   const handleRefetch = useCallback(async () => {
     await refetch();

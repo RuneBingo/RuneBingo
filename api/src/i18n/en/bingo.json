@@ -16,7 +16,11 @@
     "startDateAfterEndDate": "The start date must be earlier than the end date.",
     "endDateBeforeStartDate": "The end date must be later than the start date.",
     "registrationDateAfterStartDate": "The registration date must be before the start date.",
-    "statusRestricted": "You cannot update {field} while the bingo is {status}."
+    "statusRestricted": "You cannot update {field} while the bingo is {status}.",
+    "tileDeletionNotConfirmed": {
+      "singular": "You're about to change the bingo size, which would delete one tile. Please confirm the deletion of one tile.",
+      "plural": "You're about to change the bingo size, which would delete some tiles. Please confirm the deletion of {count} tiles."
+    }
   },
   "deleteBingo": {
     "bingoNotFound": "No bingo with this id was found.",

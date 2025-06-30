@@ -53,7 +53,6 @@ export default function EditDetails() {
     closeAction();
   };
 
-  // TODO: handle scroll in the dialog content
   return (
     <Modal open={currentAction === 'editDetails'} onOpenChange={closeAction}>
       <Modal.Header title={t('title')} />
