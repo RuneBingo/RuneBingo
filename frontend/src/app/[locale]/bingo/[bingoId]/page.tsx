@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 
 import { getAuthenticatedUser, listMyBingos } from '@/api/auth';
 import { getBingo, listBingoTiles } from '@/api/bingo';
-import { BingoRoles } from '@/api/types';
+import { BingoRoles, BingoStatus } from '@/api/types';
 import NotCurrentBingoTip from '@/common/bingo/not-current-bingo-tip';
 import BingoStatusBadge from '@/common/bingo/status-badge';
 import { type ServerSideRootProps } from '@/common/types';
@@ -49,6 +49,8 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
     (currentBingoParticipation?.role === BingoRoles.Owner || currentBingoParticipation?.role === BingoRoles.Organizer);
 
   const isCurrentBingoOrganizer = user?.currentBingo?.id === bingoId && isBingoOrganizer;
+
+  const readOnlyCard = !isCurrentBingoOrganizer || bingo.status !== BingoStatus.Pending;
 
   return (
     <Fragment>
@@ -103,6 +105,7 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
         role={user?.currentBingo?.id === bingoId ? currentBingoParticipation?.role : undefined}
         bingo={bingo}
         bingoTiles={bingoTiles}
+        readOnly={readOnlyCard}
       />
     </Fragment>
   );

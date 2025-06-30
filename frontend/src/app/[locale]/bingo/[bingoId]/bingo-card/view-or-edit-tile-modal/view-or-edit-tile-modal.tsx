@@ -121,12 +121,12 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
   return (
     <FormikContext.Provider value={formik}>
       <Modal open={open} onOpenChange={onOpenChange} disableInteractOutside>
-        <Modal.Header title={t(`title.${mode}`, { x: x ?? 0, y: y ?? 0 })} />
-        <Modal.Body>
-          {isFetching ? (
-            <Loading />
-          ) : (
-            <Fragment>
+        {isFetching ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            <Modal.Header title={t(`title.${mode}`, { x: x ?? 0, y: y ?? 0 })} />
+            <Modal.Body>
               <Title.Ternary>{t('form.information')}</Title.Ternary>
               {mode === 'view' && values.free && (
                 <div className="mb-5">
@@ -189,18 +189,18 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
                 readOnly={mode === 'view'}
                 emptyMessage={t('form.noItems')}
               />
-            </Fragment>
-          )}
-        </Modal.Body>
-        {mode !== 'view' && (
-          <Modal.Footer>
-            <Button type="submit" onClick={submitForm}>
-              {t('form.submit')}
-            </Button>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              {t('form.cancel')}
-            </Button>
-          </Modal.Footer>
+            </Modal.Body>
+            {mode !== 'view' && (
+              <Modal.Footer>
+                <Button type="submit" onClick={submitForm}>
+                  {t('form.submit')}
+                </Button>
+                <Button variant="outline" onClick={() => onOpenChange(false)}>
+                  {t('form.cancel')}
+                </Button>
+              </Modal.Footer>
+            )}
+          </Fragment>
         )}
       </Modal>
     </FormikContext.Provider>

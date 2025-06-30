@@ -61,7 +61,8 @@
       "title": {
         "create": "Create bingo tile ({x}, {y})",
         "edit": "Edit bingo tile ({x}, {y})",
-        "view": "View bingo tile ({x}, {y})"
+        "view": "View bingo tile ({x}, {y})",
+        "loading": "Create, view or edit bingo tile (loading...)"
       },
       "form": {
         "information": "Information",

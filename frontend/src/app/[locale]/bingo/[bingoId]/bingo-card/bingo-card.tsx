@@ -3,7 +3,6 @@
 import { Reorder } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
-import { BingoStatus } from '@/api/types';
 import Scrollbar from '@/design-system/components/scrollbar/scrollbar';
 import { cn } from '@/design-system/lib/utils';
 
@@ -16,7 +15,7 @@ export default function BingoCard(providerProps: BingoCardProps) {
 
   return (
     <BingoCardProvider {...providerProps}>
-      {({ bingo: { height, width, status }, bingoTiles, isFetching }) => {
+      {({ bingo: { height, width }, bingoTiles, isFetching }) => {
         if (!bingoTiles) return <p>{t('unexpectedError')}</p>;
 
         return (
@@ -46,7 +45,7 @@ export default function BingoCard(providerProps: BingoCardProps) {
                           },
                         )}
                       >
-                        <Tile x={x} y={y} readOnly={status !== BingoStatus.Pending} />
+                        <Tile x={x} y={y} />
                       </div>
                     );
                   })}

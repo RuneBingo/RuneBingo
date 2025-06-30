@@ -20,13 +20,12 @@ import useTileDrag from './use-tile-drag';
 type TileProps = {
   x: number;
   y: number;
-  readOnly: boolean;
 };
 
-export default function Tile({ x, y, readOnly }: TileProps) {
+export default function Tile({ x, y }: TileProps) {
   const t = useTranslations('bingo.bingoCard');
   const { askConfirmation } = useConfirmationModal();
-  const { role, bingo, bingoTiles, dropTarget, draggingTile, viewOrEditTile, refetch } = useBingoCard();
+  const { role, bingo, bingoTiles, dropTarget, draggingTile, readOnly, viewOrEditTile, refetch } = useBingoCard();
   const { ref, handlePointerDown } = useTileDrag({ x, y });
 
   const bingoTile = bingoTiles?.find((tile) => tile.x === x && tile.y === y);
