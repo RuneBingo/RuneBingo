@@ -53,8 +53,8 @@ export class SearchBingoActivitiesHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canViewActivities(bingoParticipant)) {
-      throw new ForbiddenException(); // this.i18nService.t('bingo.activity.forbidden')
+    if (!new BingoPolicies(requester, bingoParticipant).canViewActivities()) {
+      throw new ForbiddenException(this.i18nService.t('bingo.searchBingoActivities.forbidden'));
     }
 
     const q = this.activityRepository

@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserDto } from '@/user/dto/user.dto';
 
 import { BingoParticipant } from '../bingo-participant.entity';
+import { BingoRoles } from '../roles/bingo-roles.constants';
 
 export class BingoParticipantDto {
   constructor(bingoParticipant: BingoParticipant) {
@@ -33,6 +34,6 @@ export class BingoParticipantDto {
   @ApiProperty()
   user: UserDto | null;
 
-  @ApiProperty()
-  role: string;
+  @ApiProperty({ enum: BingoRoles, enumName: 'BingoRoles' })
+  role: BingoRoles;
 }
