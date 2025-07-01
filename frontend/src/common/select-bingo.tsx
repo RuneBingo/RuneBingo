@@ -29,6 +29,8 @@ type SelectBingoValueDisplayProps = {
 };
 
 function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps) {
+  const t = useTranslations('bingo.status');
+
   const statusColor = (() => {
     switch (status) {
       case BingoStatus.Canceled:
@@ -46,12 +48,12 @@ function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps
 
   return (
     <div className="flex items-center gap-2">
-      {statusColor && (
+      {status && statusColor && (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className={`w-2 h-2 rounded-full ${statusColor}`} />
           </TooltipTrigger>
-          <TooltipContent>{status}</TooltipContent>
+          <TooltipContent>{t(status)}</TooltipContent>
         </Tooltip>
       )}
       {title}
@@ -91,9 +93,8 @@ export default function SelectBingo() {
         return;
       }
 
-      // TODO: if bingoId in route, redirect to the dashboard
       await refreshUser();
-      router.refresh();
+      router.push(`/bingo/${bingo.id}`);
     },
   });
 

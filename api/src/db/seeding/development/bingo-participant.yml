@@ -48,3 +48,27 @@ dee420-ready:
   bingo: ready_bingo
   role: participant
   team: ready-red
+
+raph-lifecycle:
+  user: raph
+  bingo: lifecycle-bingo
+  role: owner
+  team: lifecycle-blue
+
+char0o-lifecycle:
+  user: char0o
+  bingo: lifecycle-bingo
+  role: organizer
+  team: lifecycle-blue
+
+didiking-lifecycle:
+  user: didiking
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-red
+
+dee420-lifecycle:
+  user: dee420
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-red

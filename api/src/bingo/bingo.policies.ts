@@ -14,9 +14,12 @@ type FieldUpdateRestriction = {
 };
 
 export class BingoPolicies {
-  constructor(private readonly requester: User) {}
+  constructor(
+    private readonly requester: User,
+    private readonly participant: BingoParticipant | null = null,
+  ) {}
 
-  canUpdate(participant: BingoParticipant | null, updates: Partial<Bingo>) {
+  canUpdate(updates: Partial<Bingo>) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
 
     for (const field of Object.keys(updates)) {
@@ -25,56 +28,46 @@ export class BingoPolicies {
 
       if (restriction.moderatorBypass && requesterIsModerator) continue;
 
-      if (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer)) return false;
+      if (!this.participant || !participantHasBingoRole(this.participant, BingoRoles.Organizer)) return false;
 
-      if (restriction.owner && !participantHasBingoRole(participant, BingoRoles.Owner)) return false;
+      if (restriction.owner && !participantHasBingoRole(this.participant, BingoRoles.Owner)) return false;
     }
 
     return true;
   }
 
-  canDelete(participant: BingoParticipant | null) {
-    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
-
-    if (!requesterIsModerator && (!participant || !participantHasBingoRole(participant, BingoRoles.Owner))) {
-      return false;
-    }
-
-    return true;
+  canDelete() {
+    return this.isModeratorOrOwner();
   }
 
-  canCancel(participant: BingoParticipant | null, bingo: Bingo) {
-    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
-
-    if (bingo.canceledAt || bingo.endedAt) {
-      return false;
-    }
-
-    if (!requesterIsModerator && (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer))) {
-      return false;
-    }
-
-    return true;
+  canCancel() {
+    return this.isModeratorOrOwner();
   }
 
-  canViewActivities(participant: BingoParticipant | null) {
-    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
-
-    if (!requesterIsModerator && (!participant || !participantHasBingoRole(participant, BingoRoles.Organizer))) {
-      return false;
-    }
-
-    return true;
+  canReset() {
+    return this.isModeratorOrOwner();
   }
 
-  canCreateOrEditTile(participant: BingoParticipant | null, bingo: Bingo): boolean {
+  canStart() {
+    return this.isModeratorOrOrganizer();
+  }
+
+  canEnd() {
+    return this.isModeratorOrOrganizer();
+  }
+
+  canViewActivities() {
+    return this.isModeratorOrOrganizer();
+  }
+
+  canCreateOrEditTile(bingo: Bingo): boolean {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
     if (requesterIsModerator) return true;
 
     if (
       bingo.status !== BingoStatus.Pending ||
-      !participant ||
-      !participantHasBingoRole(participant, BingoRoles.Organizer)
+      !this.participant ||
+      !participantHasBingoRole(this.participant, BingoRoles.Organizer)
     ) {
       return false;
     }
@@ -82,8 +75,26 @@ export class BingoPolicies {
     return true;
   }
 
-  canDeleteTile(participant: BingoParticipant | null, bingo: Bingo): boolean {
-    return this.canCreateOrEditTile(participant, bingo);
+  canDeleteTile(bingo: Bingo): boolean {
+    return this.canCreateOrEditTile(bingo);
+  }
+
+  private isModeratorOrOrganizer() {
+    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+    if (requesterIsModerator) return true;
+
+    if (!this.participant || !participantHasBingoRole(this.participant, BingoRoles.Organizer)) return false;
+
+    return true;
+  }
+
+  private isModeratorOrOwner() {
+    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+    if (requesterIsModerator) return true;
+
+    if (!this.participant || !participantHasBingoRole(this.participant, BingoRoles.Owner)) return false;
+
+    return true;
   }
 
   /** Determines which fields can be updated and in which conditions for the `canUpdate` policy. */

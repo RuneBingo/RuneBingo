@@ -93,6 +93,28 @@ export type I18nTranslations = {
         };
         "searchBingoActivities": {
             "bingoNotFound": string;
+            "forbidden": string;
+        };
+        "startBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notPending": string;
+            "endDateBeforeNow": string;
+            "tilesNotPresent": string;
+            "participantsNotAssignedToTeams": string;
+        };
+        "endBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notOngoing": string;
+        };
+        "resetBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notCanceled": string;
+            "startDateBeforeToday": string;
+            "startDateBeforeMaxRegistrationDate": string;
+            "endDateBeforeStartDate": string;
         };
         "activity": {
             "created": {
@@ -112,19 +134,38 @@ export type I18nTranslations = {
                     "endDate": string;
                 };
             };
+            "started": {
+                "title": string;
+                "titleEarly": string;
+                "body": {
+                    "endDate": string;
+                };
+            };
+            "ended": {
+                "title": string;
+                "titleEarly": string;
+            };
             "deleted": {
                 "title": string;
             };
             "canceled": {
                 "title": string;
             };
+            "reset": {
+                "title": string;
+                "body": {
+                    "startDate": string;
+                    "endDate": string;
+                    "maxRegistrationDate": string;
+                    "deletedTiles": string;
+                    "deletedTeams": string;
+                    "deletedParticipants": string;
+                };
+            };
             "cancelBingo": {
                 "bingoNotFound": string;
                 "forbidden": string;
                 "alreadyCanceled": string;
-            };
-            "searchBingoActivities": {
-                "bingoNotFound": string;
             };
             "findBingoByBingoId": {
                 "bingoNotFound": {

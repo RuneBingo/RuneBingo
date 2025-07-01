@@ -2,8 +2,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-// eslint-disable-next-line import/named
-import { DataSource, In, QueryRunner, Repository } from 'typeorm';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { BingoPolicies } from '@/bingo/bingo.policies';
@@ -100,42 +99,30 @@ export class CreateOrEditBingoTileCommandHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canCreateOrEditTile(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canCreateOrEditTile(bingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.tile.createOrEditBingoTile.forbidden'));
     }
 
-    let bingoTile = await this.bingoTileRepository.findOne({
-      where: { bingoId: bingo.id, x, y },
-      relations: ['items'],
-    });
-
     const { mediaId, items, imageUrl, ...restData } = data;
 
-    bingoTile ??= this.createAndValidateBingoTile(requester, bingo, x, y, restData);
+    const bingoTile =
+      (await this.bingoTileRepository.findOne({
+        where: { bingoId: bingo.id, x, y },
+        relations: ['items'],
+      })) ?? this.createAndValidateBingoTile(requester, bingo, x, y, restData);
 
-    Object.assign(bingoTile, restData);
-    bingoTile.updatedBy = Promise.resolve(requester);
-    bingoTile.updatedById = requester.id;
+    await this.dataSource.transaction(async (manager) => {
+      Object.assign(bingoTile, restData);
+      bingoTile.updatedBy = Promise.resolve(requester);
+      bingoTile.updatedById = requester.id;
 
-    let result: BingoTile;
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    try {
-      // Save once to ensure we have a bingo ID for the items
-      await queryRunner.startTransaction();
       await this.validateAndAssignImage(bingoTile, mediaId, imageUrl);
+      await manager.save(bingoTile);
 
-      result = await queryRunner.manager.save(bingoTile);
+      if (items === undefined) return;
 
-      if (items !== undefined) await this.validateAndUpdateItems(queryRunner, requester, bingoTile, items);
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+      await this.validateAndUpdateItems(manager, requester, bingoTile, items);
+    });
 
     await this.eventBus.publish(
       new BingoTileSetEvent({
@@ -149,7 +136,7 @@ export class CreateOrEditBingoTileCommandHandler {
       }),
     );
 
-    return result;
+    return bingoTile;
   }
 
   private createAndValidateBingoTile(
@@ -223,7 +210,7 @@ export class CreateOrEditBingoTileCommandHandler {
   }
 
   private async validateAndUpdateItems(
-    queryRunner: QueryRunner,
+    manager: EntityManager,
     requester: User,
     bingoTile: BingoTile,
     items: CreateOrEditBingoTileItemDto[],
@@ -233,7 +220,7 @@ export class CreateOrEditBingoTileCommandHandler {
 
     const itemsToDelete = await bingoTile.items;
     if (itemsToDelete?.length) {
-      await queryRunner.manager.remove(itemsToDelete);
+      await manager.remove(itemsToDelete);
       bingoTile.items = Promise.resolve([]);
     }
 
@@ -266,7 +253,7 @@ export class CreateOrEditBingoTileCommandHandler {
       return bingoTileItem;
     });
 
-    await queryRunner.manager.save(itemsToSave);
+    await manager.save(itemsToSave);
     bingoTile.items = Promise.resolve(itemsToSave);
   }
 

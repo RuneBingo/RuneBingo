@@ -15,41 +15,54 @@ import { Bingo } from './bingo.entity';
 import { CancelBingoHandler } from './commands/cancel-bingo.command';
 import { CreateBingoHandler } from './commands/create-bingo.command';
 import { DeleteBingoHandler } from './commands/delete-bingo.command';
+import { EndBingoHandler } from './commands/end-bingo.command';
 import { FormatBingoActivitiesHandler } from './commands/format-bingo-activities.command';
+import { ResetBingoHandler } from './commands/reset-bingo.command';
+import { StartBingoHandler } from './commands/start-bingo.command';
 import { UpdateBingoHandler } from './commands/update-bingo.command';
 import { BingoCanceledHandler } from './events/bingo-canceled.event';
 import { BingoCreatedHandler } from './events/bingo-created.event';
 import { BingoDeletedHandler } from './events/bingo-deleted.event';
+import { BingoEndedHandler } from './events/bingo-ended.event';
+import { BingoResetHandler } from './events/bingo-reset.event';
+import { BingoStartedHandler } from './events/bingo-started.event';
 import { BingoUpdatedHandler } from './events/bingo-updated.event';
 import { FindBingoByBingoIdHandler } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.query';
 import { SearchBingosHandler } from './queries/search-bingos.query';
+import { BingoTile } from './tile/bingo-tile.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam])],
+  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam, BingoTile])],
   controllers: [BingoController],
   providers: [
-    //Commands
-    CreateBingoHandler,
-    UpdateBingoHandler,
-    DeleteBingoHandler,
-    FormatBingoActivitiesHandler,
+    // Commands
     AddBingoParticipantHandler,
-    RemoveBingoParticipantHandler,
-    UpdateBingoParticipantHandler,
     CancelBingoHandler,
+    CreateBingoHandler,
+    DeleteBingoHandler,
+    EndBingoHandler,
+    FormatBingoActivitiesHandler,
+    RemoveBingoParticipantHandler,
+    ResetBingoHandler,
+    StartBingoHandler,
+    UpdateBingoHandler,
+    UpdateBingoParticipantHandler,
 
-    //Queries
+    // Queries
     FindBingoByBingoIdHandler,
-    SearchBingosHandler,
     SearchBingoActivitiesHandler,
     SearchBingoParticipantsHandler,
+    SearchBingosHandler,
 
-    //Events
-    BingoCreatedHandler,
-    BingoUpdatedHandler,
-    BingoDeletedHandler,
+    // Events
     BingoCanceledHandler,
+    BingoCreatedHandler,
+    BingoDeletedHandler,
+    BingoEndedHandler,
+    BingoResetHandler,
+    BingoStartedHandler,
+    BingoUpdatedHandler,
   ],
 })
 export class BingoModule {}

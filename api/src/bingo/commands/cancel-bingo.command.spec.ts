@@ -65,8 +65,8 @@ describe('CancelBingoHandler', () => {
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
   });
 
-  it('throws ForbiddenException if the requester is a bingo participant without organizer role', async () => {
-    const requester = seedingService.getEntity(User, 'dee420');
+  it('throws ForbiddenException if the requester is a bingo participant without owner role', async () => {
+    const requester = seedingService.getEntity(User, 'didiking');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
@@ -89,8 +89,8 @@ describe('CancelBingoHandler', () => {
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
   });
 
-  it('cancels the bingo if user is at least organizer and emits BingoCanceledEvent', async () => {
-    const requester = seedingService.getEntity(User, 'didiking');
+  it('cancels the bingo if user is owner and emits BingoCanceledEvent', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
     const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
 
     const command = new CancelBingoCommand({
@@ -127,7 +127,7 @@ describe('CancelBingoHandler', () => {
     expect(canceledBingo.canceledById).toBe(requester.id);
   });
 
-  it('throws NotFound if the bingo doesnt exist', async () => {
+  it("throws NotFound if the bingo doesn't exist", async () => {
     const requester = seedingService.getEntity(User, 'dee420');
 
     const command = new CancelBingoCommand({
