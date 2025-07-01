@@ -19,8 +19,8 @@ export default function BingoCard(providerProps: BingoCardProps) {
         if (!bingoTiles) return <p>{t('unexpectedError')}</p>;
 
         return (
-          <Scrollbar className="pb-2" horizontal>
-            <Reorder.Group values={bingoTiles} onReorder={(_) => undefined}>
+          <Scrollbar className="pl-1 pb-2.5" horizontal>
+            <Reorder.Group values={bingoTiles} onReorder={(_) => undefined} className="shadow-md rounded-md w-fit">
               {Array.from({ length: height }).map((_, verticalIndex) => (
                 <div key={verticalIndex} className="relative flex w-fit">
                   {Array.from({ length: width }).map((_, horizontalIndex) => {
@@ -34,7 +34,7 @@ export default function BingoCard(providerProps: BingoCardProps) {
                         data-y={y}
                         key={key}
                         className={cn(
-                          'group relative w-[125px] h-[125px] p-1.5 border-r-1 border-b-1 border-foreground',
+                          'group relative w-[125px] h-[125px] p-1.5 border-r-1 border-b-1 border-foreground/10',
                           {
                             'border-t-1': verticalIndex === 0,
                             'border-l-1': horizontalIndex === 0,

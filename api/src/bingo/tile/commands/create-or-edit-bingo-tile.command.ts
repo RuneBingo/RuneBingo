@@ -35,6 +35,8 @@ export class CreateOrEditBingoTileCommand extends Command<CreateOrEditBingoTileR
   }
 }
 
+const IMAGE_URL_REGEX = /^https:\/\/chisel\.weirdgloop\.org\/static\/img\/osrs-dii\/\d+\.png$/;
+
 @CommandHandler(CreateOrEditBingoTileCommand)
 export class CreateOrEditBingoTileCommandHandler {
   constructor(
@@ -107,7 +109,7 @@ export class CreateOrEditBingoTileCommandHandler {
       relations: ['items'],
     });
 
-    const { mediaId, items, ...restData } = data;
+    const { mediaId, items, imageUrl, ...restData } = data;
 
     bingoTile ??= this.createAndValidateBingoTile(requester, bingo, x, y, restData);
 
@@ -121,10 +123,8 @@ export class CreateOrEditBingoTileCommandHandler {
     try {
       // Save once to ensure we have a bingo ID for the items
       await queryRunner.startTransaction();
-      await queryRunner.manager.save(bingoTile);
-      bingoTile = await queryRunner.manager.findOneByOrFail(BingoTile, { bingoId: bingo.id, x, y });
+      await this.validateAndAssignImage(bingoTile, mediaId, imageUrl);
 
-      if (mediaId !== undefined) await this.validateAndAssignMedia(bingoTile, mediaId);
       result = await queryRunner.manager.save(bingoTile);
 
       if (items !== undefined) await this.validateAndUpdateItems(queryRunner, requester, bingoTile, items);
@@ -177,26 +177,49 @@ export class CreateOrEditBingoTileCommandHandler {
     return bingoTile;
   }
 
-  private async validateAndAssignMedia(bingoTile: BingoTile, mediaId: string | null) {
-    if (mediaId === null) {
-      bingoTile.media = Promise.resolve(null);
-      bingoTile.mediaId = null;
+  private async validateAndAssignImage(bingoTile: BingoTile, mediaId?: string | null, imageUrl?: string | null) {
+    if (mediaId === undefined && imageUrl === undefined) return;
+
+    if (mediaId !== undefined) {
+      if (mediaId === null) {
+        bingoTile.media = Promise.resolve(null);
+        bingoTile.mediaId = null;
+      } else {
+        const media = await this.mediaRepository.findOneBy({ publicId: mediaId });
+        if (!media) {
+          throw new NotFoundException(
+            this.i18nService.t('bingo.tile.createOrEditBingoTile.mediaNotFound', {
+              args: {
+                mediaId,
+              },
+            }),
+          );
+        }
+
+        bingoTile.media = Promise.resolve(media);
+        bingoTile.mediaId = media.id;
+        bingoTile.imageUrl = null;
+
+        return;
+      }
+    }
+
+    if (imageUrl === null) {
+      bingoTile.imageUrl = null;
       return;
     }
 
-    const media = await this.mediaRepository.findOneBy({ publicId: mediaId });
-    if (!media) {
-      throw new NotFoundException(
-        this.i18nService.t('bingo.tile.createOrEditBingoTile.mediaNotFound', {
-          args: {
-            mediaId,
-          },
+    if (!IMAGE_URL_REGEX.test(imageUrl!)) {
+      throw new BadRequestException(
+        this.i18nService.t('bingo.tile.createOrEditBingoTile.invalidImageUrl', {
+          args: { imageUrl },
         }),
       );
     }
 
-    bingoTile.media = Promise.resolve(media);
-    bingoTile.mediaId = media.id;
+    bingoTile.imageUrl = imageUrl!;
+    bingoTile.mediaId = null;
+    bingoTile.media = Promise.resolve(null);
   }
 
   private async validateAndUpdateItems(

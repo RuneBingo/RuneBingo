@@ -10,6 +10,174 @@ abyssal_whip:
   imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/4151.png
   enabled: true
 
+ranger_boots:
+  id: 2577
+  name: Ranger boots
+  configName: boots_ranger
+  category: 0
+  exchangeable: true
+  members: true
+  examine: Lightweight boots ideal for rangers.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/2577.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/2577.png
+  enabled: true
+
+draconic_visage:
+  id: 11286
+  name: Draconic visage
+  configName: dragonfire_visage
+  category: 0
+  exchangeable: true
+  members: true
+  examine: It looks like this could be attached to a shield somehow.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/11286.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/11286.png
+  enabled: true
+
+curved_bone:
+  id: 10977
+  name: Curved bone
+  configName: dorgesh_construction_bone_curved
+  category: 0
+  exchangeable: false
+  members: true
+  examine: A curved Construction bone.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/10977.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/10977.png
+  enabled: true
+
+zenyte_shard:
+  id: 19529
+  name: Zenyte shard
+  configName: zenyte_shard
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A shard of unstable zenyte.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/19529.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/19529.png
+  enabled: true
+
+tome_of_fire_empty:
+  id: 20716
+  name: Tome of fire (empty)
+  configName: tome_of_fire_uncharged
+  category: 0
+  exchangeable: true
+  members: true
+  examine: An ancient tome containing the secrets of fire magic.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/20716.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/20716.png
+  enabled: true
+
+vorkaths_head:
+  id: 21907
+  name: Vorkath's head
+  configName: vorkath_head
+  category: 0
+  exchangeable: false
+  members: true
+  examine: Yuck! I could get it stuffed!
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/21907.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/21907.png
+  enabled: true
+
+vorki:
+  id: 21992
+  name: Vorki
+  configName: vorkathpet
+  category: 0
+  exchangeable: false
+  members: true
+  examine: Three legs on my dragon...
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/21992.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/21992.png
+  enabled: true
+
+skeletal_visage:
+  id: 22006
+  name: Skeletal visage
+  configName: skeletal_visage
+  category: 0
+  exchangeable: true
+  members: true
+  examine: It looks like this could be attached to a shield somehow.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/22006.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/22006.png
+  enabled: true
+
+dragonbone_necklace:
+  id: 22111
+  name: Dragonbone necklace
+  configName: dragonbone_necklace
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A necklace made out of dragon bones.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/22111.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/22111.png
+  enabled: true
+
+jar_of_decay:
+  id: 22106
+  name: Jar of decay
+  configName: jar_of_decay
+  category: 0
+  exchangeable: true
+  members: true
+  examine: Very healthy.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/22106.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/22106.png
+  enabled: true
+
+dark_claw:
+  id: 21275
+  name: Dark claw
+  configName: cata_boss_claw
+  category: 0
+  exchangeable: false
+  members: true
+  examine: More menacing when attached to the owner. Emanates a dark energy.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/21275.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/21275.png
+  enabled: true
+
+bottomless_compost_bucket:
+  id: 22994
+  name: Bottomless compost bucket
+  configName: bottomless_compost_bucket
+  category: 0
+  exchangeable: true
+  members: true
+  examine: It's a bucket that can hold a lot of compost at once.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/22994.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/22994.png
+  enabled: true
+
+alchemical_hydra_heads:
+  id: 23077
+  name: Alchemical hydra heads
+  configName: poh_alchemical_hydra_head
+  category: 0
+  exchangeable: false
+  members: true
+  examine: Yuck! I could get it stuffed!
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/23077.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/23077.png
+  enabled: true
+
+araxyte_head:
+  id: 29788
+  name: Araxyte head
+  configName: poh_araxyte_head
+  category: 0
+  exchangeable: false
+  members: true
+  examine: Do spiders even have heads?
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/29788.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/29788.png
+  enabled: true
+
 seers_ring:
   id: 6731
   name: Seers ring
@@ -57,3 +225,51 @@ berserker_ring:
   iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6737.png
   imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6737.png
   enabled: true
+
+kbd_heads:
+  id: 7980
+  name: Kbd heads
+  configName: poh_trophydrop_kbd
+  category: 0
+  exchangeable: false
+  members: true
+  examine: I should get them stuffed!
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/7980.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/7980.png
+  enabled: true
+
+abyssal_head:
+  id: 7979
+  name: Abyssal head
+  configName: poh_trophydrop_abyssaldemon
+  category: 0
+  exchangeable: false
+  members: true
+  examine: I should get it stuffed!
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/7979.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/7979.png
+  enabled: true
+
+kq_head:
+  id: 7981
+  name: Kq head
+  configName: poh_trophydrop_kalphitequeen
+  category: 0
+  exchangeable: false
+  members: true
+  examine: I should get it stuffed!
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/7981.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/7981.png
+  enabled: true
+
+disabled_item:
+  id: 6737000
+  name: Disabled item
+  configName: disabled_item
+  category: 0
+  exchangeable: true
+  members: true
+  examine: A disabled item. For testing purposes only.
+  iconUrl: https://chisel.weirdgloop.org/static/img/osrs-sprite/6737000.png
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/6737000.png
+  enabled: false

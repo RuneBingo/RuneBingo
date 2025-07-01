@@ -3,7 +3,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { GripVerticalIcon, InfoIcon, PencilIcon, ReplaceIcon, TrashIcon } from 'lucide-react';
 import { PlusIcon } from 'lucide-react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 
@@ -73,12 +72,16 @@ export default function Tile({ x, y }: TileProps) {
     return 'view';
   })();
 
+  const imageUrl = bingoTile?.media?.url ?? bingoTile?.imageUrl;
+  const imageAlt = bingoTile?.media?.originalName ?? bingoTile?.title ?? '';
+
   return (
     <Fragment>
       {bingoTile && (
         <div className={styles.tile(draggingOtherTile)}>
-          {bingoTile.media ? (
-            <Image src={bingoTile.media.url} alt={bingoTile.media.originalName} width={100} height={100} />
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt={imageAlt} className="max-w-[100px] max-h-[100px]" />
           ) : (
             <span className={styles.title} style={{ textShadow: '1px 1px 0 #000000' }}>
               {bingoTile.title}
@@ -123,7 +126,8 @@ export default function Tile({ x, y }: TileProps) {
 }
 
 const styles = {
-  tile: (isDraggingOtherTile: boolean) => cn({ 'pointer-events-none': isDraggingOtherTile }),
+  tile: (isDraggingOtherTile: boolean) =>
+    cn('relative w-full h-full flex items-center justify-center', { 'pointer-events-none': isDraggingOtherTile }),
   title: 'text-2xl font-runescape text-warning break-words',
   hover: {
     container: (isDragging: boolean) =>

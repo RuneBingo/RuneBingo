@@ -101,6 +101,7 @@ export type DetailedBingoTileDto = {
   description: string;
   completionMode: BingoTileCompletionMode;
   media: MediaDto | null;
+  imageUrl: string | null;
   items: BingoTileItemDto[];
 };
 
@@ -116,6 +117,7 @@ export type CreateOrEditBingoTileDto = {
   free?: boolean;
   completionMode?: BingoTileCompletionMode;
   mediaId?: string | null;
+  imageUrl?: string | null;
   items?: CreateOrEditBingoTileItemDto[];
 };
 
@@ -127,6 +129,7 @@ export type BingoTileDto = {
   title: string;
   description: string;
   media: MediaDto | null;
+  imageUrl: string | null;
 };
 
 export type BingoTileItemDto = {
@@ -169,6 +172,7 @@ export type UpdateBingoDto = {
   startDate?: string;
   endDate?: string;
   maxRegistrationDate?: string;
+  confirmTileDeletion?: boolean;
 };
 
 export type ShortBingoDto = {

@@ -106,7 +106,8 @@
       "forbidden": "You are not allowed to create or edit this tile.",
       "missingFieldsOnCreate": "You must provide a title, value, free, and completion mode when creating a new tile.",
       "mediaNotFound": "No media with the id '{mediaId}' was found.",
-      "itemNotFound": "No item with the id '{itemId}' was found."
+      "itemNotFound": "No item with the id '{itemId}' was found.",
+      "invalidImageUrl": "The image url '{imageUrl}' is invalid."
     },
     "deleteBingoTile": {
       "bingoNotFound": "No bingo with this id was found.",

@@ -1,8 +1,9 @@
-import type React from 'react';
+import { type PropsWithChildren } from 'react';
 
-export type SwitchFieldProps = {
+export type SwitchFieldProps = PropsWithChildren<{
   label?: string;
   value?: boolean;
-  onChange?: (value: boolean) => void;
   error?: string | React.ReactNode;
-} & Omit<React.ComponentProps<'button'>, 'value' | 'onChange'>;
+  onChange?: (value: boolean) => void;
+}> &
+  Omit<React.ComponentProps<'button'>, 'value' | 'onChange'>;

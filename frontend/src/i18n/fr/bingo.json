@@ -72,6 +72,7 @@
         "noImage": "Cette case n'a pas d'image.",
         "noItems": "Cette case n'a pas d'objets.",
         "items": "Items",
+        "customImage": "Utiliser une image personnalisée pour cette case",
         "itemsDescription": {
           "all": "Vous devez obtenir tous les objets suivants pour compléter cette case :",
           "any": "Vous devez obtenir un des objets suivants pour compléter cette case :"

@@ -74,6 +74,7 @@
         "noImage": "This tile has no image.",
         "noItems": "This tile has no items.",
         "items": "Items",
+        "customImage": "Use a custom image for this tile",
         "itemsDescription": {
           "all": "You must obtain all of the following items to complete this tile:",
           "any": "You must obtain any of the following items to complete this tile:"

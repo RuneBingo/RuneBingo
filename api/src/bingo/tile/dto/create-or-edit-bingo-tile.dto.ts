@@ -41,6 +41,10 @@ export class CreateOrEditBingoTileDto {
   @IsOptional()
   mediaId?: string | null;
 
+  @ApiProperty({ type: 'string', nullable: true })
+  @IsOptional()
+  imageUrl?: string | null;
+
   @ApiProperty({ type: [CreateOrEditBingoTileItemDto] })
   @IsOptional()
   items?: CreateOrEditBingoTileItemDto[];

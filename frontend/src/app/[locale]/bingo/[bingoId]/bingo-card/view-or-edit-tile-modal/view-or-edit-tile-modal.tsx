@@ -8,8 +8,8 @@ import { Fragment, useMemo } from 'react';
 import { findBingoTileByCoordinates } from '@/api/bingo';
 import { createOrEditBingoTile } from '@/api/bingo';
 import { type BingoTileCompletionMode, type CreateOrEditBingoTileDto } from '@/api/types';
-import ImageUploader from '@/common/image-uploader';
 import SelectItem from '@/common/select-item';
+import { type SelectItemValue } from '@/common/select-item/types';
 import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import Modal from '@/design-system/components/modal';
@@ -25,6 +25,7 @@ import Loading from './loading';
 import type { FormValues, ViewOrEditTileModalProps } from './types';
 import { formValuesToInput } from './utils';
 import { useBingoCard } from '../provider';
+import ViewOrEditImage from './view-or-edit-image';
 
 export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTileModalProps) {
   const t = useTranslations('bingo.bingoCard.viewOrEditTile');
@@ -77,6 +78,7 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
       if (mode === 'view' || x === undefined || y === undefined) return;
 
       const input = formValuesToInput(values);
+      console.log(input);
       const response = await createOrEditBingoTile(bingoId, x, y, input);
       if ('error' in response) {
         const { message, validationErrors } = transformApiError(response);
@@ -96,19 +98,23 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
     },
   });
 
-  const initialValues = useMemo(
-    () =>
-      ({
-        title: detailedBingoTile?.title ?? '',
-        description: detailedBingoTile?.description ?? '',
-        value: detailedBingoTile?.value ?? 0,
-        free: detailedBingoTile?.free ?? false,
-        media: detailedBingoTile?.media ?? null,
-        items: detailedBingoTile?.items ?? [],
-        completionMode: detailedBingoTile?.completionMode ?? ('all' as BingoTileCompletionMode),
-      }) satisfies FormValues,
-    [detailedBingoTile],
-  );
+  const initialValues = useMemo(() => {
+    const useFirstItemImage =
+      detailedBingoTile?.items.length === 1 &&
+      detailedBingoTile?.media === null &&
+      detailedBingoTile?.imageUrl !== null;
+
+    return {
+      title: detailedBingoTile?.title ?? '',
+      description: detailedBingoTile?.description ?? '',
+      value: detailedBingoTile?.value ?? 0,
+      free: detailedBingoTile?.free ?? false,
+      media: detailedBingoTile?.media ?? null,
+      items: detailedBingoTile?.items ?? [],
+      completionMode: detailedBingoTile?.completionMode ?? ('all' as BingoTileCompletionMode),
+      useFirstItemImage,
+    } satisfies FormValues;
+  }, [detailedBingoTile]);
 
   const formik = useFormik({
     initialValues,
@@ -117,6 +123,18 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
   });
 
   const { values, errors, setFieldValue, resetForm, submitForm } = formik;
+
+  const handleItemsChange = (items: SelectItemValue[]) => {
+    setFieldValue('items', items);
+
+    if (items.length === 1 && !values.useFirstItemImage && !values.media) {
+      setFieldValue('useFirstItemImage', true);
+    }
+
+    if (items.length !== 1 && values.useFirstItemImage) {
+      setFieldValue('useFirstItemImage', false);
+    }
+  };
 
   return (
     <FormikContext.Provider value={formik}>
@@ -173,22 +191,17 @@ export default function ViewOrEditTileModal({ open, onOpenChange }: ViewOrEditTi
                   error={errors.free}
                 />
               )}
-              <Title.Ternary>{t('form.image')}</Title.Ternary>
-              <ImageUploader
-                value={values.media}
-                readOnly={mode === 'view'}
-                emptyMessage={t('form.noImage')}
-                onChange={(value) => setFieldValue('media', value)}
-              />
               <Title.Ternary>{t('form.items')}</Title.Ternary>
               <SelectItem
                 side="top"
                 align="start"
                 value={values.items}
-                onChange={(value) => setFieldValue('items', value)}
+                onChange={handleItemsChange}
                 readOnly={mode === 'view'}
                 emptyMessage={t('form.noItems')}
               />
+              <Title.Ternary>{t('form.image')}</Title.Ternary>
+              <ViewOrEditImage />
             </Modal.Body>
             {mode !== 'view' && (
               <Modal.Footer>

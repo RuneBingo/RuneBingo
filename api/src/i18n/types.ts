@@ -170,6 +170,7 @@ export type I18nTranslations = {
                 "missingFieldsOnCreate": string;
                 "mediaNotFound": string;
                 "itemNotFound": string;
+                "invalidImageUrl": string;
             };
             "deleteBingoTile": {
                 "bingoNotFound": string;

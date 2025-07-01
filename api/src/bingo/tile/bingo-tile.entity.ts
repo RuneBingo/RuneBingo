@@ -38,6 +38,9 @@ export class BingoTile extends StrongEntity {
   @JoinColumn({ name: 'media_id' })
   mediaId: number | null = null;
 
+  @Column({ name: 'image_url', type: 'varchar', nullable: true })
+  imageUrl: string | null = null;
+
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'created_by' })
   createdBy: Promise<User | null>;

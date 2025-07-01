@@ -111,7 +111,8 @@
       "forbidden": "Vous n'êtes pas autorisé à supprimer cette case.",
       "missingFieldsOnCreate": "Vous devez fournir un titre, une valeur, une confidentialité, et un mode de complétion lors de la création d'une nouveau case.",
       "mediaNotFound": "Aucun média avec l'id '{mediaId}' n'a été trouvé.",
-      "itemNotFound": "Aucun item avec l'id '{itemId}' n'a été trouvé."
+      "itemNotFound": "Aucun item avec l'id '{itemId}' n'a été trouvé.",
+      "invalidImageUrl": "L'url d'image '{imageUrl}' est invalide."
     },
     "deleteBingoTile": {
       "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",

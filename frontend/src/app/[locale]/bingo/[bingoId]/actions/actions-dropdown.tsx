@@ -35,7 +35,7 @@ export default function ActionsDropdown({ bingo }: ActionProps) {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className="gap-2">
           {t('title')}
           <ChevronDownIcon className="size-4" />
         </Button>

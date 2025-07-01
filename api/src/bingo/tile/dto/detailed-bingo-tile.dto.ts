@@ -31,6 +31,9 @@ export class DetailedBingoTileDto {
   @ApiProperty({ type: MediaDto, nullable: true })
   media: MediaDto | null;
 
+  @ApiProperty()
+  imageUrl: string | null;
+
   @ApiProperty({ type: [BingoTileItemDto] })
   items: BingoTileItemDto[];
 
@@ -50,6 +53,7 @@ export class DetailedBingoTileDto {
     dto.description = bingoTile.description;
     dto.completionMode = bingoTile.completionMode;
     dto.media = media ? await MediaDto.fromMedia(media) : null;
+    dto.imageUrl = bingoTile.imageUrl;
     dto.items = itemDtos;
 
     return dto;

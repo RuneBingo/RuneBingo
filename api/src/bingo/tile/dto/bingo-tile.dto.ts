@@ -26,6 +26,9 @@ export class BingoTileDto {
   @ApiProperty({ type: MediaDto, nullable: true })
   media: MediaDto | null;
 
+  @ApiProperty()
+  imageUrl: string | null;
+
   static async fromBingoTile(bingoTile: BingoTile): Promise<BingoTileDto> {
     const media = await bingoTile.media;
 
@@ -37,6 +40,7 @@ export class BingoTileDto {
     dto.title = bingoTile.title;
     dto.description = bingoTile.description;
     dto.media = media ? await MediaDto.fromMedia(media) : null;
+    dto.imageUrl = bingoTile.imageUrl;
 
     return dto;
   }

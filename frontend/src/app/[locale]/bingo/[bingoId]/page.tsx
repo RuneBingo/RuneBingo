@@ -52,6 +52,8 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
 
   const readOnlyCard = !isCurrentBingoOrganizer || bingo.status !== BingoStatus.Pending;
 
+  console.log({ isBingoOrganizer, isCurrentBingoOrganizer });
+
   return (
     <Fragment>
       <div className="max-w-5xl">

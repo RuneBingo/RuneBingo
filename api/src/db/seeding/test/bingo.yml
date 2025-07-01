@@ -86,3 +86,17 @@ canceled-bingo:
   endDate: '2025-04-30'
   maxRegistrationDate: '2025-03-31'
   canceledAt: '2025-04-24'
+
+ready_bingo:
+  bingoId: 00000000-0000-0000-0000-000000000007
+  createdBy: raph
+  language: 'en'
+  title: 'ready bingo'
+  description: "I'm ready to be started!"
+  private: false
+  width: 3
+  height: 3
+  fullLineValue: 10
+  startDate: '2036-01-01'
+  endDate: '2036-03-01'
+  maxRegistrationDate: '2035-12-01'

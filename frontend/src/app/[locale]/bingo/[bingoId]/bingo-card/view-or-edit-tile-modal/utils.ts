@@ -10,6 +10,7 @@ export function formValuesToInput(values: FormValues): CreateOrEditBingoTileDto 
     free: values.free,
     completionMode: values.completionMode,
     mediaId: values.media?.id ?? null,
+    imageUrl: values.useFirstItemImage ? values.items[0].item.imageUrl : null,
     items: values.items.map((item) => ({
       itemId: item.item.id,
       quantity: item.quantity,

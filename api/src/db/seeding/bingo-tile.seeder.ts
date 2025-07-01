@@ -16,6 +16,7 @@ type BingoTileSeed = {
   description: string;
   completionMode: BingoTileCompletionMode;
   media?: string; // TODO: not supported yet (platform work)
+  imageUrl?: string;
 };
 
 const bingoTileSeedSchema = Joi.object<Record<string, BingoTileSeed>>().pattern(
@@ -32,6 +33,7 @@ const bingoTileSeedSchema = Joi.object<Record<string, BingoTileSeed>>().pattern(
       .valid(...Object.values(BingoTileCompletionMode))
       .required(),
     media: Joi.string().optional(),
+    imageUrl: Joi.string().uri().optional(),
   }),
 );
 
@@ -55,6 +57,7 @@ export class BingoTileSeeder extends Seeder<BingoTile, BingoTileSeed> {
     bingoTile.description = seed.description;
     bingoTile.completionMode = seed.completionMode;
     // bingoTile.mediaId = seed.media ? this.seedingService.getEntity(Media, seed.media).id : null;
+    bingoTile.imageUrl = seed.imageUrl ?? null;
 
     return bingoTile;
   }
