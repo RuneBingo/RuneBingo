@@ -158,7 +158,7 @@ export type BingoParticipantDto = {
   teamName: string | null;
   teamNameNormalized: string | null;
   user: UserDto | null;
-  role: string;
+  role: BingoRoles;
 };
 
 export type UpdateBingoDto = {
@@ -175,11 +175,24 @@ export type UpdateBingoDto = {
   confirmTileDeletion?: boolean;
 };
 
+export type StartBingoDto = {
+  endDate?: string;
+};
+
 export type ShortBingoDto = {
   id: string;
   title: string;
   status: BingoStatus;
   role: BingoRoles;
+};
+
+export type ResetBingoDto = {
+  startDate: string;
+  endDate: string;
+  maxRegistrationDate: string;
+  deleteTiles?: boolean;
+  deleteTeams?: boolean;
+  deleteParticipants?: boolean;
 };
 
 export type PaginatedBingosDto = PaginatedDtoWithoutTotal<BingoDto> & {
@@ -220,6 +233,8 @@ export type BingoDto = {
   canceledAt: Date | null;
   canceledBy: UserDto | undefined;
   deletedBy: UserDto | undefined;
+  resetAt: Date | null;
+  resetBy: UserDto | undefined;
   maxRegistrationDate?: string;
 };
 

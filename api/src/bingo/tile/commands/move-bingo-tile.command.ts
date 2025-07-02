@@ -94,7 +94,7 @@ export class MoveBingoTileCommandHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canCreateOrEditTile(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canCreateOrEditTile(bingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.tile.createOrEditBingoTile.forbidden'));
     }
 
@@ -121,24 +121,20 @@ export class MoveBingoTileCommandHandler {
       y: toY,
     });
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    try {
-      await queryRunner.startTransaction();
-
+    await this.dataSource.transaction(async (manager) => {
       if (toBingoTile) {
         // Temporarily move the target tile to a placeholder position to avoid conflicts
         const TEMP_COORD = 9999;
         toBingoTile.x = TEMP_COORD;
         toBingoTile.y = TEMP_COORD;
-        await queryRunner.manager.save(toBingoTile);
+        await manager.save(toBingoTile);
       }
 
       bingoTile.x = toX;
       bingoTile.y = toY;
       bingoTile.updatedBy = Promise.resolve(requester);
       bingoTile.updatedById = requester.id;
-      await queryRunner.manager.save(bingoTile);
+      await manager.save(bingoTile);
 
       if (toBingoTile) {
         // Move the destination tile to the original position
@@ -146,16 +142,9 @@ export class MoveBingoTileCommandHandler {
         toBingoTile.y = y;
         toBingoTile.updatedBy = Promise.resolve(requester);
         toBingoTile.updatedById = requester.id;
-        await queryRunner.manager.save(toBingoTile);
+        await manager.save(toBingoTile);
       }
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+    });
 
     await this.eventBus.publish(
       new BingoTileMovedEvent({

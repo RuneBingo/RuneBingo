@@ -31,10 +31,32 @@
     "alreadyCanceled": "Le bingo est déjà annulé."
   },
   "searchBingoActivities": {
-    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à voir les activités de ce bingo."
   },
   "formatBingoActivities": {
     "title": "Bingo {action} par {username}."
+  },
+  "startBingo": {
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à démarrer ce bingo.",
+    "notPending": "Le bingo n'est pas en attente.",
+    "endDateBeforeNow": "La date de fin doit être dans le futur. Veuillez fournir une nouvelle date de fin.",
+    "tilesNotPresent": "Toutes les cases doivent être présentes.",
+    "participantsNotAssignedToTeams": "Tous les participants doivent être assignés à des équipes."
+  },
+  "endBingo": {
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à terminer ce bingo.",
+    "notOngoing": "Le bingo n'est pas en cours."
+  },
+  "resetBingo": {
+    "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à réinitialiser ce bingo.",
+    "notCanceled": "Le bingo n'est pas annulé.",
+    "startDateBeforeToday": "La date de début doit être dans le futur.",
+    "startDateBeforeMaxRegistrationDate": "La date de début doit être avant la date limite d'enregistrement.",
+    "endDateBeforeStartDate": "La date de fin doit être après la date de début."
   },
   "findBingoByBingoId": {
     "bingoNotFound": {
@@ -61,19 +83,38 @@
         "endDate": "A mis à jour le date de fin au {endDate}."
       }
     },
+    "started": {
+      "title": "{username} a démarré le bingo.",
+      "titleEarly": "{username} a démarré le bingo en avance.",
+      "body": {
+        "endDate": "A mis à jour la date de fin au {endDate}."
+      }
+    },
+    "ended": {
+      "title": "{username} a terminé le bingo.",
+      "titleEarly": "{username} a terminé le bingo en avance."
+    },
     "deleted": {
       "title": "{username} a supprimé le bingo."
     },
     "canceled": {
       "title": "{username} a annulé le bingo."
     },
+    "reset": {
+      "title": "{username} a réinitialisé le bingo.",
+      "body": {
+        "startDate": "A mis à jour la date de début au {startDate}.",
+        "endDate": "A mis à jour le date de fin au {endDate}.",
+        "maxRegistrationDate": "A mis à jour la date limite d'enregistrement au {maxRegistrationDate}.",
+        "deletedTiles": "A supprimé les cases.",
+        "deletedTeams": "A supprimé les équipes.",
+        "deletedParticipants": "A supprimé les participants."
+      }
+    },
     "cancelBingo": {
       "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
       "forbidden": "Vous n'êtes pas autorisé à annuler ce bingo.",
       "alreadyCanceled": "Le bingo est déjà annulé."
-    },
-    "searchBingoActivities": {
-      "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
     },
     "formatBingoActivities": {
       "title": "Bingo {action} par {username}."

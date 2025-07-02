@@ -54,7 +54,7 @@ export class CancelBingoHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canCancel(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canCancel()) {
       throw new ForbiddenException(this.i18nService.t('bingo.cancelBingo.forbidden'));
     }
 

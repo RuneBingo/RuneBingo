@@ -112,10 +112,15 @@ describe('DeleteBingoHandler', () => {
       bingoId: bingo.bingoId,
     });
 
-    const toDelete = await handler.execute(command);
-    expect(toDelete).toBeDefined();
-    expect(toDelete.deletedAt).toBeDefined();
-    expect(toDelete.deletedById).toBe(requester.id);
+    await handler.execute(command);
+
+    const deletedBingo = await dataSource
+      .getRepository(Bingo)
+      .findOne({ where: { bingoId: bingo.bingoId }, withDeleted: true });
+
+    expect(deletedBingo).toBeDefined();
+    expect(deletedBingo?.deletedAt).toBeDefined();
+    expect(deletedBingo?.deletedById).toBe(requester.id);
 
     const updatedBingoParticipants = await dataSource.getRepository(BingoParticipant).find({
       where: {
@@ -127,7 +132,7 @@ describe('DeleteBingoHandler', () => {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(eventBus.publish).toHaveBeenCalledWith(
       new BingoDeletedEvent({
-        bingoId: toDelete.id,
+        bingoId: bingo.id,
         requesterId: requester.id,
       }),
     );
@@ -142,9 +147,14 @@ describe('DeleteBingoHandler', () => {
       bingoId: bingo.bingoId,
     });
 
-    const toDelete = await handler.execute(command);
-    expect(toDelete).toBeDefined();
-    expect(toDelete.deletedAt).toBeDefined();
-    expect(toDelete.deletedById).toBe(requester.id);
+    await handler.execute(command);
+
+    const deletedBingo = await dataSource
+      .getRepository(Bingo)
+      .findOne({ where: { bingoId: bingo.bingoId }, withDeleted: true });
+
+    expect(deletedBingo).toBeDefined();
+    expect(deletedBingo?.deletedAt).toBeDefined();
+    expect(deletedBingo?.deletedById).toBe(requester.id);
   });
 });

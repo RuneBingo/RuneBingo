@@ -207,7 +207,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Set the current bingo for the user' })
   @ApiNoContentResponse({ description: 'The current bingo has been set' })
   @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
-  @ApiForbiddenResponse({ description: 'The user is not allowed to set this bingo as current because ' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to set this bingo as current.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard)
   async setCurrentBingo(@Request() req: Request, @Body() body: SetCurrentBingoDto) {

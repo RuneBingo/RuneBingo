@@ -32,7 +32,29 @@
     "alreadyCanceled": "Bingo is already canceled."
   },
   "searchBingoActivities": {
-    "bingoNotFound": "No bingo with this id was found."
+    "bingoNotFound": "No bingo with this id was found.",
+    "forbidden": "You are not authorized to view the activities of this bingo."
+  },
+  "startBingo": {
+    "bingoNotFound": "No bingo with this id was found.",
+    "forbidden": "You are not authorized to start this bingo.",
+    "notPending": "The bingo is not pending.",
+    "endDateBeforeNow": "The end date must be in the future. Please provide a new end date.",
+    "tilesNotPresent": "All tiles must be present.",
+    "participantsNotAssignedToTeams": "All participants must be assigned to teams."
+  },
+  "endBingo": {
+    "bingoNotFound": "No bingo with this id was found.",
+    "forbidden": "You are not authorized to end this bingo.",
+    "notOngoing": "The bingo is not ongoing."
+  },
+  "resetBingo": {
+    "bingoNotFound": "No bingo with this id was found.",
+    "forbidden": "You are not authorized to reset this bingo.",
+    "notCanceled": "The bingo is not canceled.",
+    "startDateBeforeToday": "The start date must be in the future.",
+    "startDateBeforeMaxRegistrationDate": "The start date must be before the max registration date.",
+    "endDateBeforeStartDate": "The end date must be after the start date."
   },
   "activity": {
     "created": {
@@ -52,19 +74,38 @@
         "endDate": "Set the end date to {endDate}."
       }
     },
+    "started": {
+      "title": "{username} has started the bingo.",
+      "titleEarly": "{username} has started the bingo early.",
+      "body": {
+        "endDate": "Set the end date to {endDate}."
+      }
+    },
+    "ended": {
+      "title": "{username} has ended the bingo.",
+      "titleEarly": "{username} has ended the bingo early."
+    },
     "deleted": {
       "title": "{username} has deleted the bingo."
     },
     "canceled": {
       "title": "{username} has canceled the bingo."
     },
+    "reset": {
+      "title": "{username} has reset the bingo.",
+      "body": {
+        "startDate": "Set the start date to {startDate}.",
+        "endDate": "Set the end date to {endDate}.",
+        "maxRegistrationDate": "Set the max registration date to {maxRegistrationDate}.",
+        "deletedTiles": "Deleted the tiles.",
+        "deletedTeams": "Deleted the teams.",
+        "deletedParticipants": "Deleted the participants."
+      }
+    },
     "cancelBingo": {
       "bingoNotFound": "No bingo with this id was found.",
       "forbidden": "You are not authorized to cancel this bingo.",
       "alreadyCanceled": "Bingo is already canceled."
-    },
-    "searchBingoActivities": {
-      "bingoNotFound": "No bingo with this id was found."
     },
     "findBingoByBingoId": {
       "bingoNotFound": {

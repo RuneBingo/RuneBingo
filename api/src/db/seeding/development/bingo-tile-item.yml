@@ -138,3 +138,8 @@ ready_3-3_ranger_boots:
   index: 0
   tile: ready_3-3
   item: ranger_boots
+
+lifecycle_1-1_ranger_boots:
+  index: 0
+  tile: lifecycle_1-1
+  item: ranger_boots

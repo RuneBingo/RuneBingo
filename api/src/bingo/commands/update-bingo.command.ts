@@ -53,7 +53,7 @@ export class UpdateBingoHandler {
     const { bingoId, requester } = command;
     const { confirmTileDeletion, ...updates } = command.updates;
 
-    let bingo = await this.bingoRepository.findOneBy({ bingoId });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.updateBingo.bingoNotFound'));
@@ -68,7 +68,7 @@ export class UpdateBingoHandler {
       Object.entries(command.updates).filter(([key, value]) => {
         if (key === 'confirmTileDeletion') return false;
 
-        const current = bingo![key as keyof Bingo];
+        const current = bingo[key as keyof Bingo];
         if (value === undefined) return false;
 
         return value !== current;
@@ -79,36 +79,24 @@ export class UpdateBingoHandler {
       return bingo;
     }
 
-    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, filteredUpdates)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canUpdate(filteredUpdates)) {
       throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
     }
 
     this.validateUpdates(bingo, filteredUpdates);
     const tilesToDelete = await this.getAndValidateTilesToDelete(bingo, filteredUpdates, confirmTileDeletion);
 
-    Object.assign(bingo, filteredUpdates);
-    bingo.updatedById = requester.id;
-    bingo.updatedBy = Promise.resolve(requester);
-
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
+    await this.dataSource.transaction(async (manager) => {
       if (tilesToDelete?.length) {
-        await queryRunner.manager.delete(BingoTileItem, { bingoTileId: In(tilesToDelete.map((tile) => tile.id)) });
-        await queryRunner.manager.delete(BingoTile, tilesToDelete);
+        await manager.delete(BingoTileItem, { bingoTileId: In(tilesToDelete.map((tile) => tile.id)) });
+        await manager.delete(BingoTile, tilesToDelete);
       }
 
-      bingo = await queryRunner.manager.save(Bingo, bingo);
-
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+      Object.assign(bingo, filteredUpdates);
+      bingo.updatedById = requester.id;
+      bingo.updatedBy = Promise.resolve(requester);
+      await manager.save(Bingo, bingo);
+    });
 
     this.eventBus.publish(
       new BingoUpdatedEvent({
