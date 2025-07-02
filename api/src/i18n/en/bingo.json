@@ -16,7 +16,11 @@
     "startDateAfterEndDate": "The start date must be earlier than the end date.",
     "endDateBeforeStartDate": "The end date must be later than the start date.",
     "registrationDateAfterStartDate": "The registration date must be before the start date.",
-    "statusRestricted": "You cannot update {field} while the bingo is {status}."
+    "statusRestricted": "You cannot update {field} while the bingo is {status}.",
+    "tileDeletionNotConfirmed": {
+      "singular": "You're about to change the bingo size, which would delete one tile. Please confirm the deletion of one tile.",
+      "plural": "You're about to change the bingo size, which would delete some tiles. Please confirm the deletion of {count} tiles."
+    }
   },
   "deleteBingo": {
     "bingoNotFound": "No bingo with this id was found.",
@@ -87,5 +91,63 @@
     "ongoing": "ongoing",
     "completed": "completed",
     "canceled": "canceled"
+  },
+  "tile": {
+    "listBingoTiles": {
+      "bingoNotFound": "No bingo with this id was found."
+    },
+    "findBingoTileByCoordinates": {
+      "bingoNotFound": "No bingo with this id was found.",
+      "tileNotFound": "No bingo tile with the provided coordinates was found."
+    },
+    "createOrEditBingoTile": {
+      "bingoNotFound": "No bingo with this id was found.",
+      "badCoordinates": "The {coordinate} must be between 1 and {max}.",
+      "forbidden": "You are not allowed to create or edit this tile.",
+      "missingFieldsOnCreate": "You must provide a title, value, free, and completion mode when creating a new tile.",
+      "mediaNotFound": "No media with the id '{mediaId}' was found.",
+      "itemNotFound": "No item with the id '{itemId}' was found.",
+      "invalidImageUrl": "The image url '{imageUrl}' is invalid."
+    },
+    "deleteBingoTile": {
+      "bingoNotFound": "No bingo with this id was found.",
+      "badCoordinates": "The {coordinate} must be between 1 and {max}.",
+      "forbidden": "You are not allowed to delete this tile.",
+      "tileNotFound": "No bingo tile with the provided coordinates was found."
+    },
+    "moveBingoTile": {
+      "bingoNotFound": "No bingo with this id was found.",
+      "badCoordinates": "The {coordinate} must be between 1 and {max}.",
+      "sameCoordinates": "The new coordinates are the same as the current coordinates.",
+      "forbidden": "You are not allowed to move this tile.",
+      "tileNotFound": "No bingo tile with the provided coordinates was found."
+    },
+    "activity": {
+      "set": {
+        "title": "{username} has set a tile at ({x}, {y}).",
+        "body": {
+          "title": "Set the title to {title}.",
+          "description": "Set the description to {description}.",
+          "value": "Set the value to {value}.",
+          "free": {
+            "true": "Set the tile as free.",
+            "false": "Set the tile as not free."
+          },
+          "completionMode": "Set the completion mode to {completionMode}.",
+          "mediaAdded": "Set the tile image.",
+          "mediaRemoved": "Removed the tile image.",
+          "items": "Changed the required items."
+        }
+      },
+      "deleted": {
+        "title": "{username} has deleted a tile at ({x}, {y})."
+      },
+      "moved": {
+        "title": "{username} has moved a tile from ({x}, {y}) to ({toX}, {toY})."
+      },
+      "swapped": {
+        "title": "{username} has swapped a tile at ({x}, {y}) with a tile at ({toX}, {toY})."
+      }
+    }
   }
 }

@@ -7,6 +7,13 @@ export enum BingoStatus {
   Canceled = 'canceled',
 }
 
+export enum BingoTileCompletionMode {
+  /** All associated items must be obtained for the tile to be completed */
+  All = 'all',
+  /** Any associated item must be obtained for the tile to be completed */
+  Any = 'any',
+}
+
 export enum BingoRoles {
   Participant = 'participant',
   Organizer = 'organizer',
@@ -48,6 +55,7 @@ export type OsrsItemDto = {
   exchangeable: boolean;
   members: boolean;
   examine: string;
+  iconUrl: string;
   imageUrl: string;
 };
 
@@ -84,6 +92,52 @@ export type PaginatedDtoWithoutTotal<T extends object> = {
   hasNextPage: boolean;
 };
 
+export type DetailedBingoTileDto = {
+  x: number;
+  y: number;
+  value: number;
+  free: boolean;
+  title: string;
+  description: string;
+  completionMode: BingoTileCompletionMode;
+  media: MediaDto | null;
+  imageUrl: string | null;
+  items: BingoTileItemDto[];
+};
+
+export type CreateOrEditBingoTileItemDto = {
+  itemId: number;
+  quantity: number;
+};
+
+export type CreateOrEditBingoTileDto = {
+  title?: string;
+  description?: string;
+  value?: number;
+  free?: boolean;
+  completionMode?: BingoTileCompletionMode;
+  mediaId?: string | null;
+  imageUrl?: string | null;
+  items?: CreateOrEditBingoTileItemDto[];
+};
+
+export type BingoTileDto = {
+  x: number;
+  y: number;
+  value: number;
+  free: boolean;
+  title: string;
+  description: string;
+  media: MediaDto | null;
+  imageUrl: string | null;
+};
+
+export type BingoTileItemDto = {
+  index: number;
+  quantity: number;
+  item: OsrsItemDto;
+};
+
 export type BingoTeamDto = {
   name: string;
   nameNormalized: string;
@@ -118,6 +172,7 @@ export type UpdateBingoDto = {
   startDate?: string;
   endDate?: string;
   maxRegistrationDate?: string;
+  confirmTileDeletion?: boolean;
 };
 
 export type ShortBingoDto = {

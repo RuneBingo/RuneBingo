@@ -1,9 +1,16 @@
 {
   "appName": "RuneBingo",
-  "language": "Langue",
+  "confirmationModal": {
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
   "error": {
     "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
   },
+  "imageUploader": {
+    "noImage": "Aucune image."
+  },
+  "language": "Langue",
   "languages": {
     "en": "English",
     "fr": "Français"
@@ -36,8 +43,10 @@
     }
   },
   "noResults": "Aucun résultat trouvé",
+  "noQuery": "Veuillez entrer au moins {min} caractères.",
   "selectItem": {
     "addItemButton": "Ajouter un objet",
+    "noItems": "Aucun objet",
     "popover": {
       "title": "Ajouter un objet",
       "search": {

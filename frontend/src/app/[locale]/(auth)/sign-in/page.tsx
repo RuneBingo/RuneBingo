@@ -3,9 +3,9 @@
 import { Form, FormikContext, type FormikHelpers, useFormik } from 'formik';
 import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
-import { toast } from 'sonner';
 
 import { signInWithEmail } from '@/api/auth';
+import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import TextField from '@/design-system/components/text-field';
 import { Title } from '@/design-system/components/title';
@@ -27,7 +27,7 @@ export default function SignInPage() {
     if ('error' in response) {
       const { message, validationErrors } = transformApiError(response);
       if (validationErrors) setErrors(validationErrors);
-      if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+      if (message) toast.error(message);
 
       return;
     }

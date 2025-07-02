@@ -1,8 +1,8 @@
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect } from 'react';
-import { toast } from 'sonner';
 
+import toast from '@/common/utils/toast';
 import { usePathname, useRouter } from '@/i18n/navigation';
 
 export default function useSuccessMessages(basePath: string, supportedMessages: string[]) {
@@ -12,15 +12,7 @@ export default function useSuccessMessages(basePath: string, supportedMessages: 
   const t = useTranslations(basePath);
   const searchParams = useSearchParams();
 
-  const sendSuccessMessage = useCallback(
-    (key: string) =>
-      toast.success(t(key), {
-        richColors: true,
-        dismissible: true,
-        position: 'bottom-center',
-      }),
-    [t],
-  );
+  const sendSuccessMessage = useCallback((key: string) => toast.success(t(key)), [t]);
 
   useEffect(() => {
     const message = searchParams.get('message');

@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import { v4 } from 'uuid';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { User } from '@/user/user.entity';
@@ -7,6 +6,7 @@ import { User } from '@/user/user.entity';
 import { Seeder } from './seeder';
 
 type BingoSeed = {
+  bingoId: string;
   createdBy: string;
   language: string;
   title: string;
@@ -27,6 +27,7 @@ type BingoSeed = {
 const bingoSeedSchema = Joi.object<Record<string, BingoSeed>>().pattern(
   Joi.string(),
   Joi.object({
+    bingoId: Joi.string().uuid().required(),
     createdBy: Joi.string().required(),
     title: Joi.string().required(),
     language: Joi.string().required(),
@@ -55,10 +56,10 @@ export class BingoSeeder extends Seeder<Bingo, BingoSeed> {
 
     const bingo = new Bingo();
 
+    bingo.bingoId = seed.bingoId;
     bingo.createdById = user.id;
     bingo.createdBy = Promise.resolve(user);
     bingo.language = seed.language;
-    bingo.bingoId = v4();
     bingo.title = seed.title;
     bingo.description = seed.description;
     bingo.private = seed.private;

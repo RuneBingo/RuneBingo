@@ -9,3 +9,15 @@ les-machos:
   bingo: 'osrs-qc'
   captain: 'didiking'
   points: 0
+
+ready-blue:
+  name: Blue team
+  bingo: ready_bingo
+  captain: raph
+  points: 0
+
+ready-red:
+  name: Red team
+  bingo: ready_bingo
+  captain: char0o
+  points: 0

@@ -1,7 +1,8 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
@@ -15,16 +16,23 @@ import { Bingo } from '../bingo.entity';
 import { UpdateBingoCommand, UpdateBingoHandler } from './update-bingo.command';
 import { BingoStatus } from '../bingo-status.enum';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
+import { BingoTile } from '../tile/bingo-tile.entity';
 
 describe('UpdateBingoHandler', () => {
   let module: TestingModule;
   let seedingService: SeedingService;
   let eventBus: jest.Mocked<EventBus>;
   let handler: UpdateBingoHandler;
+  let dataSource: DataSource;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [configModule, dbModule, i18nModule, TypeOrmModule.forFeature([Bingo, User, BingoParticipant])],
+      imports: [
+        configModule,
+        dbModule,
+        i18nModule,
+        TypeOrmModule.forFeature([Bingo, BingoTile, User, BingoParticipant]),
+      ],
       providers: [
         UpdateBingoHandler,
         SeedingService,
@@ -40,6 +48,7 @@ describe('UpdateBingoHandler', () => {
     handler = module.get(UpdateBingoHandler);
     eventBus = module.get(EventBus);
     seedingService = module.get(SeedingService);
+    dataSource = module.get(DataSource);
   });
 
   beforeEach(async () => {
@@ -415,6 +424,54 @@ describe('UpdateBingoHandler', () => {
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
+  });
+
+  describe('when the bingo size is changed', () => {
+    it('throws ConflictException if tiles would be deleted and no confirmation is provided', async () => {
+      const requester = seedingService.getEntity(User, 'char0o');
+      const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+      const command = new UpdateBingoCommand({
+        requester,
+        bingoId: bingo.bingoId,
+        updates: {
+          width: 3,
+        },
+      });
+
+      await expect(handler.execute(command)).rejects.toThrow(ConflictException);
+    });
+
+    it('only deletes tiles that are outside of the new size', async () => {
+      const requester = seedingService.getEntity(User, 'char0o');
+      const bingo = seedingService.getEntity(Bingo, 'osrs-qc');
+      const tileToKeep = seedingService.getEntity(BingoTile, 'osrs-qc_3-1');
+      const tileToDelete = seedingService.getEntity(BingoTile, 'osrs-qc_4-1');
+
+      const command = new UpdateBingoCommand({
+        requester,
+        bingoId: bingo.bingoId,
+        updates: {
+          width: 3,
+          confirmTileDeletion: true,
+        },
+      });
+
+      await handler.execute(command);
+
+      const updatedBingo = await dataSource.manager.findOne(Bingo, {
+        where: { id: bingo.id },
+        relations: ['tiles'],
+      });
+
+      expect(updatedBingo).toBeDefined();
+      expect(updatedBingo!.width).toBe(3);
+      expect(updatedBingo!.height).toBe(bingo.height);
+
+      const tiles = await updatedBingo!.tiles;
+      expect(tiles.find((tile) => tile.id === tileToDelete.id)).toBeUndefined();
+      expect(tiles.find((tile) => tile.id === tileToKeep.id)).toBeDefined();
+    });
   });
 
   const BINGO_AND_FIELDS_TO_TEST_BY_STATUS = {

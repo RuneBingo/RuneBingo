@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
-import type { OsrsItemDto } from '@/api/types';
-
 import SelectItem from './select-item';
+import { type SelectItemValue } from './types';
 
 const meta: Meta<typeof SelectItem> = {
   title: 'Common/SelectItem',
@@ -19,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 // Interactive playground for development
 const PlaygroundTemplate = () => {
-  const [selectedItems, setSelectedItems] = useState<OsrsItemDto[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SelectItemValue[]>([]);
 
   return (
     <div className="w-96 space-y-4">

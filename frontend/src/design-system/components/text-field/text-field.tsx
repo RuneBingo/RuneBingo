@@ -5,8 +5,17 @@ import { Label } from '@/design-system/ui/label';
 
 import type { TextFieldProps } from './types';
 
-export default function TextField({ label, onChange, error, ...props }: TextFieldProps) {
+export default function TextField({ label, error, readOnly, onChange, ...props }: TextFieldProps) {
   const id = useId();
+
+  if (readOnly) {
+    return (
+      <div className="mb-5">
+        {label && <Label className="mb-2">{label}</Label>}
+        <p className="text-sm">{props.value}</p>
+      </div>
+    );
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event.target.value);

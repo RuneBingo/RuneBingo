@@ -24,3 +24,27 @@ paul:
   user: char0o
   bingo: started-bingo
   role: 'participant'
+
+raph-ready:
+  user: raph
+  bingo: ready_bingo
+  role: owner
+  team: ready-blue
+
+char0o-ready:
+  user: char0o
+  bingo: ready_bingo
+  role: organizer
+  team: ready-blue
+
+didiking-ready:
+  user: didiking
+  bingo: ready_bingo
+  role: participant
+  team: ready-red
+
+dee420-ready:
+  user: dee420
+  bingo: ready_bingo
+  role: participant
+  team: ready-red
