@@ -13,6 +13,7 @@ import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
 import { BingoStartedEvent } from '../events/bingo-started.event';
 import { BingoParticipant } from '../participant/bingo-participant.entity';
+import { BingoRoles } from '../participant/roles/bingo-roles.constants';
 import { ViewBingoScope } from '../scopes/view-bingo.scope';
 import { BingoTile } from '../tile/bingo-tile.entity';
 
@@ -123,6 +124,7 @@ export class StartBingoHandler {
     const orphanedParticipants = await this.bingoParticipantRepository.existsBy({
       bingoId: bingo.id,
       teamId: IsNull(),
+      role: BingoRoles.Participant,
     });
 
     if (orphanedParticipants) {
