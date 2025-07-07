@@ -72,9 +72,11 @@ export default function Navbar({ mode }: NavbarProps) {
               </div>
               <div className="flex flex-col gap-3">
                 {user ? (
-                  <Button variant="default" size="sm" onClick={() => setDrawerOpen(false)}>
-                    {t('buttons.dashboard')}
-                  </Button>
+                  <Link href="/dashboard">
+                    <Button variant="default" size="sm" onClick={() => setDrawerOpen(false)}>
+                      {t('buttons.dashboard')}
+                    </Button>
+                  </Link>
                 ) : (
                   <Fragment>
                     <Button variant="default" onClick={() => router.push('/sign-up')}>
@@ -111,9 +113,11 @@ export default function Navbar({ mode }: NavbarProps) {
         {user ? (
           <Fragment>
             {mode === 'site' && (
-              <Button variant="default" size="sm" className="hidden md:block">
-                {t('buttons.dashboard')}
-              </Button>
+              <Link href="/dashboard">
+                <Button variant="default" size="sm" className="hidden md:block">
+                  {t('buttons.dashboard')}
+                </Button>
+              </Link>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -16,9 +16,9 @@ export default function BingoCardPreview({ width, height }: BingoCardPreviewProp
             <div
               id={`${horizontalIndex}-${verticalIndex}`}
               key={`${horizontalIndex}-${verticalIndex}`}
-              className={cn('w-[25px] aspect-square border-r-1 border-b-1', {
-                'border-t-1': verticalIndex === 0,
-                'border-l-1': horizontalIndex === 0,
+              className={cn('w-[25px] aspect-square border-r border-b border-slate-700', {
+                'border-t': verticalIndex === 0,
+                'border-l': horizontalIndex === 0,
                 'rounded-tl-md': verticalIndex === 0 && horizontalIndex === 0,
                 'rounded-tr-md': verticalIndex === 0 && horizontalIndex === width - 1,
                 'rounded-bl-md': verticalIndex === height - 1 && horizontalIndex === 0,

@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "Create a Bingo Event",
+    "description": "Organize a new bingo event for you and your friends in just a few steps."
+  },
+  "step1Title": "Organize a Bingo",
+  "step1Description": "Let's start with the basics — give your event a name and describe what it's all about. This helps others know what to expect if they join.",
+  "step2Title": "Set Your Event Dates",
+  "step2Description": "Choose when your Bingo event will run and when participants must sign up by. These dates help players know what to expect and when to get ready.",
+  "step3Title": "Customize Your Bingo Card",
+  "step3Description": "Set the size of your bingo grid and decide how many bonus points players earn for completing a full line. Make your event as easy or as challenging as you like!",
+  "form": {
+    "language": "Language",
+    "title": "Title",
+    "titlePlaceholder": "Enter an inviting title...",
+    "description": "Description",
+    "descriptionPlaceholder": "What will your event be like? ...",
+    "public": "Make this event public to other users",
+    "startDate": "Start date",
+    "startDatePlaceholder": "Enter a start date",
+    "endDate": "End date",
+    "endDatePlaceholder": "Enter an end date",
+    "maxRegistrationDate": "Registration deadline (optional)",
+    "maxRegistrationDatePlaceholder": "Enter a deadline",
+    "width": "Width",
+    "widthPlaceholder": "Enter a width",
+    "height": "Height",
+    "heightPlaceholder": "Enter a height",
+    "fullLineValue": "Points earned for a full line",
+    "fullLineValuePlaceholder": "Enter an amount",
+    "back": "Go back",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "submit": "Create bingo"
+  },
+  "success": "Your bingo event has been created successfully!"
+}
