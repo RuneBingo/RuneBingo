@@ -100,3 +100,20 @@ ready_bingo:
   startDate: '2036-01-01'
   endDate: '2036-03-01'
   maxRegistrationDate: '2035-12-01'
+
+lifecycle-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000008
+  createdBy: raph
+  language: 'en'
+  title: 'lifecycle bingo'
+  description: 'Im a bingo that has went through a full lifecycle'
+  private: true
+  width: 1
+  height: 1
+  fullLineValue: 10
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
+  canceledAt: '2025-05-01'
+  startedAt: '2025-04-01'
+  endedAt: '2025-04-30'

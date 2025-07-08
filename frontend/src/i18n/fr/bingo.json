@@ -55,6 +55,52 @@
         "confirm": "Confirmer"
       }
     },
+    "startBingo": {
+      "title": "Démarrer l'événement en avance ?",
+      "description": "Vous ne pourrez plus modifier la langue ou le statut public de l'événement, ou modifier la taille de la carte de bingo et ses cases.\n\nToutes les demandes et invitations en attente seront annulées et les participants seront liés à leur équipe assignée.\n\nTous les participants seront liés à leur équipe et notifiés que l'événement a commencé.",
+      "endDate": {
+        "switch": "Je veux aussi modifier la date de fin",
+        "placeholder": "Entrer une nouvelle date de fin"
+      },
+      "success": "L'événement a été démarré avec succès."
+    },
+    "endBingo": {
+      "title": "Terminer l'événement en avance ?",
+      "descriptionHtml": "<p>Vous ne pourrez plus modifier le titre ou la description de l'événement.</p><p>Toutes les demandes de complétion de cases en attente seront annulées et les scores seront calculés une dernière fois.</p>",
+      "submit": "Terminer l'événement",
+      "cancel": "Fermer",
+      "success": "L'événement a été terminé avec succès."
+    },
+    "cancelBingo": {
+      "title": "Annuler l'événement ?",
+      "descriptionHtml": "<p>Vous ne pourrez plus modifier les détails de l'événement ou la carte de bingo.</p><p>Toutes les demandes d'inscription et les invitations en attente, ainsi que les demandes de complétion de cases seront supprimées et les scores des équipes seront réinitialisés.</p><p>Vous pouvez toujours réutiliser les détails, la carte de bingo, les équipes et les participants de cet événement plus tard si vous choisissez de le réinitialiser.</p>",
+      "submit": "Annuler l'événement",
+      "cancel": "Fermer",
+      "success": "L'événement a été annulé avec succès."
+    },
+    "deleteBingo": {
+      "title": "Supprimer l'événement ?",
+      "description": "Les participants ne seront pas notifiés de cette action, et l'événement sera supprimé définitivement. Êtes-vous sûr de vouloir le supprimer ?",
+      "submit": "Oui, supprimer l'événement",
+      "cancel": "Fermer",
+      "success": "L'événement a été supprimé avec succès."
+    },
+    "resetBingo": {
+      "title": "Réinitialiser l'événement ?",
+      "descriptionHtml": "<p>Réinitialiser un événement permet de réutiliser ses paramètres, y compris la carte de bingo, les équipes et les participants. L'événement sera remis à l'état En attente.</p><p>Vous devrez choisir une nouvelle date de début et de fin. Vous pouvez également définir une date limite d'inscription optionnelle. Ces paramètres peuvent être modifiés plus tard si nécessaire.</p>",
+      "form": {
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "maxRegistrationDate": "Date limite d'inscription (optionnel)",
+        "entitiesToClear": "Optionnel — choisissez ce que vous souhaitez réinitialiser lors de la réinitialisation de l'événement :",
+        "deleteTiles": "Supprimer toutes les cases de la carte de bingo",
+        "deleteTeams": "Supprimer toutes les équipes",
+        "deleteParticipants": "Supprimer tous les participants"
+      },
+      "submit": "Réinitialiser l'événement",
+      "cancel": "Fermer",
+      "success": "L'événement a été réinitialisé avec succès."
+    },
     "moveBingoTileSuccess": "La case de bingo a été déplacée avec succès.",
     "viewOrEditTile": {
       "title": {

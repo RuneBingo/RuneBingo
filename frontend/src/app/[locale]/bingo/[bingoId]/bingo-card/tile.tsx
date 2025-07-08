@@ -62,7 +62,7 @@ export default function Tile({ x, y }: TileProps) {
 
   const isOrganizerOrOwner = role === BingoRoles.Organizer || role === BingoRoles.Owner;
 
-  const ViewOrEditIcon = isOrganizerOrOwner ? PencilIcon : InfoIcon;
+  const ViewOrEditIcon = readOnly ? InfoIcon : PencilIcon;
 
   const mode = (() => {
     if (readOnly) return 'view';
@@ -107,7 +107,7 @@ export default function Tile({ x, y }: TileProps) {
                 <button className={styles.hover.actionButton} onClick={() => viewOrEditTile({ x, y })}>
                   <ViewOrEditIcon className={styles.hover.buttonIcon} />
                 </button>
-                {isOrganizerOrOwner && (
+                {!readOnly && (
                   <button className={styles.hover.actionButton} onClick={() => deleteBingoTile()}>
                     <TrashIcon className={styles.hover.buttonIcon} />
                   </button>

@@ -21,3 +21,15 @@ ready-red:
   bingo: ready_bingo
   captain: char0o
   points: 0
+
+lifecycle-blue:
+  name: Blue team
+  bingo: lifecycle-bingo
+  captain: raph
+  points: 100
+
+lifecycle-red:
+  name: Red team
+  bingo: lifecycle-bingo
+  captain: didiking
+  points: 50

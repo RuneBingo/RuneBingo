@@ -75,7 +75,7 @@ export class DeleteBingoTileCommandHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canDeleteTile(bingoParticipant, bingo)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canDeleteTile(bingo)) {
       throw new ForbiddenException(this.i18nService.t('bingo.tile.deleteBingoTile.forbidden'));
     }
 
@@ -84,21 +84,12 @@ export class DeleteBingoTileCommandHandler {
       throw new NotFoundException(this.i18nService.t('bingo.tile.deleteBingoTile.tileNotFound', { args: { x, y } }));
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.dataSource.transaction(async (manager) => {
+      await manager.delete(BingoTileItem, { bingoTileId: bingoTile.id });
+      if (bingoTile.mediaId) await manager.delete(Media, { id: bingoTile.mediaId });
 
-    try {
-      await queryRunner.manager.delete(BingoTileItem, { bingoTileId: bingoTile.id });
-      if (bingoTile.mediaId) await queryRunner.manager.delete(Media, { id: bingoTile.mediaId });
-
-      await queryRunner.manager.delete(BingoTile, { id: bingoTile.id });
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+      await manager.delete(BingoTile, { id: bingoTile.id });
+    });
 
     this.eventBus.publish(new BingoTileDeletedEvent({ requesterId: requester.id, bingoId: bingo.id, x, y }));
   }

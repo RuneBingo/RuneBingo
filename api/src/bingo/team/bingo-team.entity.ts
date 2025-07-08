@@ -21,12 +21,12 @@ export class BingoTeam extends StrongEntityParanoid {
   @Column()
   nameNormalized: string;
 
-  @Column({ name: 'captain_id', type: 'int' })
-  captainId: number;
+  @Column({ name: 'captain_id', type: 'int', nullable: true })
+  captainId: number | null;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'captain_id' })
-  captain: Promise<User>;
+  captain: Promise<User | null>;
 
   @Column({ default: 0 })
   points: number;

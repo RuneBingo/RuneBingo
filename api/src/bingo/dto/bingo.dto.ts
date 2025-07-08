@@ -14,6 +14,7 @@ export class BingoDto {
       endedBy?: UserDto;
       canceledBy?: UserDto;
       deletedBy?: UserDto;
+      resetBy?: UserDto;
     },
   ) {
     this.language = bingo.language;
@@ -36,6 +37,8 @@ export class BingoDto {
     this.canceledAt = bingo.canceledAt;
     this.canceledBy = users?.canceledBy;
     this.deletedBy = users?.deletedBy;
+    this.resetAt = bingo.resetAt;
+    this.resetBy = users?.resetBy;
   }
 
   @ApiProperty()
@@ -97,6 +100,12 @@ export class BingoDto {
 
   @ApiProperty()
   deletedBy: UserDto | undefined;
+
+  @ApiProperty()
+  resetAt: Date | null;
+
+  @ApiProperty()
+  resetBy: UserDto | undefined;
 
   @ApiProperty()
   maxRegistrationDate?: string;

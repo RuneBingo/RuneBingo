@@ -2,7 +2,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { I18nTranslations } from '@/i18n/types';
@@ -11,13 +11,16 @@ import { User } from '@/user/user.entity';
 import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
 import { BingoDeletedEvent } from '../events/bingo-deleted.event';
+import { BingoTeam } from '../team/bingo-team.entity';
+import { BingoTileItem } from '../tile/bingo-tile-item';
+import { BingoTile } from '../tile/bingo-tile.entity';
 
 export type DeleteBingoParams = {
   requester: User;
   bingoId: string;
 };
 
-export type DeleteBingoResult = Bingo;
+export type DeleteBingoResult = void;
 
 export class DeleteBingoCommand extends Command<DeleteBingoResult> {
   constructor(public readonly params: DeleteBingoParams) {
@@ -52,37 +55,29 @@ export class DeleteBingoHandler {
       userId: requester.id,
     });
 
-    if (!new BingoPolicies(requester).canDelete(bingoParticipant)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canDelete()) {
       throw new ForbiddenException(this.i18nService.t('bingo.deleteBingo.forbidden'));
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
+    await this.dataSource.transaction(async (manager) => {
+      // TODO: delete all bingo completion requests
+      // TODO: delete all bingo applications
+      // TODO: delete all bingo invitations
+      const bingoTiles = await manager.find(BingoTile, { where: { bingoId: bingo.id } });
+      if (bingoTiles?.length) {
+        await manager.delete(BingoTileItem, { bingoTileId: In(bingoTiles.map((tile) => tile.id)) });
+        await manager.delete(BingoTile, bingoTiles);
+      }
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      await queryRunner.manager
-        .createQueryBuilder()
-        .delete()
-        .from('bingo_participant')
-        .where('bingoId = :bingoId', { bingoId: bingo.id })
-        .execute();
+      await manager.softDelete(BingoTeam, { bingoId: bingo.id });
+      await manager.delete(BingoParticipant, { bingoId: bingo.id });
 
       bingo.deletedAt = new Date();
       bingo.deletedById = requester.id;
 
-      await queryRunner.manager.save(bingo);
-      await queryRunner.commitTransaction();
+      await manager.save(bingo);
+    });
 
-      this.eventBus.publish(new BingoDeletedEvent({ bingoId: bingo.id, requesterId: requester.id }));
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-
-    return bingo;
+    this.eventBus.publish(new BingoDeletedEvent({ bingoId: bingo.id, requesterId: requester.id }));
   }
 }

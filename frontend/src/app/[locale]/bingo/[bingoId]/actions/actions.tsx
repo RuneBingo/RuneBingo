@@ -1,25 +1,25 @@
 'use client';
 
-import { Fragment } from 'react';
-
 import ActionsDropdown from './actions-dropdown';
+import CancelBingo from './cancel-bingo';
+import DeleteBingo from './delete-bingo';
 import EditDetails from './edit-details';
+import EndBingo from './end-bingo';
 import ActionsProvider from './provider';
-import type { ActionsProps } from './types';
+import ResetBingo from './reset-bingo';
+import StartBingo from './start-bingo';
+import type { ActionsProviderProps } from './types';
 
-function Actions({ bingo }: ActionsProps) {
+export default function Actions(actionsProviderProps: ActionsProviderProps) {
   return (
-    <Fragment>
-      <ActionsDropdown bingo={bingo} />
+    <ActionsProvider {...actionsProviderProps}>
+      <ActionsDropdown />
+      <CancelBingo />
+      <DeleteBingo />
       <EditDetails />
-    </Fragment>
-  );
-}
-
-export default function ActionsWithProvider({ bingo }: ActionsProps) {
-  return (
-    <ActionsProvider bingo={bingo}>
-      <Actions bingo={bingo} />
+      <EndBingo />
+      <ResetBingo />
+      <StartBingo />
     </ActionsProvider>
   );
 }
