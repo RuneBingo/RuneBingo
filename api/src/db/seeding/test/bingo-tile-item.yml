@@ -1,0 +1,140 @@
+osrs-qc_3-1_berserker_ring:
+  index: 0
+  tile: osrs-qc_3-1
+  item: berserker_ring
+
+osrs-qc_3-1_seers_ring:
+  index: 1
+  tile: osrs-qc_3-1
+  item: seers_ring
+
+osrs-qc_3-1_archers_ring:
+  index: 2
+  tile: osrs-qc_3-1
+  item: archers_ring
+
+osrs-qc_3-1_warrior_ring:
+  index: 3
+  tile: osrs-qc_3-1
+  item: warrior_ring
+
+osrs-qc_4-1_abyssal_whip:
+  index: 0
+  tile: osrs-qc_4-1
+  item: abyssal_whip
+
+ready_1-1_vorkaths_head:
+  index: 0
+  tile: ready_1-1
+  item: vorkaths_head
+
+ready_1-1_vorki:
+  index: 1
+  tile: ready_1-1
+  item: vorki
+
+ready_1-1_dragonbone_necklace:
+  index: 2
+  tile: ready_1-1
+  item: dragonbone_necklace
+
+ready_1-1_jar_of_decay:
+  index: 3
+  tile: ready_1-1
+  item: jar_of_decay
+
+ready_1-1_draconic_visage:
+  index: 4
+  tile: ready_1-1
+  item: draconic_visage
+
+ready_1-1_skeletal_visage:
+  index: 5
+  tile: ready_1-1
+  item: skeletal_visage
+
+ready_1-2_vorkaths_head:
+  index: 0
+  tile: ready_1-2
+  item: vorkaths_head
+
+ready_1-2_kbd_heads:
+  index: 1
+  tile: ready_1-2
+  item: kbd_heads
+
+ready_1-2_kq_head:
+  index: 2
+  tile: ready_1-2
+  item: kq_head
+
+ready_1-2_abyssal_head:
+  index: 3
+  tile: ready_1-2
+  item: abyssal_head
+
+ready_1-2_alchemical_hydra_heads:
+  index: 4
+  tile: ready_1-2
+  item: alchemical_hydra_heads
+
+ready_1-2_araxyte_head:
+  index: 5
+  tile: ready_1-2
+  item: araxyte_head
+
+ready_1-2_dark_claw:
+  index: 6
+  tile: ready_1-2
+  item: dark_claw
+
+ready_1-3_bottomless_compost_bucket:
+  index: 0
+  tile: ready_1-3
+  item: bottomless_compost_bucket
+
+ready_2-1_curved_bone:
+  index: 0
+  tile: ready_2-1
+  item: curved_bone
+
+ready_2-2_abyssal_whip:
+  index: 0
+  tile: ready_2-2
+  item: abyssal_whip
+  quantity: 3
+
+ready_2-3_seers_ring:
+  index: 0
+  tile: ready_2-3
+  item: seers_ring
+
+ready_2-3_archers_ring:
+  index: 1
+  tile: ready_2-3
+  item: archers_ring
+
+ready_2-3_warrior_ring:
+  index: 2
+  tile: ready_2-3
+  item: warrior_ring
+
+ready_2-3_berserker_ring:
+  index: 3
+  tile: ready_2-3
+  item: berserker_ring
+
+ready_3-1_tome_of_fire_empty:
+  index: 0
+  tile: ready_3-1
+  item: tome_of_fire_empty
+
+ready_3-2_zenyte_shard:
+  index: 0
+  tile: ready_3-2
+  item: zenyte_shard
+
+ready_3-3_ranger_boots:
+  index: 0
+  tile: ready_3-3
+  item: ranger_boots

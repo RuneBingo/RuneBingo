@@ -16,6 +16,7 @@
     "noValue": "No bingo selected"
   },
   "bingoCard": {
+    "unexpectedError": "An unexpected error has occurred while loading this bingo card. Please try again later.",
     "dateRangeHtml": "From <b>{startDate}</b> to <b>{endDate}</b>.",
     "maxRegistrationDateHtml": "Applications close <b>{maxRegistrationDate}</b>.",
     "createdByHtml": "Organized by <b>{username}</b>",
@@ -27,6 +28,11 @@
       "startNow": "Start now",
       "endNow": "End now",
       "cancel": "Cancel event"
+    },
+    "deleteBingoTile": {
+      "title": "Delete bingo tile at ({x}, {y})?",
+      "description": "Are you sure you want to delete this bingo tile? This action cannot be undone.",
+      "success": "Bingo tile deleted successfully."
     },
     "editDetails": {
       "title": "Edit event details",
@@ -44,11 +50,54 @@
         "submit": "Edit event details",
         "cancel": "Discard changes"
       },
-      "success": "Event details updated successfully."
+      "success": "Event details updated successfully.",
+      "confirmTileDeletion": {
+        "title": "Confirm tile deletion?",
+        "confirm": "Confirm"
+      }
+    },
+    "moveBingoTileSuccess": "Bingo tile moved successfully.",
+    "viewOrEditTile": {
+      "title": {
+        "create": "Create bingo tile ({x}, {y})",
+        "edit": "Edit bingo tile ({x}, {y})",
+        "view": "View bingo tile ({x}, {y})",
+        "loading": "Create, view or edit bingo tile (loading...)"
+      },
+      "form": {
+        "information": "Information",
+        "title": "Title",
+        "description": "Description",
+        "value": "Value",
+        "free": "Free?",
+        "image": "Image",
+        "noImage": "This tile has no image.",
+        "noItems": "This tile has no items.",
+        "items": "Items",
+        "customImage": "Use a custom image for this tile",
+        "itemsDescription": {
+          "all": "You must obtain all of the following items to complete this tile:",
+          "any": "You must obtain any of the following items to complete this tile:"
+        },
+        "submit": "Save bingo tile",
+        "cancel": "Discard changes"
+      },
+      "freeTip": {
+        "title": "<span>🎉</span> This tile is free!",
+        "description": "This tile is given to each team for free. No need to complete it!"
+      },
+      "success": {
+        "create": "Bingo tile created successfully.",
+        "edit": "Bingo tile updated successfully.",
+        "delete": "Bingo tile deleted successfully."
+      }
     }
   },
   "notCurrentBingoTip": {
-    "title": "You are an organizer of this bingo.",
+    "title": {
+      "organizer": "You are an organizer of this bingo.",
+      "owner": "You are the owner of this bingo."
+    },
     "description": "You may manage it by <button>making it your current bingo</button>."
   }
 }

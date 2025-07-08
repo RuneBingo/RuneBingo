@@ -77,6 +77,10 @@ export type I18nTranslations = {
             "endDateBeforeStartDate": string;
             "registrationDateAfterStartDate": string;
             "statusRestricted": string;
+            "tileDeletionNotConfirmed": {
+                "singular": string;
+                "plural": string;
+            };
         };
         "deleteBingo": {
             "bingoNotFound": string;
@@ -150,6 +154,64 @@ export type I18nTranslations = {
             "ongoing": string;
             "completed": string;
             "canceled": string;
+        };
+        "tile": {
+            "listBingoTiles": {
+                "bingoNotFound": string;
+            };
+            "findBingoTileByCoordinates": {
+                "bingoNotFound": string;
+                "tileNotFound": string;
+            };
+            "createOrEditBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "forbidden": string;
+                "missingFieldsOnCreate": string;
+                "mediaNotFound": string;
+                "itemNotFound": string;
+                "invalidImageUrl": string;
+            };
+            "deleteBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "forbidden": string;
+                "tileNotFound": string;
+            };
+            "moveBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "sameCoordinates": string;
+                "forbidden": string;
+                "tileNotFound": string;
+            };
+            "activity": {
+                "set": {
+                    "title": string;
+                    "body": {
+                        "title": string;
+                        "description": string;
+                        "value": string;
+                        "free": {
+                            "true": string;
+                            "false": string;
+                        };
+                        "completionMode": string;
+                        "mediaAdded": string;
+                        "mediaRemoved": string;
+                        "items": string;
+                    };
+                };
+                "deleted": {
+                    "title": string;
+                };
+                "moved": {
+                    "title": string;
+                };
+                "swapped": {
+                    "title": string;
+                };
+            };
         };
         "formatBingoActivities": {
             "title": string;

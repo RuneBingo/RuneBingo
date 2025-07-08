@@ -11,32 +11,34 @@ import Provider from './provider';
 import type { SelectItemProps } from './types';
 import Value from './value';
 
-export default function SelectItem({ value, onChange }: SelectItemProps) {
+export default function SelectItem({ side, align, value, readOnly, emptyMessage, onChange }: SelectItemProps) {
   const t = useTranslations('common');
 
   return (
     <Provider value={value} onChange={onChange}>
       {({ open, query, onOpenChange, setQuery }) => (
         <div className="mb-5">
-          <Value />
-          <Popover open={open} onOpenChange={onOpenChange}>
-            <PopoverTrigger asChild>
-              <Button variant="default">
-                <PlusCircle className="h-4 w-4" />
-                {t('selectItem.addItemButton')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <Title.Quaternary>{t('selectItem.popover.title')}</Title.Quaternary>
-              <SearchInput
-                value={query}
-                placeholder={t('selectItem.popover.search.placeholder')}
-                onChange={setQuery}
-                clearable
-              />
-              <Content />
-            </PopoverContent>
-          </Popover>
+          <Value readOnly={readOnly} emptyMessage={emptyMessage} />
+          {!readOnly && (
+            <Popover open={open} onOpenChange={onOpenChange}>
+              <PopoverTrigger asChild>
+                <Button variant="default">
+                  <PlusCircle className="h-4 w-4" />
+                  {t('selectItem.addItemButton')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side={side} align={align}>
+                <Title.Quaternary>{t('selectItem.popover.title')}</Title.Quaternary>
+                <SearchInput
+                  value={query}
+                  placeholder={t('selectItem.popover.search.placeholder')}
+                  onChange={setQuery}
+                  clearable
+                />
+                <Content />
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       )}
     </Provider>

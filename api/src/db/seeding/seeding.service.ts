@@ -3,14 +3,18 @@ import { ConfigService } from '@nestjs/config';
 import { InjectDataSource } from '@nestjs/typeorm';
 import type { DataSource, EntityTarget, ObjectLiteral } from 'typeorm';
 
+import { AppConfig } from '@/config';
+
 import { entities } from '..';
 import { BingoParticipantSeeder } from './bingo-participant.seeder';
 import { BingoTeamSeeder } from './bingo-team.seeder';
+import { BingoTileItemSeeder } from './bingo-tile-item.seeder';
+import { BingoTileSeeder } from './bingo-tile.seeder';
 import { BingoSeeder } from './bingo.seeder';
+import { OsrsItemSeeder } from './osrs-item.seeder';
 import { Seeder } from './seeder';
 import { SessionSeeder } from './session.seeder';
 import { UserSeeder } from './user.seeder';
-import { AppConfig } from '../../config';
 
 @Injectable()
 export class SeedingService {
@@ -22,6 +26,9 @@ export class SeedingService {
     UserSeeder,
     SessionSeeder,
     BingoSeeder,
+    OsrsItemSeeder,
+    BingoTileSeeder,
+    BingoTileItemSeeder,
     BingoTeamSeeder,
     BingoParticipantSeeder,
     // Weak entities

@@ -26,6 +26,9 @@ export class OsrsItem {
   examine: string;
 
   @Column({ type: 'varchar' })
+  iconUrl: string;
+
+  @Column({ type: 'varchar' })
   imageUrl: string;
 
   @Column({ type: 'boolean', default: true })

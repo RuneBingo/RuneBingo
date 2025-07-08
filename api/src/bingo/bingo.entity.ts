@@ -6,6 +6,7 @@ import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoStatus } from './bingo-status.enum';
+import { BingoTile } from './tile/bingo-tile.entity';
 
 @Entity()
 export class Bingo extends StrongEntityParanoid {
@@ -95,6 +96,9 @@ export class Bingo extends StrongEntityParanoid {
 
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
+
+  @OneToMany(() => BingoTile, (bingoTile) => bingoTile.bingo)
+  tiles: Promise<BingoTile[]>;
 
   public get status() {
     const now = new Date();

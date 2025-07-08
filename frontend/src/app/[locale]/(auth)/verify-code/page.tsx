@@ -4,10 +4,10 @@ import { Form, FormikContext, type FormikHelpers, useFormik } from 'formik';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Fragment } from 'react';
-import { toast } from 'sonner';
 
 import { verifyCode } from '@/api/auth';
 import { useAppContext } from '@/common/context';
+import toast from '@/common/utils/toast';
 import transformApiError from '@/common/utils/transform-api-error';
 import CodeInput from '@/design-system/components/code-input';
 import { Title } from '@/design-system/components/title';
@@ -37,7 +37,7 @@ export default function VerifyCodePage() {
     if ('error' in response) {
       const { message, validationErrors } = transformApiError(response);
       if (validationErrors) setErrors(validationErrors);
-      if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+      if (message) toast.error(message);
 
       return;
     }
