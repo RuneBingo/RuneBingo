@@ -1,8 +1,9 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
 import { FormikContext, useFormik } from 'formik';
 import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { createBingo } from '@/api/bingo';
@@ -15,7 +16,7 @@ import { useRouter } from '@/i18n/navigation';
 import StepBasics from './step-form-component/step-basics';
 import StepCard from './step-form-component/step-card';
 import StepDates from './step-form-component/step-dates';
-import { type FormValues } from './types';
+import { type FormValues, type Step } from './types';
 
 const INITIAL_VALUES: FormValues = {
   language: 'en',
@@ -30,71 +31,69 @@ const INITIAL_VALUES: FormValues = {
   fullLineValue: null,
 };
 
-type Step = 'details' | 'dates' | 'card';
-
 export default function CreateBingoPage() {
   const [step, setStep] = useState<Step>('details');
   const t = useTranslations('create-bingo');
   const router = useRouter();
 
-  const handleCreateBingo = async () => {
-    const payload = {
-      ...formik.values,
-      width: formik.values.width ?? 5,
-      height: formik.values.height ?? 5,
-      fullLineValue: formik.values.fullLineValue ?? 0,
-    };
+  const { mutate: handleCreateBingo, isPending } = useMutation({
+    mutationFn: async (values: FormValues) => {
+      const payload = {
+        ...values,
+        width: values.width ?? 5,
+        height: values.height ?? 5,
+        fullLineValue: values.fullLineValue ?? 0,
+      };
 
-    const response = await createBingo(payload);
+      const response = await createBingo(payload);
 
-    if ('error' in response) {
-      const { message, validationErrors } = transformApiError(response);
-      if (validationErrors) {
-        formik.setErrors(validationErrors);
+      if ('error' in response) {
+        const { message, validationErrors } = transformApiError(response);
+        if (validationErrors) {
+          formik.setErrors(validationErrors);
+        }
+        if (message) {
+          toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+        }
+        return;
       }
-      toast.error(message, { richColors: true });
-      return;
-    }
 
-    toast.success(t('success'), { richColors: true });
-    router.push('/dashboard');
-  };
+      toast.success(t('success'), { richColors: true, dismissible: true, position: 'bottom-center' });
+      router.push('/dashboard');
+    },
+  });
 
   const formik = useFormik({
     initialValues: INITIAL_VALUES,
-    onSubmit: () => {},
+    onSubmit: (values) => handleCreateBingo(values),
   });
 
   const { isSubmitting } = formik;
 
-  const steps: Record<Step, { title: string; description: string; content: React.ReactNode }> = {
+  const steps = {
     details: {
       title: t('step1Title'),
       description: t('step1Description'),
-      content: <StepBasics />,
+      component: StepBasics,
     },
     dates: {
       title: t('step2Title'),
       description: t('step2Description'),
-      content: <StepDates />,
+      component: StepDates,
     },
     card: {
       title: t('step3Title'),
       description: t('step3Description'),
-      content: <StepCard />,
+      component: StepCard,
     },
   };
 
   const stepOrder: Step[] = ['details', 'dates', 'card'];
   const currentStepIndex = stepOrder.indexOf(step);
   const currentStep = steps[step];
-  const baseTitle = t('meta.title');
 
-  useEffect(() => {
-    document.title = `${currentStep.title} | ${baseTitle}`;
-  }, [currentStep, baseTitle]);
-
-  const handleContinue = () => {
+  const handleContinue = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (currentStepIndex < stepOrder.length - 1) {
       const nextStep = stepOrder[currentStepIndex + 1];
       setStep(nextStep);
@@ -123,8 +122,8 @@ export default function CreateBingoPage() {
             <CardDescription className="text-sm text-muted-foreground">{currentStep.description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={(e) => e.preventDefault()}>
-              {currentStep.content}
+            <form onSubmit={formik.handleSubmit}>
+              <currentStep.component />
               <div className="flex justify-end gap-2 mt-6">
                 {step !== 'details' && (
                   <Button type="button" variant="outline" onClick={handleBack}>
@@ -141,7 +140,7 @@ export default function CreateBingoPage() {
                     {t('form.continue')}
                   </Button>
                 ) : (
-                  <Button type="button" onClick={handleCreateBingo} disabled={isSubmitting}>
+                  <Button type="submit" disabled={isPending}>
                     {t('form.submit')}
                   </Button>
                 )}

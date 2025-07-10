@@ -33,7 +33,7 @@ export default async function DashboardPage() {
                 </p>
               </div>
 
-              <ChevronRight className="h-5 w-5 text-background flex-shrink-0  " />
+              <ChevronRight className="h-5 w-5 text-background flex-shrink-0" />
             </Button>
           </Link>
 

@@ -10,3 +10,5 @@ export type FormValues = {
   height: number | null;
   fullLineValue: number | null;
 };
+
+export type Step = 'details' | 'dates' | 'card';

@@ -3,12 +3,12 @@ import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('dashboard.meta');
+  const tCommon = await getTranslations('common.meta');
 
   return {
-    title: t('title'),
-    description: t('description'),
+    title: tCommon('titleTemplate', { title: t('title') }),
   };
 }
-export default async function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
