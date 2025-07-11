@@ -1,2 +1,3 @@
 src/db/migrations/
 *.hbs
+src/i18n/types.ts

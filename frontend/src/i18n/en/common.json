@@ -44,6 +44,9 @@
   },
   "noResults": "No results found",
   "noQuery": "Please enter at least {min} characters.",
+  "pager": {
+    "page": "Page "
+  },
   "selectItem": {
     "addItemButton": "Add Item",
     "noItems": "No items",
@@ -51,9 +54,6 @@
       "title": "Add an item",
       "search": {
         "placeholder": "Search an item"
-      },
-      "pager": {
-        "page": "Page "
       }
     }
   }
