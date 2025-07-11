@@ -68,8 +68,6 @@ export default function CreateBingoPage() {
     onSubmit: (values) => handleCreateBingo(values),
   });
 
-  const { isSubmitting } = formik;
-
   const steps = {
     details: {
       title: t('step1Title'),

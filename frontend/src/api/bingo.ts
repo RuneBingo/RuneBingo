@@ -2,7 +2,7 @@ import { _delete, get, post, put, type PaginatedQueryParams } from '.';
 import type {
   BingoDto,
   BingoTileDto,
-  CreateBingoDto
+  CreateBingoDto,
   CreateOrEditBingoTileDto,
   DetailedBingoTileDto,
   PaginatedBingosDto,
@@ -69,7 +69,7 @@ export async function updateBingo(bingoId: string, updates: UpdateBingoDto) {
 export async function createBingo(bingo: CreateBingoDto) {
   return post<CreateBingoDto, BingoDto>('/bingo', bingo);
 }
-  
+
 export async function startBingo(bingoId: string, endDate?: string) {
   return post<StartBingoDto, BingoDto>(`/bingo/${bingoId}/start`, { endDate });
 }
