@@ -15,7 +15,11 @@
     "startDateAfterEndDate": "La date de début doit être avant la date de fin.",
     "endDateBeforeStartDate": "La date de fin doit être après la date de début.",
     "registrationDateAfterStartDate": "La date limite d'enregistrement doit être avant la date de début.",
-    "statusRestricted": "Vous ne pouvez le/la {field} pendant que le bingo est {status}."
+    "statusRestricted": "Vous ne pouvez pas modifier le/la {field} pendant que le bingo est {status}.",
+    "tileDeletionNotConfirmed": {
+      "singular": "Vous êtes sur le point de changer la taille du bingo, ce qui supprimerait une case. Veuillez confirmer la suppression d'une case.",
+      "plural": "Vous êtes sur le point de changer la taille du bingo, ce qui supprimerait certaines cases. Veuillez confirmer la suppression de {count} cases."
+    }
   },
   "deleteBingo": {
     "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
@@ -27,10 +31,32 @@
     "alreadyCanceled": "Le bingo est déjà annulé."
   },
   "searchBingoActivities": {
-    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à voir les activités de ce bingo."
   },
   "formatBingoActivities": {
     "title": "Bingo {action} par {username}."
+  },
+  "startBingo": {
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à démarrer ce bingo.",
+    "notPending": "Le bingo n'est pas en attente.",
+    "endDateBeforeNow": "La date de fin doit être dans le futur. Veuillez fournir une nouvelle date de fin.",
+    "tilesNotPresent": "Toutes les cases doivent être présentes.",
+    "participantsNotAssignedToTeams": "Tous les participants doivent être assignés à des équipes."
+  },
+  "endBingo": {
+    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à terminer ce bingo.",
+    "notOngoing": "Le bingo n'est pas en cours."
+  },
+  "resetBingo": {
+    "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+    "forbidden": "Vous n'êtes pas autorisé à réinitialiser ce bingo.",
+    "notCanceled": "Le bingo n'est pas annulé.",
+    "startDateBeforeToday": "La date de début doit être dans le futur.",
+    "startDateBeforeMaxRegistrationDate": "La date de début doit être avant la date limite d'enregistrement.",
+    "endDateBeforeStartDate": "La date de fin doit être après la date de début."
   },
   "findBingoByBingoId": {
     "bingoNotFound": {
@@ -57,19 +83,38 @@
         "endDate": "A mis à jour le date de fin au {endDate}."
       }
     },
+    "started": {
+      "title": "{username} a démarré le bingo.",
+      "titleEarly": "{username} a démarré le bingo en avance.",
+      "body": {
+        "endDate": "A mis à jour la date de fin au {endDate}."
+      }
+    },
+    "ended": {
+      "title": "{username} a terminé le bingo.",
+      "titleEarly": "{username} a terminé le bingo en avance."
+    },
     "deleted": {
       "title": "{username} a supprimé le bingo."
     },
     "canceled": {
       "title": "{username} a annulé le bingo."
     },
+    "reset": {
+      "title": "{username} a réinitialisé le bingo.",
+      "body": {
+        "startDate": "A mis à jour la date de début au {startDate}.",
+        "endDate": "A mis à jour le date de fin au {endDate}.",
+        "maxRegistrationDate": "A mis à jour la date limite d'enregistrement au {maxRegistrationDate}.",
+        "deletedTiles": "A supprimé les cases.",
+        "deletedTeams": "A supprimé les équipes.",
+        "deletedParticipants": "A supprimé les participants."
+      }
+    },
     "cancelBingo": {
       "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
       "forbidden": "Vous n'êtes pas autorisé à annuler ce bingo.",
       "alreadyCanceled": "Le bingo est déjà annulé."
-    },
-    "searchBingoActivities": {
-      "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
     },
     "formatBingoActivities": {
       "title": "Bingo {action} par {username}."
@@ -92,5 +137,62 @@
     "ongoing": "en cours",
     "completed": "terminé",
     "canceled": "annulé"
+  },
+  "tile": {
+    "listBingoTiles": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé."
+    },
+    "findBingoTileByCoordinates": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "tileNotFound": "Aucun bingo avec les coordonnées spécifiées n'a été trouvé."
+    },
+    "createOrEditBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "forbidden": "Vous n'êtes pas autorisé à supprimer cette case.",
+      "missingFieldsOnCreate": "Vous devez fournir un titre, une valeur, une confidentialité, et un mode de complétion lors de la création d'une nouveau case.",
+      "mediaNotFound": "Aucun média avec l'id '{mediaId}' n'a été trouvé.",
+      "itemNotFound": "Aucun item avec l'id '{itemId}' n'a été trouvé.",
+      "invalidImageUrl": "L'url d'image '{imageUrl}' est invalide."
+    },
+    "deleteBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "forbidden": "Vous n'êtes pas autorisé à supprimer cette case.",
+      "tileNotFound": "Aucune case avec les coordonnées spécifiées n'a été trouvée."
+    },
+    "moveBingoTile": {
+      "bingoNotFound": "Aucun bingo avec cet id n'a été trouvé.",
+      "badCoordinates": "La {coordinate} doit être entre 1 et {max}.",
+      "sameCoordinates": "Les nouvelles coordonnées sont les mêmes que les coordonnées actuelles.",
+      "forbidden": "Vous n'êtes pas autorisé à déplacer cette case.",
+      "tileNotFound": "Aucune case avec les coordonnées spécifiées n'a été trouvée."
+    },
+    "activity": {
+      "set": {
+        "title": "{username} a défini une case à ({x}, {y}).",
+        "body": {
+          "title": "A défini le titre à {title}.",
+          "description": "A défini la description à {description}.",
+          "value": "A défini la valeur à {value}.",
+          "free": {
+            "true": "A défini la case comme gratuite.",
+            "false": "A défini la case comme non-gratuite."
+          },
+          "completionMode": "A défini le mode de complétion à {completionMode}.",
+          "mediaAdded": "A défini l'image de la case.",
+          "mediaRemoved": "A supprimé l'image de la case."
+        }
+      },
+      "deleted": {
+        "title": "{username} a supprimé une case à ({x}, {y})."
+      },
+      "moved": {
+        "title": "{username} a déplacé une case de ({x}, {y}) à ({toX}, {toY})."
+      },
+      "swapped": {
+        "title": "{username} a échangé une case à ({x}, {y}) avec une case à ({toX}, {toY})."
+      }
+    }
   }
 }

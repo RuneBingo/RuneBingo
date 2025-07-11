@@ -9,7 +9,7 @@ import { Input } from '@/design-system/ui/input';
 
 import type { SearchInputProps } from './types';
 
-export default function SearchInput({ debounceSeconds = 300, onChange, ...props }: SearchInputProps) {
+export default function SearchInput({ clearable, debounceSeconds = 300, onChange, ...props }: SearchInputProps) {
   const [inputValue, setInputValue] = useState(props.value);
   const [debouncedValue] = useDebounce(inputValue, debounceSeconds);
 
@@ -24,7 +24,7 @@ export default function SearchInput({ debounceSeconds = 300, onChange, ...props 
     <div className="relative mb-5">
       <Input {...props} value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="px-9" />
       <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-      {props.clearable && inputValue && (
+      {clearable && inputValue && (
         <Button
           variant="ghost"
           size="icon-xs"

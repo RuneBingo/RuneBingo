@@ -2,6 +2,7 @@ import { Form, FormikContext, useFormik } from 'formik';
 import { MoveRightIcon, XIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
+import { BingoStatus, type UpdateBingoDto } from '@/api/types';
 import BingoCardPreview from '@/common/bingo/card-preview';
 import DateField from '@/design-system/components/date-field';
 import Modal from '@/design-system/components/modal';
@@ -15,7 +16,20 @@ import { Separator } from '@/design-system/ui/separator';
 import { SUPPORTED_LOCALES } from '@/i18n';
 
 import { useActionsContext } from './provider';
-import type { FormValues } from './types';
+import type { UpdateBingoFormValues } from './types';
+
+const STATUS_RESTRICTIONS = {
+  language: [BingoStatus.Pending],
+  title: [BingoStatus.Pending, BingoStatus.Ongoing],
+  description: [BingoStatus.Pending, BingoStatus.Ongoing],
+  private: [BingoStatus.Pending],
+  startDate: [BingoStatus.Pending],
+  endDate: [BingoStatus.Pending, BingoStatus.Ongoing],
+  maxRegistrationDate: [BingoStatus.Pending],
+  width: [BingoStatus.Pending],
+  height: [BingoStatus.Pending],
+  fullLineValue: [BingoStatus.Pending],
+} as Readonly<Record<keyof Omit<UpdateBingoDto, 'confirmTileDeletion'>, BingoStatus[]>>;
 
 export default function EditDetails() {
   const { bingo, currentAction, closeAction, updateBingo } = useActionsContext();
@@ -23,7 +37,7 @@ export default function EditDetails() {
   const t = useTranslations('bingo.bingoCard.editDetails');
   const locale = useLocale();
 
-  const formik = useFormik<FormValues>({
+  const formik = useFormik<UpdateBingoFormValues>({
     initialValues: {
       language: bingo.language,
       title: bingo.title,
@@ -47,13 +61,15 @@ export default function EditDetails() {
 
   const { values, errors, setFieldValue, resetForm, handleSubmit } = formik;
   const submitDisabled = [values.width, values.height, values.fullLineValue].some((value) => value === null);
+  const disabledFields = Object.entries(STATUS_RESTRICTIONS)
+    .filter(([_, statuses]) => !statuses.includes(bingo.status))
+    .map(([field]) => field);
 
   const handleCancel = () => {
     resetForm();
     closeAction();
   };
 
-  // TODO: handle scroll in the dialog content
   return (
     <Modal open={currentAction === 'editDetails'} onOpenChange={closeAction}>
       <Modal.Header title={t('title')} />
@@ -67,6 +83,7 @@ export default function EditDetails() {
               value={values.language ?? ''}
               onChange={(value) => setFieldValue('language', value)}
               modal
+              disabled={disabledFields.includes('language')}
             />
             <TextField
               name="title"
@@ -74,6 +91,7 @@ export default function EditDetails() {
               value={values.title ?? ''}
               onChange={(value) => setFieldValue('title', value)}
               error={errors.title}
+              disabled={disabledFields.includes('title')}
             />
             <TextAreaField
               name="description"
@@ -81,6 +99,7 @@ export default function EditDetails() {
               value={values.description ?? ''}
               onChange={(value) => setFieldValue('description', value)}
               error={errors.description}
+              disabled={disabledFields.includes('description')}
             />
             <SwitchField
               name="public"
@@ -88,6 +107,7 @@ export default function EditDetails() {
               value={!values.private}
               onChange={(value) => setFieldValue('private', !value)}
               error={errors.private}
+              disabled={disabledFields.includes('private')}
             />
             <Separator className="my-5" />
             <div className="flex items-center gap-2.5 w-full">
@@ -99,6 +119,7 @@ export default function EditDetails() {
                 onChange={(value) => setFieldValue('startDate', value)}
                 error={errors.startDate}
                 modal
+                disabled={disabledFields.includes('startDate')}
               />
               <MoveRightIcon className="size-6 mt-1 shrink-0 text-gray-500" />
               <DateField
@@ -109,6 +130,7 @@ export default function EditDetails() {
                 onChange={(value) => setFieldValue('endDate', value)}
                 error={errors.endDate}
                 modal
+                disabled={disabledFields.includes('endDate')}
               />
             </div>
             <DateField
@@ -118,6 +140,7 @@ export default function EditDetails() {
               value={values.maxRegistrationDate ?? ''}
               onChange={(value) => setFieldValue('maxRegistrationDate', value)}
               error={errors.maxRegistrationDate}
+              disabled={disabledFields.includes('maxRegistrationDate')}
             />
             <Separator className="my-5" />
             <BingoCardPreview width={values.width} height={values.height} />
@@ -131,6 +154,7 @@ export default function EditDetails() {
                 value={values.width}
                 onChange={(value) => setFieldValue('width', value)}
                 error={errors.width}
+                disabled={disabledFields.includes('width')}
               />
               <XIcon className="size-6 mt-1 shrink-0 text-gray-500" />
               <NumberField
@@ -142,6 +166,7 @@ export default function EditDetails() {
                 value={values.height}
                 onChange={(value) => setFieldValue('height', value)}
                 error={errors.height}
+                disabled={disabledFields.includes('height')}
               />
             </div>
             <div className="w-1/2 pr-5">
@@ -152,6 +177,7 @@ export default function EditDetails() {
                 value={values.fullLineValue}
                 onChange={(value) => setFieldValue('fullLineValue', value)}
                 error={errors.fullLineValue}
+                disabled={disabledFields.includes('fullLineValue')}
               />
             </div>
           </Form>

@@ -93,6 +93,7 @@ describe('SearchUsersHandler', () => {
     const expectedPendingBingos = [
       seedingService.getEntity(Bingo, 'osrs-qc'),
       seedingService.getEntity(Bingo, 'german-osrs'),
+      seedingService.getEntity(Bingo, 'ready_bingo'),
     ];
     const expectedCanceledBingos = [seedingService.getEntity(Bingo, 'canceled-bingo')];
     const expectedStartedBingos = [seedingService.getEntity(Bingo, 'started-bingo')];

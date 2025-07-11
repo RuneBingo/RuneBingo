@@ -2,10 +2,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Check, ChevronsUpDownIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
 import { listMyBingos, setCurrentBingo as setCurrentBingoApi } from '@/api/auth';
 import { BingoRoles, BingoStatus, type ShortBingoDto } from '@/api/types';
+import toast from '@/common/utils/toast';
 import { cn } from '@/design-system/lib/utils';
 import { Button } from '@/design-system/ui/button';
 import {
@@ -29,6 +29,8 @@ type SelectBingoValueDisplayProps = {
 };
 
 function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps) {
+  const t = useTranslations('bingo.status');
+
   const statusColor = (() => {
     switch (status) {
       case BingoStatus.Canceled:
@@ -46,12 +48,12 @@ function SelectBingoValueDisplay({ title, status }: SelectBingoValueDisplayProps
 
   return (
     <div className="flex items-center gap-2">
-      {statusColor && (
+      {status && statusColor && (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className={`w-2 h-2 rounded-full ${statusColor}`} />
           </TooltipTrigger>
-          <TooltipContent>{status}</TooltipContent>
+          <TooltipContent>{t(status)}</TooltipContent>
         </Tooltip>
       )}
       {title}
@@ -86,14 +88,13 @@ export default function SelectBingo() {
       const response = await setCurrentBingoApi(bingo.id);
       if ('error' in response) {
         const { message } = transformApiError(response);
-        if (message) toast.error(message, { richColors: true, dismissible: true, position: 'bottom-center' });
+        if (message) toast.error(message);
 
         return;
       }
 
-      // TODO: if bingoId in route, redirect to the dashboard
       await refreshUser();
-      router.refresh();
+      router.push(`/bingo/${bingo.id}`);
     },
   });
 

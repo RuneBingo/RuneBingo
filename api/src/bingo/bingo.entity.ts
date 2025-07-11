@@ -6,6 +6,7 @@ import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoStatus } from './bingo-status.enum';
+import { BingoTile } from './tile/bingo-tile.entity';
 
 @Entity()
 export class Bingo extends StrongEntityParanoid {
@@ -64,7 +65,7 @@ export class Bingo extends StrongEntityParanoid {
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'started_by' })
-  startedBy: Promise<User>;
+  startedBy: Promise<User | null>;
 
   @Column({ nullable: true, type: 'timestamptz' })
   endedAt: Date | null;
@@ -74,7 +75,7 @@ export class Bingo extends StrongEntityParanoid {
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'ended_by' })
-  endedBy: Promise<User>;
+  endedBy: Promise<User | null>;
 
   @Column({ nullable: true, type: 'timestamptz' })
   canceledAt: Date | null;
@@ -84,17 +85,30 @@ export class Bingo extends StrongEntityParanoid {
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'canceled_by' })
-  canceledBy: Promise<User>;
+  canceledBy: Promise<User | null>;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'deleted_by' })
-  deletedBy: Promise<User>;
+  deletedBy: Promise<User | null>;
+
+  @Column({ nullable: true, type: 'timestamptz' })
+  resetAt: Date | null;
+
+  @Column({ name: 'reset_by', type: 'int', nullable: true })
+  resetById: number | null = null;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'reset_by' })
+  resetBy: Promise<User | null>;
 
   @Column({ type: 'date', nullable: true })
   maxRegistrationDate?: string;
 
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
+
+  @OneToMany(() => BingoTile, (bingoTile) => bingoTile.bingo)
+  tiles: Promise<BingoTile[]>;
 
   public get status() {
     const now = new Date();

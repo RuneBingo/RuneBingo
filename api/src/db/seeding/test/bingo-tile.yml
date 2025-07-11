@@ -1,0 +1,115 @@
+osrs-qc_3-1:
+  bingo: osrs-qc
+  x: 3
+  y: 1
+  value: 5
+  title: Fremennik rings set
+  description: Obtain each of the Fremennik rings
+  completionMode: all
+
+osrs-qc_4-1:
+  bingo: osrs-qc
+  x: 4
+  y: 1
+  value: 1
+  title: Obtain an Abyssal Whip
+  description: Face the Abyssal Demons to obtain an Abyssal Whip
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/4151.png
+
+ready_1-1:
+  bingo: ready_bingo
+  x: 1
+  y: 1
+  value: 1
+  title: Vorkath unique
+  description: Obtain any Vorkath unique item
+  completionMode: any
+
+ready_1-2:
+  bingo: ready_bingo
+  x: 1
+  y: 2
+  value: 1
+  title: Any slayer head
+  description: Obtain any head that can be used to cosmetically upgrade a slayer helmet
+  completionMode: any
+
+ready_1-3:
+  bingo: ready_bingo
+  x: 1
+  y: 3
+  value: 1
+  title: Bottomless Bucket
+  description: Obtain a Bottomless Bucket from Hespori
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/22994.png
+
+ready_2-1:
+  bingo: ready_bingo
+  x: 2
+  y: 1
+  value: 1
+  title: Curved bone
+  description: Hunt for the elusive Curved bone
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/10977.png
+
+ready_2-2:
+  bingo: ready_bingo
+  x: 2
+  y: 2
+  value: 1
+  title: Miracle whip
+  description: Obtain three Abyssal Whips from killing Abyssal Demons or the Abyssal Sire
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/4151.png
+
+ready_2-3:
+  bingo: ready_bingo
+  x: 2
+  y: 3
+  value: 1
+  title: Lord of the Rings
+  description: Obtain a full set of rings from the Dagannoth Kings
+  completionMode: all
+
+ready_3-1:
+  bingo: ready_bingo
+  x: 3
+  y: 1
+  value: 1
+  title: This tome is on fire
+  description: Obtain a Tome of Fire from Wintertodt supplies. Rip Franck!
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/20716.png
+
+ready_3-2:
+  bingo: ready_bingo
+  x: 3
+  y: 2
+  value: 1
+  title: Zenyte Madness
+  description: "Obtain a Zenyte shard from Glough's experiments"
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/19529.png
+
+ready_3-3:
+  bingo: ready_bingo
+  x: 3
+  y: 3
+  value: 1
+  title: Ranger boots
+  description: You know what to do. Go hunt those eclectic implings!
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/2577.png
+
+lifecycle_1-1:
+  bingo: lifecycle-bingo
+  x: 1
+  y: 1
+  value: 1
+  title: Lifecycle bingo
+  description: Lifecycle bingo
+  completionMode: all
+  imageUrl: https://chisel.weirdgloop.org/static/img/osrs-dii/2577.png

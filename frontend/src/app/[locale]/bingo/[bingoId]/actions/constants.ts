@@ -1,46 +1,53 @@
 import { CalendarXIcon, CalendarClockIcon, PencilIcon, RecycleIcon, Trash2Icon } from 'lucide-react';
 
-import { type BingoDto, BingoStatus } from '@/api/types';
+import { BingoRoles, BingoStatus } from '@/api/types';
 
-import type { Action } from './types';
+import type { Action, ActionVisibleParams } from './types';
 
-export const ACTION_KEYS = ['cancel', 'delete', 'editDetails', 'endNow', 'reset', 'startNow'] as const;
+const actionVisibilityFor = (status: BingoStatus[] | 'all', roles: BingoRoles[]) => (params: ActionVisibleParams) =>
+  Boolean(
+    params.participant &&
+      (status === 'all' || status.includes(params.bingo.status)) &&
+      roles.includes(params.participant.role),
+  );
+
+export const ACTION_KEYS = ['cancel', 'delete', 'editDetails', 'end', 'reset', 'start'] as const;
 
 export const EDIT_DETAILS = {
   key: 'editDetails',
   icon: PencilIcon,
-  visible: ({ status }: BingoDto) => [BingoStatus.Pending, BingoStatus.Ongoing].includes(status),
+  visible: actionVisibilityFor([BingoStatus.Pending, BingoStatus.Ongoing], [BingoRoles.Owner, BingoRoles.Organizer]),
 } as const satisfies Action;
 
 export const RESET_EVENT = {
   key: 'reset',
   icon: RecycleIcon,
-  visible: ({ status }: BingoDto) => status === BingoStatus.Canceled,
+  visible: actionVisibilityFor([BingoStatus.Canceled], [BingoRoles.Owner]),
 } as const satisfies Action;
 
 export const START_NOW = {
-  key: 'startNow',
+  key: 'start',
   icon: CalendarClockIcon,
-  visible: ({ status }: BingoDto) => status === BingoStatus.Pending,
+  visible: actionVisibilityFor([BingoStatus.Pending], [BingoRoles.Owner, BingoRoles.Organizer]),
 } as const satisfies Action;
 
 export const END_NOW = {
-  key: 'endNow',
+  key: 'end',
   icon: CalendarClockIcon,
-  visible: ({ status }: BingoDto) => status === BingoStatus.Ongoing,
+  visible: actionVisibilityFor([BingoStatus.Ongoing], [BingoRoles.Owner, BingoRoles.Organizer]),
 } as const satisfies Action;
 
 export const CANCEL_EVENT = {
   key: 'cancel',
   icon: CalendarXIcon,
-  visible: ({ status }: BingoDto) => [BingoStatus.Pending, BingoStatus.Ongoing].includes(status),
+  visible: actionVisibilityFor([BingoStatus.Pending, BingoStatus.Ongoing], [BingoRoles.Owner]),
 } as const satisfies Action;
 
 export const DELETE_EVENT = {
   key: 'delete',
   icon: Trash2Icon,
   variant: 'destructive',
-  visible: () => true,
+  visible: actionVisibilityFor('all', [BingoRoles.Owner]),
 } as const satisfies Action;
 
 export const ACTION_GROUPS = [

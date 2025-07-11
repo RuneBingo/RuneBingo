@@ -1,4 +1,5 @@
 osrs-qc:
+  bingoId: 00000000-0000-0000-0000-000000000001
   createdBy: char0o
   language: 'en'
   title: 'OSRS QC'
@@ -12,6 +13,7 @@ osrs-qc:
   maxRegistrationDate: '2025-03-31'
 
 german-osrs:
+  bingoId: 00000000-0000-0000-0000-000000000002
   createdBy: raph
   language: 'en'
   title: 'German OSRS'
@@ -25,6 +27,7 @@ german-osrs:
   maxRegistrationDate: '2025-03-31'
 
 ended-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000003
   createdBy: dee420
   language: 'en'
   title: 'ended bingo'
@@ -40,6 +43,7 @@ ended-bingo:
   maxRegistrationDate: '2025-03-31'
 
 started-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000004
   createdBy: didiking
   language: 'en'
   title: 'started bingo'
@@ -54,6 +58,7 @@ started-bingo:
   maxRegistrationDate: '2025-03-31'
 
 deleted-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000005
   createdBy: raph
   language: 'en'
   title: 'deleted bingo'
@@ -68,6 +73,7 @@ deleted-bingo:
   deletedAt: '2024-04-03'
 
 canceled-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000006
   createdBy: dee420
   language: 'en'
   title: 'canceled bingo'
@@ -80,3 +86,34 @@ canceled-bingo:
   endDate: '2025-04-30'
   maxRegistrationDate: '2025-03-31'
   canceledAt: '2025-04-24'
+
+ready_bingo:
+  bingoId: 00000000-0000-0000-0000-000000000007
+  createdBy: raph
+  language: 'en'
+  title: 'ready bingo'
+  description: "I'm ready to be started!"
+  private: false
+  width: 3
+  height: 3
+  fullLineValue: 10
+  startDate: '2036-01-01'
+  endDate: '2036-03-01'
+  maxRegistrationDate: '2035-12-01'
+
+lifecycle-bingo:
+  bingoId: 00000000-0000-0000-0000-000000000008
+  createdBy: raph
+  language: 'en'
+  title: 'lifecycle bingo'
+  description: 'Im a bingo that has went through a full lifecycle'
+  private: true
+  width: 1
+  height: 1
+  fullLineValue: 10
+  startDate: '2025-04-01'
+  endDate: '2025-04-30'
+  maxRegistrationDate: '2025-03-31'
+  canceledAt: '2025-05-01'
+  startedAt: '2025-04-01'
+  endedAt: '2025-04-30'

@@ -21,14 +21,16 @@ type Item = {
   name: string;
   configName: string;
   examine: string;
+  iconUrl: string;
   imageUrl: string;
   exchangeable: boolean;
   members: boolean;
   category: number;
 };
 
-type ItemOrVariant = Exclude<Item, 'id' | 'imageUrl' | 'name'> & {
+type ItemOrVariant = Exclude<Item, 'id' | 'iconUrl' | 'imageUrl' | 'name'> & {
   id: number | null;
+  iconUrl: string | null;
   imageUrl: string | null;
   name: string | null;
 };
@@ -117,14 +119,15 @@ export class SyncOsrsItemsProcessor extends WorkerHost {
       if (this.ITEM_NAME_BLACKLIST.includes(item.configName)) return;
 
       if (item.name === null) {
-        if (this.lastItem === null || !item.configName.startsWith(this.lastItem.configName) || item.imageUrl === null)
+        if (this.lastItem === null || !item.configName.startsWith(this.lastItem.configName) || item.iconUrl === null)
           return;
 
+        this.lastItem.iconUrl = item.iconUrl;
         this.lastItem.imageUrl = item.imageUrl;
         return;
       }
 
-      if (item.id === null || item.imageUrl === null) return;
+      if (item.id === null || item.iconUrl === null) return;
 
       this.items.push(item);
       this.lastItem = item;
@@ -134,7 +137,7 @@ export class SyncOsrsItemsProcessor extends WorkerHost {
   }
 
   private scrapeItemFromPage($item: cheerio.Cheerio<Element>): ItemOrVariant {
-    const imageUrl = $item.find('td:nth-child(1) img').attr('src');
+    const iconUrl = $item.find('td:nth-child(1) img').attr('src');
     const id = this.getColumnText($item, 2);
     const name = this.getColumnText($item, 3);
     const configName = this.getColumnText($item, 4);
@@ -142,9 +145,11 @@ export class SyncOsrsItemsProcessor extends WorkerHost {
     const members = this.getColumnText($item, 6);
     const examine = this.getColumnText($item, 9);
     const category = this.getColumnText($item, 17);
+    const imageUrl = $item.find('td:nth-child(18) a:last-child').attr('href');
 
     return {
-      imageUrl: imageUrl ? `${this.BASE_URL}${imageUrl}` : null,
+      iconUrl: iconUrl ? `${this.BASE_URL}${iconUrl}` : null,
+      imageUrl,
       id: id ? Number(id) : null,
       name: name.trim() === '' || name.toLowerCase() === 'null' ? null : name,
       configName,
@@ -171,6 +176,7 @@ export class SyncOsrsItemsProcessor extends WorkerHost {
         name: item.name,
         configName: item.configName,
         examine: item.examine,
+        iconUrl: item.iconUrl,
         imageUrl: item.imageUrl,
         exchangeable: item.exchangeable,
         members: item.members,

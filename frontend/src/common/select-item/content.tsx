@@ -12,7 +12,7 @@ import { useSelectItemContext } from './provider';
 
 export default function Content() {
   const t = useTranslations('common');
-  const { value, items, isError, isLoading, onChange } = useSelectItemContext();
+  const { query, value, items, isError, isLoading, onChange, focusNewItem } = useSelectItemContext();
 
   if (isLoading)
     return (
@@ -28,17 +28,20 @@ export default function Content() {
 
   if (isError) return <span className="text-sm font-medium">{t('error.unexpected')}</span>;
 
-  if (!items || items.length === 0) return <span className="text-sm font-medium">{t('noResults')}</span>;
+  if (!items || items.length === 0) {
+    return <span className="text-sm font-medium">{query.length < 3 ? t('noQuery', { min: 3 }) : t('noResults')}</span>;
+  }
 
-  const itemIsSelected = (item: OsrsItemDto) => value.some((i) => i.id === item.id);
+  const itemIsSelected = (item: OsrsItemDto) => value.some((i) => i.item.id === item.id);
 
   const handleSelectItem = (item: OsrsItemDto) => {
-    if (value.some((i) => i.id === item.id)) {
-      onChange(value.filter((i) => i.id !== item.id));
+    if (value.some((i) => i.item.id === item.id)) {
+      onChange(value.filter((i) => i.item.id !== item.id));
       return;
     }
 
-    onChange([...value, item]);
+    onChange([...value, { item, quantity: 1 }]);
+    focusNewItem(item.id);
   };
 
   return (
@@ -52,7 +55,7 @@ export default function Content() {
           )}
           onClick={() => handleSelectItem(item)}
         >
-          <Image src={item.imageUrl} width={32} height={32} alt={item.name} className="w-8 h-8 object-contain" />
+          <Image src={item.iconUrl} width={32} height={32} alt={item.name} className="w-8 h-8 object-contain" />
           <span className="text-sm font-medium">{item.name}</span>
         </div>
       ))}

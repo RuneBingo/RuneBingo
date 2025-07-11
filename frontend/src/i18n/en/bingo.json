@@ -16,6 +16,7 @@
     "noValue": "No bingo selected"
   },
   "bingoCard": {
+    "unexpectedError": "An unexpected error has occurred while loading this bingo card. Please try again later.",
     "dateRangeHtml": "From <b>{startDate}</b> to <b>{endDate}</b>.",
     "maxRegistrationDateHtml": "Applications close <b>{maxRegistrationDate}</b>.",
     "createdByHtml": "Organized by <b>{username}</b>",
@@ -24,9 +25,14 @@
       "editDetails": "Edit details",
       "delete": "Delete event",
       "reset": "Reset event",
-      "startNow": "Start now",
-      "endNow": "End now",
+      "start": "Start now",
+      "end": "End now",
       "cancel": "Cancel event"
+    },
+    "deleteBingoTile": {
+      "title": "Delete bingo tile at ({x}, {y})?",
+      "description": "Are you sure you want to delete this bingo tile? This action cannot be undone.",
+      "success": "Bingo tile deleted successfully."
     },
     "editDetails": {
       "title": "Edit event details",
@@ -44,11 +50,102 @@
         "submit": "Edit event details",
         "cancel": "Discard changes"
       },
-      "success": "Event details updated successfully."
+      "success": "Event details updated successfully.",
+      "confirmTileDeletion": {
+        "title": "Confirm tile deletion?",
+        "confirm": "Confirm"
+      }
+    },
+    "startBingo": {
+      "title": "Start the event early?",
+      "descriptionHtml": "<p>You will not be able to change the event's language or public status anymore, or change the Bingo card size and its tiles.</p><p>All pending applications and invitations will be canceled and participants will be locked to their assigned team.</p><p>All participants will be locked to their assigned team and notified that the event is started.</p>",
+      "endDate": {
+        "switch": "I also want to change the end date",
+        "placeholder": "Enter a new end date"
+      },
+      "submit": "Start the event",
+      "cancel": "Close",
+      "success": "Event started successfully."
+    },
+    "endBingo": {
+      "title": "End the event early?",
+      "descriptionHtml": "<p>You will not be able to change the event's title and description anymore.</p><p>All pending tile completion requests will be canceled and the scores will be calculated one last time.</p>",
+      "submit": "End the event",
+      "cancel": "Close",
+      "success": "Event ended successfully."
+    },
+    "cancelBingo": {
+      "title": "Cancel the event?",
+      "descriptionHtml": "<p>You will not be able to change the event details or its Bingo card anymore.</p><p>All applications & invitations, as well as tile completions will be deleted and the team scores will be reset.</p><p>You may still reuse this event's details, bingo card, teams and participants later if you choose to reset it.</p>",
+      "submit": "Cancel the event",
+      "cancel": "Close",
+      "success": "Event canceled successfully."
+    },
+    "deleteBingo": {
+      "title": "Delete the event?",
+      "description": "Participants will not be notified of this action, and the event will be deleted permanently. Are you sure you want to delete it?",
+      "submit": "Yes, delete the event",
+      "cancel": "Close",
+      "success": "Event deleted successfully."
+    },
+    "resetBingo": {
+      "title": "Reset the event?",
+      "descriptionHtml": "<p>Resetting an event allows you to reuse its settings — including the Bingo card, teams, and participants. The event will be set back to Pending status.</p><p>You'll need to choose a new start and end date. You can also set an optional registration deadline. These can be changed later if needed.</p>",
+      "form": {
+        "startDate": "Start date",
+        "endDate": "End date",
+        "maxRegistrationDate": "Registration deadline (optional)",
+        "entitiesToClear": "Optional — choose what you want to be cleared when resetting the event:",
+        "deleteTiles": "Delete all the tiles from the bingo card",
+        "deleteTeams": "Delete all teams",
+        "deleteParticipants": "Remove all participants"
+      },
+      "submit": "Reset the event",
+      "cancel": "Close",
+      "success": "Event reset successfully."
+    },
+    "moveBingoTileSuccess": "Bingo tile moved successfully.",
+    "viewOrEditTile": {
+      "title": {
+        "create": "Create bingo tile ({x}, {y})",
+        "edit": "Edit bingo tile ({x}, {y})",
+        "view": "View bingo tile ({x}, {y})",
+        "loading": "Create, view or edit bingo tile (loading...)"
+      },
+      "form": {
+        "information": "Information",
+        "title": "Title",
+        "description": "Description",
+        "value": "Value",
+        "free": "Free?",
+        "image": "Image",
+        "noImage": "This tile has no image.",
+        "noItems": "This tile has no items.",
+        "items": "Items",
+        "customImage": "Use a custom image for this tile",
+        "itemsDescription": {
+          "all": "You must obtain all of the following items to complete this tile:",
+          "any": "You must obtain any of the following items to complete this tile:"
+        },
+        "submit": "Save bingo tile",
+        "cancel": "Discard changes"
+      },
+      "freeTip": {
+        "title": "<span>🎉</span> This tile is free!",
+        "description": "This tile is given to each team for free. No need to complete it!"
+      },
+      "success": {
+        "create": "Bingo tile created successfully.",
+        "edit": "Bingo tile updated successfully.",
+        "delete": "Bingo tile deleted successfully."
+      }
     }
   },
   "notCurrentBingoTip": {
-    "title": "You are an organizer of this bingo.",
+    "title": {
+      "organizer": "You are an organizer of this bingo.",
+      "owner": "You are the owner of this bingo."
+    },
     "description": "You may manage it by <button>making it your current bingo</button>."
   }
 }

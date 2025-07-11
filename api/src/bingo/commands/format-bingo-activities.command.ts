@@ -38,21 +38,30 @@ export class FormatBingoActivitiesHandler {
         switch (activity.key) {
           case 'bingo.created':
             return this.formatBingoCreatedActivity(activity);
-          case 'bingo.updated':
-            return this.formatBingoUpdatedActivity(activity);
           case 'bingo.canceled':
             return this.formatBingoCanceledActivity(activity);
           case 'bingo.deleted':
             return this.formatBingoDeletedActivity(activity);
+          case 'bingo.started':
+            return this.formatBingoStartedActivity(activity);
+          case 'bingo.ended':
+            return this.formatBingoEndedActivity(activity);
+          case 'bingo.updated':
+            return this.formatBingoUpdatedActivity(activity);
+          case 'bingo.reset':
+            return this.formatBingoResetActivity(activity);
           case 'bingo.participant.added':
             return this.formatBingoParticipantAddedActivity(activity);
           case 'bingo.participant.removed':
             return this.formatBingoParticipantRemovedActivity(activity);
           case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
-          default:
-            this.logger.error(`Unsupported activity key: ${activity.key}`);
-            return null;
+          case 'bingo.tile.set':
+            return this.formatBingoTileSetActivity(activity);
+          case 'bingo.tile.deleted':
+            return this.formatBingoTileDeletedActivity(activity);
+          case 'bingo.tile.moved':
+            return this.formatBingoTileMovedActivity(activity);
         }
       }),
     );
@@ -110,8 +119,48 @@ export class FormatBingoActivitiesHandler {
         case 'endDate':
           body.push(this.i18nService.t('bingo.activity.updated.body.endDate', { args: { endDate: value } }));
           break;
-        default:
-          this.logger.error(`Unsupported activity parameter for 'bingo.update': ${key}`);
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoResetActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo.activity.reset.title', {
+      args: { username: requesterName },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'startDate':
+          body.push(this.i18nService.t('bingo.activity.reset.body.startDate', { args: { startDate: value } }));
+          break;
+        case 'endDate':
+          body.push(this.i18nService.t('bingo.activity.reset.body.endDate', { args: { endDate: value } }));
+          break;
+        case 'maxRegistrationDate':
+          body.push(
+            this.i18nService.t('bingo.activity.reset.body.maxRegistrationDate', {
+              args: { maxRegistrationDate: value },
+            }),
+          );
+          break;
+        case 'deletedTiles':
+          body.push(this.i18nService.t('bingo.activity.reset.body.deletedTiles', { args: { deletedTiles: value } }));
+          break;
+        case 'deletedTeams':
+          body.push(this.i18nService.t('bingo.activity.reset.body.deletedTeams', { args: { deletedTeams: value } }));
+          break;
+        case 'deletedParticipants':
+          body.push(
+            this.i18nService.t('bingo.activity.reset.body.deletedParticipants', {
+              args: { deletedParticipants: value },
+            }),
+          );
           break;
       }
     });
@@ -123,6 +172,38 @@ export class FormatBingoActivitiesHandler {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.deleted.title', {
+      args: { username: requesterName },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoStartedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const titleKey = activity.parameters?.early ? 'titleEarly' : 'title';
+    const title = this.i18nService.t(`bingo.activity.started.${titleKey}`, {
+      args: { username: requesterName },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'endDate':
+          body.push(this.i18nService.t('bingo.activity.started.body.endDate', { args: { endDate: value } }));
+          break;
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoEndedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const titleKey = activity.parameters?.early ? 'titleEarly' : 'title';
+    const title = this.i18nService.t(`bingo.activity.ended.${titleKey}`, {
       args: { username: requesterName },
     });
 
@@ -193,13 +274,85 @@ export class FormatBingoActivitiesHandler {
             }),
           );
           break;
-        default:
-          this.logger.error(`Unsupported activity parameter for 'bingo.update': ${key}`);
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoTileSetActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo.tile.activity.set.title', {
+      args: { username: requesterName, x: activity.parameters?.x, y: activity.parameters?.y },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'title':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.title', { args: { title: value } }));
+          break;
+        case 'description':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.description', { args: { description: value } }));
+          break;
+        case 'value':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.value', { args: { value: value } }));
+          break;
+        case 'free':
+          body.push(
+            this.i18nService.t(`bingo.tile.activity.set.body.free.${value as 'true' | 'false'}`, {
+              args: { free: value },
+            }),
+          );
+          break;
+        case 'completionMode':
+          body.push(
+            this.i18nService.t('bingo.tile.activity.set.body.completionMode', { args: { completionMode: value } }),
+          );
+          break;
+        case 'media':
+          if (value !== null) {
+            body.push(this.i18nService.t('bingo.tile.activity.set.body.mediaAdded', { args: { media: value } }));
+          } else {
+            body.push(this.i18nService.t('bingo.tile.activity.set.body.mediaRemoved'));
+          }
+          break;
+        case 'items':
+          body.push(this.i18nService.t('bingo.tile.activity.set.body.items'));
           break;
       }
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoTileDeletedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo.tile.activity.deleted.title', {
+      args: { username: requesterName, x: activity.parameters?.x, y: activity.parameters?.y },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoTileMovedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const key = activity.parameters?.swapped ? 'swapped' : 'moved';
+    const title = this.i18nService.t(`bingo.tile.activity.${key}.title`, {
+      args: {
+        username: requesterName,
+        x: activity.parameters?.x,
+        y: activity.parameters?.y,
+        toX: activity.parameters?.toX,
+        toY: activity.parameters?.toY,
+      },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
   }
 
   private async preloadUsers(activities: Activity[]): Promise<void> {

@@ -1,8 +1,8 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
 import { UpdateBingoDto } from '@/bingo/dto/update-bingo.dto';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
@@ -13,6 +13,8 @@ import { BingoStatus } from '../bingo-status.enum';
 import { Bingo } from '../bingo.entity';
 import { BingoPolicies } from '../bingo.policies';
 import { BingoUpdatedEvent } from '../events/bingo-updated.event';
+import { BingoTileItem } from '../tile/bingo-tile-item';
+import { BingoTile } from '../tile/bingo-tile.entity';
 
 export type UpdateBingoParams = {
   bingoId: string;
@@ -37,6 +39,8 @@ export class UpdateBingoCommand extends Command<Bingo> {
 @CommandHandler(UpdateBingoCommand)
 export class UpdateBingoHandler {
   constructor(
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
     @InjectRepository(Bingo)
     private readonly bingoRepository: Repository<Bingo>,
     @InjectRepository(BingoParticipant)
@@ -47,8 +51,9 @@ export class UpdateBingoHandler {
 
   async execute(command: UpdateBingoCommand): Promise<UpdateBingoResult> {
     const { bingoId, requester } = command;
+    const { confirmTileDeletion, ...updates } = command.updates;
 
-    let bingo = await this.bingoRepository.findOneBy({ bingoId });
+    const bingo = await this.bingoRepository.findOneBy({ bingoId });
 
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo.updateBingo.bingoNotFound'));
@@ -59,10 +64,11 @@ export class UpdateBingoHandler {
       userId: requester.id,
     });
 
-    const updates = Object.fromEntries(
+    const filteredUpdates = Object.fromEntries(
       Object.entries(command.updates).filter(([key, value]) => {
-        const current = bingo![key as keyof Bingo];
+        if (key === 'confirmTileDeletion') return false;
 
+        const current = bingo[key as keyof Bingo];
         if (value === undefined) return false;
 
         return value !== current;
@@ -73,23 +79,30 @@ export class UpdateBingoHandler {
       return bingo;
     }
 
-    if (!new BingoPolicies(requester).canUpdate(bingoParticipant, updates)) {
+    if (!new BingoPolicies(requester, bingoParticipant).canUpdate(filteredUpdates)) {
       throw new ForbiddenException(this.i18nService.t('bingo.updateBingo.forbidden'));
     }
 
-    this.validateUpdates(bingo, updates);
+    this.validateUpdates(bingo, filteredUpdates);
+    const tilesToDelete = await this.getAndValidateTilesToDelete(bingo, filteredUpdates, confirmTileDeletion);
 
-    Object.assign(bingo, updates);
-    bingo.updatedById = requester.id;
-    bingo.updatedBy = Promise.resolve(requester);
+    await this.dataSource.transaction(async (manager) => {
+      if (tilesToDelete?.length) {
+        await manager.delete(BingoTileItem, { bingoTileId: In(tilesToDelete.map((tile) => tile.id)) });
+        await manager.delete(BingoTile, tilesToDelete);
+      }
 
-    bingo = await this.bingoRepository.save(bingo);
+      Object.assign(bingo, filteredUpdates);
+      bingo.updatedById = requester.id;
+      bingo.updatedBy = Promise.resolve(requester);
+      await manager.save(Bingo, bingo);
+    });
 
     this.eventBus.publish(
       new BingoUpdatedEvent({
         bingoId: bingo.id,
         requesterId: command.requester.id,
-        updates,
+        updates: filteredUpdates,
       }),
     );
 
@@ -104,7 +117,7 @@ export class UpdateBingoHandler {
       throw new BadRequestException(
         this.i18nService.t('bingo.updateBingo.statusRestricted', {
           args: {
-            field: this.i18nService.t(`bingo.entity.${key as keyof UpdateBingoDto}`),
+            field: this.i18nService.t(`bingo.entity.${key as keyof Omit<UpdateBingoDto, 'confirmTileDeletion'>}`),
             status: this.i18nService.t(`bingo.status.${bingo.status}`),
           },
         }),
@@ -135,6 +148,37 @@ export class UpdateBingoHandler {
     if (updates.maxRegistrationDate && new Date(updates.maxRegistrationDate) >= newStartDate) {
       throw new BadRequestException(this.i18nService.t('bingo.updateBingo.registrationDateAfterStartDate'));
     }
+  }
+
+  private async getAndValidateTilesToDelete(
+    bingo: Bingo,
+    updates: UpdateBingoDto,
+    confirmTileDeletion: boolean | undefined,
+  ) {
+    if (updates.width === undefined && updates.height === undefined) return [];
+
+    const newWidth = updates.width ?? bingo.width;
+    const newHeight = updates.height ?? bingo.height;
+
+    const tiles = await bingo.tiles;
+    const tilesToDelete = tiles?.filter((tile) => tile.x > newWidth || tile.y > newHeight) ?? [];
+    if (tilesToDelete.length === 0) return [];
+
+    if (!confirmTileDeletion) {
+      if (tilesToDelete.length === 1) {
+        throw new ConflictException(this.i18nService.t('bingo.updateBingo.tileDeletionNotConfirmed.singular'));
+      }
+
+      throw new ConflictException(
+        this.i18nService.t('bingo.updateBingo.tileDeletionNotConfirmed.plural', {
+          args: {
+            count: tilesToDelete.length,
+          },
+        }),
+      );
+    }
+
+    return tilesToDelete;
   }
 
   private readonly fieldUpdateStatusRestrictions: Readonly<{ [key in keyof Bingo]?: BingoStatus[] }> = {

@@ -28,26 +28,22 @@ import {
 import { PaginatedActivitiesDto } from '@/activity/dto/paginated-activities.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { AddBingoParticipantCommand } from '@/bingo/participant/commands/add-bingo-participant.command';
-import { RemoveBingoParticipantCommand } from '@/bingo/participant/commands/remove-bingo-participant.command';
-import { UpdateBingoParticipantCommand } from '@/bingo/participant/commands/update-bingo-participant.command';
-import { BingoParticipantDto } from '@/bingo/participant/dto/bingo-participant.dto';
-import { PaginatedBingoParticipantsDto } from '@/bingo/participant/dto/paginated-bingo-participants.dto';
-import { UpdateBingoParticipantDto } from '@/bingo/participant/dto/update-bingo-participant.dto';
-import {
-  SearchBingoParticipantsParams,
-  SearchBingoParticipantsQuery,
-} from '@/bingo/participant/queries/search-bingo-participants.query';
 import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { UserDto } from '@/user/dto/user.dto';
 
 import { CancelBingoCommand } from './commands/cancel-bingo.command';
 import { CreateBingoCommand } from './commands/create-bingo.command';
 import { DeleteBingoCommand } from './commands/delete-bingo.command';
+import { EndBingoCommand } from './commands/end-bingo.command';
 import { FormatBingoActivitiesCommand } from './commands/format-bingo-activities.command';
+import { ResetBingoCommand } from './commands/reset-bingo.command';
+import { StartBingoCommand } from './commands/start-bingo.command';
 import { UpdateBingoCommand } from './commands/update-bingo.command';
 import { BingoDto } from './dto/bingo.dto';
 import { CreateBingoDto } from './dto/create-bingo.dto';
 import { PaginatedBingosDto } from './dto/paginated-bingos.dto';
+import { ResetBingoDto } from './dto/reset-bingo.dto';
+import { StartBingoDto } from './dto/start-bingo.dto';
 import { UpdateBingoDto } from './dto/update-bingo.dto';
 import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
@@ -139,7 +135,7 @@ export class BingoController {
 
   @Put(':bingoId')
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Update a bingo event' })
+  @ApiOperation({ summary: 'Update a bingo event details' })
   @ApiOkResponse({ description: 'The bingo has been updated.', type: BingoDto })
   @ApiBadRequestResponse({ description: 'Invalid request parameters.' })
   @ApiUnauthorizedResponse({ description: 'Not authorized to modify this bingo event.' })
@@ -152,16 +148,7 @@ export class BingoController {
       new UpdateBingoCommand({
         requester: req.userEntity!,
         bingoId: bingoId,
-        updates: {
-          language: body.language,
-          title: body.title,
-          description: body.description,
-          private: body.private,
-          fullLineValue: body.fullLineValue,
-          startDate: body.startDate,
-          endDate: body.endDate,
-          maxRegistrationDate: body.maxRegistrationDate,
-        },
+        updates: body,
       }),
     );
 
@@ -213,6 +200,53 @@ export class BingoController {
     );
   }
 
+  @Post(':bingoId/start')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Start a bingo event immediately' })
+  @ApiOkResponse({ description: 'The bingo event has been successfully started.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
+  @ApiBadRequestResponse({
+    description:
+      'The bingo event is not pending, nor ready to be started, or the end date must set to be in the future.',
+  })
+  @ApiUnauthorizedResponse({ description: 'Not authorized to start the bingo event.' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to start the bingo event.' })
+  async startBingo(@Req() req: Request, @Param('bingoId') bingoId: string, @Body() body: StartBingoDto) {
+    const user = req.userEntity!;
+
+    const bingo = await this.commandBus.execute(
+      new StartBingoCommand({
+        requester: user,
+        bingoId,
+        endDate: body.endDate,
+      }),
+    );
+
+    const startedBy = await bingo.startedBy;
+    return new BingoDto(bingo, { startedBy: startedBy ? new UserDto(startedBy) : undefined });
+  }
+
+  @Post(':bingoId/end')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'End a bingo event early' })
+  @ApiOkResponse({ description: 'The bingo event has been successfully ended.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
+  @ApiBadRequestResponse({ description: 'The bingo event was already ended.' })
+  @ApiUnauthorizedResponse({ description: 'Not authorized to end the bingo event.' })
+  async end(@Req() req: Request, @Param('bingoId') bingoId: string) {
+    const user = req.userEntity!;
+
+    const bingo = await this.commandBus.execute(
+      new EndBingoCommand({
+        requester: user,
+        bingoId: bingoId,
+      }),
+    );
+
+    const endedBy = await bingo.endedBy;
+    return new BingoDto(bingo, { endedBy: endedBy ? new UserDto(endedBy) : undefined });
+  }
+
   @Post(':bingoId/cancel')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Cancel a bingo event' })
@@ -227,96 +261,33 @@ export class BingoController {
         bingoId: bingoId,
       }),
     );
-    const canceledBy = new UserDto(await bingo.canceledBy);
-    const createdBy = new UserDto(await bingo.createdBy);
-    return new BingoDto(bingo, { createdBy, canceledBy });
+
+    const canceledBy = await bingo.canceledBy;
+    return new BingoDto(bingo, { canceledBy: canceledBy ? new UserDto(canceledBy) : undefined });
   }
 
-  @Get(':bingoId/participants')
+  @Post(':bingoId/reset')
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get bingo participants' })
-  @ApiOkResponse({ description: 'Bingo Participants.' })
-  @ApiQuery({ name: 'query', required: false })
-  @ApiQuery({ name: 'team', required: false })
-  @ApiQuery({ name: 'role', enum: ['participant', 'organizer', 'owner'], required: false })
-  @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'offset', required: false })
-  async getBingoParticipants(
-    @Req() req: Request,
-    @Param('bingoId') bingoId: string,
-    @Query('query') query: string = '',
-    @Query('team') teamName: string = '',
-    @Query('role') role: BingoRoles | undefined,
-    @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
-  ): Promise<PaginatedBingoParticipantsDto> {
-    const normalizedQuery = query?.trim() === '' ? undefined : query;
-    const normalizedTeamName = teamName?.trim() === '' ? undefined : teamName;
-    const params = {
-      requester: req.userEntity!,
-      bingoId,
-      query: normalizedQuery,
-      teamName: normalizedTeamName,
-      role,
-      limit: limit ? parseInt(limit) : undefined,
-      offset: offset ? parseInt(offset) : undefined,
-    } satisfies SearchBingoParticipantsParams;
-
-    const { items, ...pagination } = await this.queryBus.execute(new SearchBingoParticipantsQuery(params));
-
-    const bingoParticipantsDtos = await Promise.all(
-      items.map(async (bingoParticipant) => BingoParticipantDto.fromBingoParticipant(bingoParticipant)),
-    );
-
-    return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
-  }
-
-  @Delete(':bingoId/participants/:username')
-  @UseGuards(AuthGuard)
-  @HttpCode(204)
-  @ApiOperation({ summary: 'Delete a bingo participant from an event' })
-  @ApiNoContentResponse({ description: 'The bingo participant has been successfully deleted.' })
+  @ApiOperation({ summary: 'Reset a bingo event' })
+  @ApiOkResponse({ description: 'The bingo event has been successfully reset.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
-  @ApiUnauthorizedResponse({ description: 'Not authorized to view the bingo event.' })
-  @ApiForbiddenResponse({ description: 'Not authorized to delete the bingo participant.' })
-  async removeBingoParticipant(
-    @Req() req: Request,
-    @Param('bingoId') bingoId: string,
-    @Param('username') username: string,
-  ) {
-    await this.commandBus.execute(
-      new RemoveBingoParticipantCommand({
+  @ApiBadRequestResponse({ description: 'The bingo event was already reset.' })
+  @ApiUnauthorizedResponse({ description: 'Not authorized to reset the bingo event.' })
+  async reset(@Req() req: Request, @Param('bingoId') bingoId: string, @Body() body: ResetBingoDto) {
+    const bingo = await this.commandBus.execute(
+      new ResetBingoCommand({
         requester: req.userEntity!,
-        bingoId,
-        username,
+        bingoId: bingoId,
+        startDate: body.startDate,
+        endDate: body.endDate,
+        maxRegistrationDate: body.maxRegistrationDate,
+        deleteTiles: body.deleteTiles,
+        deleteTeams: body.deleteTeams,
+        deleteParticipants: body.deleteParticipants,
       }),
     );
-  }
 
-  @Put(':bingoId/participants/:username')
-  @UseGuards(AuthGuard)
-  @HttpCode(204)
-  @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
-  @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
-  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
-  @ApiUnauthorizedResponse({ description: 'User not authed.' })
-  @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
-  async updateBingoParticipant(
-    @Req() req: Request,
-    @Param('bingoId') bingoId: string,
-    @Param('username') username: string,
-    @Body() updateBingoParticipantDto: UpdateBingoParticipantDto,
-  ) {
-    await this.commandBus.execute(
-      new UpdateBingoParticipantCommand({
-        requester: req.userEntity!,
-        bingoId,
-        username,
-        updates: {
-          teamName: updateBingoParticipantDto.teamName,
-          role: updateBingoParticipantDto.role,
-        },
-      }),
-    );
+    const resetBy = await bingo.resetBy;
+    return new BingoDto(bingo, { resetBy: resetBy ? new UserDto(resetBy) : undefined });
   }
 }

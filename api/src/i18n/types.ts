@@ -77,6 +77,10 @@ export type I18nTranslations = {
             "endDateBeforeStartDate": string;
             "registrationDateAfterStartDate": string;
             "statusRestricted": string;
+            "tileDeletionNotConfirmed": {
+                "singular": string;
+                "plural": string;
+            };
         };
         "deleteBingo": {
             "bingoNotFound": string;
@@ -89,6 +93,28 @@ export type I18nTranslations = {
         };
         "searchBingoActivities": {
             "bingoNotFound": string;
+            "forbidden": string;
+        };
+        "startBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notPending": string;
+            "endDateBeforeNow": string;
+            "tilesNotPresent": string;
+            "participantsNotAssignedToTeams": string;
+        };
+        "endBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notOngoing": string;
+        };
+        "resetBingo": {
+            "bingoNotFound": string;
+            "forbidden": string;
+            "notCanceled": string;
+            "startDateBeforeToday": string;
+            "startDateBeforeMaxRegistrationDate": string;
+            "endDateBeforeStartDate": string;
         };
         "activity": {
             "created": {
@@ -108,19 +134,38 @@ export type I18nTranslations = {
                     "endDate": string;
                 };
             };
+            "started": {
+                "title": string;
+                "titleEarly": string;
+                "body": {
+                    "endDate": string;
+                };
+            };
+            "ended": {
+                "title": string;
+                "titleEarly": string;
+            };
             "deleted": {
                 "title": string;
             };
             "canceled": {
                 "title": string;
             };
+            "reset": {
+                "title": string;
+                "body": {
+                    "startDate": string;
+                    "endDate": string;
+                    "maxRegistrationDate": string;
+                    "deletedTiles": string;
+                    "deletedTeams": string;
+                    "deletedParticipants": string;
+                };
+            };
             "cancelBingo": {
                 "bingoNotFound": string;
                 "forbidden": string;
                 "alreadyCanceled": string;
-            };
-            "searchBingoActivities": {
-                "bingoNotFound": string;
             };
             "findBingoByBingoId": {
                 "bingoNotFound": {
@@ -150,6 +195,64 @@ export type I18nTranslations = {
             "ongoing": string;
             "completed": string;
             "canceled": string;
+        };
+        "tile": {
+            "listBingoTiles": {
+                "bingoNotFound": string;
+            };
+            "findBingoTileByCoordinates": {
+                "bingoNotFound": string;
+                "tileNotFound": string;
+            };
+            "createOrEditBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "forbidden": string;
+                "missingFieldsOnCreate": string;
+                "mediaNotFound": string;
+                "itemNotFound": string;
+                "invalidImageUrl": string;
+            };
+            "deleteBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "forbidden": string;
+                "tileNotFound": string;
+            };
+            "moveBingoTile": {
+                "bingoNotFound": string;
+                "badCoordinates": string;
+                "sameCoordinates": string;
+                "forbidden": string;
+                "tileNotFound": string;
+            };
+            "activity": {
+                "set": {
+                    "title": string;
+                    "body": {
+                        "title": string;
+                        "description": string;
+                        "value": string;
+                        "free": {
+                            "true": string;
+                            "false": string;
+                        };
+                        "completionMode": string;
+                        "mediaAdded": string;
+                        "mediaRemoved": string;
+                        "items": string;
+                    };
+                };
+                "deleted": {
+                    "title": string;
+                };
+                "moved": {
+                    "title": string;
+                };
+                "swapped": {
+                    "title": string;
+                };
+            };
         };
         "formatBingoActivities": {
             "title": string;
