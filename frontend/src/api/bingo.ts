@@ -1,13 +1,14 @@
 import { _delete, get, post, put, type PaginatedQueryParams } from '.';
-import {
-  type StartBingoDto,
-  type BingoDto,
-  type BingoTileDto,
-  type CreateOrEditBingoTileDto,
-  type DetailedBingoTileDto,
-  type PaginatedBingosDto,
-  type UpdateBingoDto,
-  type ResetBingoDto,
+import type {
+  BingoDto,
+  BingoTileDto,
+  CreateBingoDto,
+  CreateOrEditBingoTileDto,
+  DetailedBingoTileDto,
+  PaginatedBingosDto,
+  ResetBingoDto,
+  StartBingoDto,
+  UpdateBingoDto,
 } from './types';
 
 type SearchBingosParams = PaginatedQueryParams<{
@@ -63,6 +64,10 @@ export async function moveBingoTile(bingoId: string, x: number, y: number, toX: 
 
 export async function updateBingo(bingoId: string, updates: UpdateBingoDto) {
   return put<UpdateBingoDto, BingoDto>(`/bingo/${bingoId}`, updates);
+}
+
+export async function createBingo(bingo: CreateBingoDto) {
+  return post<CreateBingoDto, BingoDto>('/bingo', bingo);
 }
 
 export async function startBingo(bingoId: string, endDate?: string) {

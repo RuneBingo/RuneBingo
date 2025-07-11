@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "Créer un événement Bingo",
+    "description": "Organisez un nouvel événement de bingo pour vous et vos amis en quelques étapes seulement."
+  },
+  "step1Title": "Organiser un Bingo",
+  "step1Description": "Commençons par les bases — donnez un nom à votre événement et décrivez-le. Cela aide les autres à savoir à quoi s'attendre s'ils rejoignent.",
+  "step2Title": "Définir les dates de l'événement",
+  "step2Description": "Choisissez quand votre événement Bingo aura lieu et jusqu'à quand les participants peuvent s'inscrire. Ces dates aident les joueurs à se préparer.",
+  "step3Title": "Personnaliser votre grille de Bingo",
+  "step3Description": "Définissez la taille de votre grille et le nombre de points bonus pour une ligne complète. Rendez votre événement aussi facile ou difficile que vous le souhaitez !",
+  "form": {
+    "language": "Langue",
+    "title": "Titre",
+    "titlePlaceholder": "Entrez un titre accrocheur...",
+    "description": "Description",
+    "descriptionPlaceholder": "À quoi ressemblera votre événement ? ...",
+    "public": "Rendre cet événement public aux autres utilisateurs",
+    "startDate": "Date de début",
+    "startDatePlaceholder": "Entrez une date de début",
+    "endDate": "Date de fin",
+    "endDatePlaceholder": "Entrez une date de fin",
+    "maxRegistrationDate": "Date limite d'inscription (optionnel)",
+    "maxRegistrationDatePlaceholder": "Entrez une date limite",
+    "width": "Largeur",
+    "widthPlaceholder": "Entrez une largeur",
+    "height": "Hauteur",
+    "heightPlaceholder": "Entrez une hauteur",
+    "fullLineValue": "Points pour une ligne complète",
+    "fullLineValuePlaceholder": "Entrez un montant",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "submit": "Créer le bingo"
+  },
+  "success": "Votre événement bingo a été créé avec succès !"
+}

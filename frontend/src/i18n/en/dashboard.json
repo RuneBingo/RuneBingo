@@ -1,0 +1,20 @@
+{
+    "title": "Welcome to RuneBingo, {name}! 👋",
+    "description": "It appears you are not currently participating in any bingo. What would you like to do?",
+    "button": {
+      "organize":{
+        "title": "I want to organize a Bingo",
+        "description": "Choose this option if you wish to create your own bingo event for you and your friends."
+      },
+      "join":{
+        "title": "I want to join an existing Bingo",
+        "description": "Choose this option to browse pending bingo events that you may apply to join."
+      }
+    },
+    "viewApp": "View my applications",
+    "viewInvite": "View my invitations",
+    "meta": {
+      "title": "Dashboard",
+      "description": "Dashboard"
+    }
+}
