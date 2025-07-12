@@ -16,7 +16,7 @@ export type SidebarItem =
 
 export type SidebarProps = React.HTMLAttributes<HTMLDivElement> & {
   items: SidebarItem[];
-  collapsed?: boolean;
+  collapsed: boolean;
   onToggle?: () => void;
   linkComponent?: React.ElementType;
 };

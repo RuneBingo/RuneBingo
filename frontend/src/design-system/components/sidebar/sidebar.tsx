@@ -1,6 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
 
 import { cn } from '@/design-system/lib/utils';
 import { Button } from '@/design-system/ui/button';
@@ -9,13 +8,8 @@ import NavItem from './nav-item';
 import NavItemGroup from './nav-item-group';
 import { type SidebarProps } from './types';
 
-export function Sidebar({ collapsed: collapsedProp, items, onToggle, className, linkComponent }: SidebarProps) {
+export function Sidebar({ collapsed, items, onToggle, className, linkComponent }: SidebarProps) {
   const t = useTranslations('common');
-  const [collapsed, setCollapsed] = useState(collapsedProp ?? false);
-
-  useEffect(() => {
-    setCollapsed(collapsedProp ?? false);
-  }, [collapsedProp]);
 
   return (
     <div className={cn('h-full bg-background shadow-sm', className)}>
