@@ -10,7 +10,7 @@ const DECIMAL_NUMBER_REGEX = /^\d+(,\d+)?(\.\d+)?$/;
 // Matches only numbers
 const INTEGER_NUMBER_REGEX = /^\d+$/;
 
-export default function NumberInput({ className, decimal, value, autoSize, onChange, ...props }: NumberInputProps) {
+export default function NumberInput({ decimal, value, autoSize, onChange, ...props }: NumberInputProps) {
   const id = useId();
   const [innerValue, setInnerValue] = useState<string | null>(value?.toString() ?? null);
   useEffect(() => {

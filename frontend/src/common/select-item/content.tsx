@@ -3,8 +3,8 @@ import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 
 import { type OsrsItemDto } from '@/api/types';
-import { cn } from '@/design-system/lib/utils';
 import Pager from '@/common/pager';
+import { cn } from '@/design-system/lib/utils';
 import { Skeleton } from '@/design-system/ui/skeleton';
 
 import { ITEMS_PER_PAGE } from './constants';
