@@ -71,6 +71,7 @@ const InteractiveTemplate = () => {
   useEffect(() => {
     setData(generateData(dataSize));
     setDataKey((prev) => prev + 1);
+    setPage(0);
   }, [dataSize]);
 
   const columns: DataTableColumn<UserDto>[] = [
