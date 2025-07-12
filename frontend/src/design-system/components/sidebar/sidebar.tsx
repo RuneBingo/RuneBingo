@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '@/design-system/lib/utils';
 import { Button } from '@/design-system/ui/button';
@@ -11,9 +11,9 @@ import { type SidebarProps } from './types';
 
 export function Sidebar({ collapsed: collapsedProp, items, onToggle, className, linkComponent }: SidebarProps) {
   const t = useTranslations('common');
-  const [collapsed, setCollapsed] = React.useState(collapsedProp ?? false);
+  const [collapsed, setCollapsed] = useState(collapsedProp ?? false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCollapsed(collapsedProp ?? false);
   }, [collapsedProp]);
 
@@ -21,14 +21,12 @@ export function Sidebar({ collapsed: collapsedProp, items, onToggle, className, 
     <div className={cn('h-full bg-background', className)}>
       <div
         data-collapsed={collapsed}
-        className={cn('group flex h-full flex-col justify-between gap-4 py-2 data-[collapsed=true]:py-2')}
+        className="group flex h-full flex-col justify-between gap-4 py-2 data-[collapsed=true]:py-2"
       >
-        <nav className={cn('grid gap-2 p-2 data-[collapsed=true]:justify-center data-[collapsed=true]:px-2')}>
+        <nav className="grid gap-2 p-2 data-[collapsed=true]:justify-center data-[collapsed=true]:px-2">
           {items.map((item, index) =>
             item.items ? (
-              <React.Fragment key={index}>
-                <NavItemGroup item={item} linkComponent={linkComponent} />
-              </React.Fragment>
+              <NavItemGroup key={index} item={item} linkComponent={linkComponent} />
             ) : (
               <NavItem key={index} item={item} linkComponent={linkComponent} />
             ),
