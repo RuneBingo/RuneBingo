@@ -7,6 +7,8 @@
   "error": {
     "unexpected": "An unexpected error has occurred. Please try again later."
   },
+  "expand": "Expand",
+  "collapse": "Collapse",
   "imageUploader": {
     "noImage": "No image."
   },
