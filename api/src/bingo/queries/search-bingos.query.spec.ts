@@ -48,7 +48,10 @@ describe('SearchUsersHandler', () => {
 
   it('applies private filter correctly', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
-    const expectedBingos = [seedingService.getEntity(Bingo, 'osrs-qc')];
+    const expectedBingos = [
+      seedingService.getEntity(Bingo, 'osrs-qc'),
+      seedingService.getEntity(Bingo, 'lifecycle-bingo'),
+    ];
 
     const query = new SearchBingosQuery({
       requester,
@@ -76,7 +79,10 @@ describe('SearchUsersHandler', () => {
 
   it('should return one private bingo for a member', async () => {
     const requester = seedingService.getEntity(User, 'dee420');
-    const expectedBingos = [seedingService.getEntity(Bingo, 'osrs-qc')];
+    const expectedBingos = [
+      seedingService.getEntity(Bingo, 'osrs-qc'),
+      seedingService.getEntity(Bingo, 'lifecycle-bingo'),
+    ];
 
     const query = new SearchBingosQuery({
       requester,
@@ -95,7 +101,10 @@ describe('SearchUsersHandler', () => {
       seedingService.getEntity(Bingo, 'german-osrs'),
       seedingService.getEntity(Bingo, 'ready_bingo'),
     ];
-    const expectedCanceledBingos = [seedingService.getEntity(Bingo, 'canceled-bingo')];
+    const expectedCanceledBingos = [
+      seedingService.getEntity(Bingo, 'canceled-bingo'),
+      seedingService.getEntity(Bingo, 'lifecycle-bingo'),
+    ];
     const expectedStartedBingos = [seedingService.getEntity(Bingo, 'started-bingo')];
     const expectedEndedBingos = [seedingService.getEntity(Bingo, 'ended-bingo')];
 
