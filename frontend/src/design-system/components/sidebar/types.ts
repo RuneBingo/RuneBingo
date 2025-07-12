@@ -24,7 +24,7 @@ export type SidebarProps = React.HTMLAttributes<HTMLDivElement> & {
 export interface NavItemProps {
   item: SidebarLink;
   linkComponent?: React.ElementType;
-  collapsed?: boolean;
+  collapsed: boolean;
 }
 
 export interface NavItemGroupProps {
@@ -33,5 +33,5 @@ export interface NavItemGroupProps {
     items: SidebarLink[];
   };
   linkComponent?: React.ElementType;
-  collapsed?: boolean;
+  collapsed: boolean;
 }

@@ -18,7 +18,7 @@ export function Sidebar({ collapsed: collapsedProp, items, onToggle, className, 
   }, [collapsedProp]);
 
   return (
-    <div className={cn('h-full bg-background', className)}>
+    <div className={cn('h-full bg-background shadow-sm', className)}>
       <div
         data-collapsed={collapsed}
         className="group flex h-full flex-col justify-between gap-4 py-2 data-[collapsed=true]:py-2"
@@ -26,9 +26,9 @@ export function Sidebar({ collapsed: collapsedProp, items, onToggle, className, 
         <nav className="grid gap-2 p-2 data-[collapsed=true]:justify-center data-[collapsed=true]:px-2">
           {items.map((item, index) =>
             item.items ? (
-              <NavItemGroup key={index} item={item} linkComponent={linkComponent} />
+              <NavItemGroup key={index} item={item} collapsed={collapsed} linkComponent={linkComponent} />
             ) : (
-              <NavItem key={index} item={item} linkComponent={linkComponent} />
+              <NavItem key={index} item={item} collapsed={collapsed} linkComponent={linkComponent} />
             ),
           )}
         </nav>
