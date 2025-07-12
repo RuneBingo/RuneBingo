@@ -3,16 +3,29 @@ import { useTranslations } from 'next-intl';
 import { Fragment } from 'react';
 
 import { type OsrsItemDto } from '@/api/types';
+import Pager from '@/common/pager';
 import { cn } from '@/design-system/lib/utils';
 import { Skeleton } from '@/design-system/ui/skeleton';
 
 import { ITEMS_PER_PAGE } from './constants';
-import Pager from './pager';
 import { useSelectItemContext } from './provider';
 
 export default function Content() {
   const t = useTranslations('common');
-  const { query, value, items, isError, isLoading, onChange, focusNewItem } = useSelectItemContext();
+  const {
+    page,
+    query,
+    value,
+    items,
+    isError,
+    isLoading,
+    totalCount,
+    pagerOpen,
+    setPagerOpen,
+    focusNewItem,
+    onChange,
+    setPage,
+  } = useSelectItemContext();
 
   if (isLoading)
     return (
@@ -59,7 +72,15 @@ export default function Content() {
           <span className="text-sm font-medium">{item.name}</span>
         </div>
       ))}
-      <Pager />
+      <Pager
+        page={page}
+        limit={ITEMS_PER_PAGE}
+        total={totalCount}
+        pagerOpen={pagerOpen}
+        className="justify-center"
+        onPageChange={setPage}
+        onPagerOpenChange={setPagerOpen}
+      />
     </Fragment>
   );
 }

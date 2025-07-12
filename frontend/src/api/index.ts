@@ -2,6 +2,11 @@ import { getLocale as getLocaleIntl } from 'next-intl/server';
 
 import { DEFAULT_LOCALE } from '@/i18n';
 
+export type OrderBy<T extends object> = {
+  field: keyof T;
+  order: 'ASC' | 'DESC';
+};
+
 export type PaginatedQueryParams<T> = T & {
   limit?: number;
   offset?: number;
