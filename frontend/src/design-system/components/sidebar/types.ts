@@ -13,3 +13,25 @@ export type SidebarItem =
       title?: string;
       items: SidebarLink[];
     };
+
+export type SidebarProps = React.HTMLAttributes<HTMLDivElement> & {
+  items: SidebarItem[];
+  collapsed?: boolean;
+  onToggle?: () => void;
+  linkComponent?: React.ElementType;
+};
+
+export interface NavItemProps {
+  item: SidebarLink;
+  linkComponent?: React.ElementType;
+  collapsed?: boolean;
+}
+
+export interface NavItemGroupProps {
+  item: {
+    title?: string;
+    items: SidebarLink[];
+  };
+  linkComponent?: React.ElementType;
+  collapsed?: boolean;
+}

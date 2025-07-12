@@ -9,14 +9,14 @@ import {
   Handshake,
   LayoutGrid,
   Trophy,
-  Users,
+  User,
 } from 'lucide-react';
 
 import { Sidebar } from '@/design-system/components/sidebar/sidebar';
 import { type SidebarItem } from '@/design-system/components/sidebar/types';
 
 const meta: Meta<typeof Sidebar> = {
-  title: 'Components/Sidebar',
+  title: 'Common/Sidebar',
   component: Sidebar,
   parameters: {
     layout: 'centered',
@@ -50,10 +50,11 @@ const sidebarItems: SidebarItem[] = [
     ],
   },
   {
+    title: 'Participants',
     items: [
       {
         title: 'Participants',
-        icon: Users,
+        icon: User,
         href: '/participants',
       },
       {
