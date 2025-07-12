@@ -1,7 +1,8 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '@/design-system/lib/utils';
-import { buttonVariants } from '@/design-system/ui/button';
+import { buttonVariants, Button } from '@/design-system/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/design-system/ui/tooltip';
 
 import { type SidebarItem, type SidebarLink } from './types';
@@ -9,12 +10,13 @@ import { type SidebarItem, type SidebarLink } from './types';
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   collapsed: boolean;
   items: SidebarItem[];
+  onToggle?: () => void;
 }
 
-export function Sidebar({ collapsed, items, className }: SidebarProps) {
+export function Sidebar({ collapsed, items, onToggle, className }: SidebarProps) {
   return (
     <div className={cn('h-full bg-white dark:bg-gray-950', className)}>
-      <div data-collapsed={collapsed} className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2 h-full">
+      <div data-collapsed={collapsed} className="group flex flex-col h-full gap-4 py-2 data-[collapsed=true]:py-2">
         <nav className="grid gap-2 p-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
           {items.map((item, index) =>
             item.items ? (
@@ -33,6 +35,14 @@ export function Sidebar({ collapsed, items, className }: SidebarProps) {
             ),
           )}
         </nav>
+        {onToggle && (
+          <div className="mt-auto flex w-full justify-center p-2">
+            <Button onClick={onToggle} variant="outline" size="icon-xs" className="rounded-full">
+              {collapsed ? <ChevronRight /> : <ChevronLeft />}
+              <span className="sr-only">{collapsed ? 'Expand' : 'Collapse'}</span>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

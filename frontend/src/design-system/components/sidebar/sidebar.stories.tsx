@@ -1,3 +1,4 @@
+import { useArgs } from '@storybook/preview-api';
 import { type Meta, type StoryObj } from '@storybook/react';
 import {
   AppWindow,
@@ -93,6 +94,12 @@ export const Default: Story = {
   args: {
     items: sidebarItems,
     collapsed: false,
+  },
+  render: function Render(args) {
+    const [{ collapsed }, updateArgs] = useArgs();
+    const onToggle = () => updateArgs({ collapsed: !collapsed });
+
+    return <Sidebar {...args} collapsed={collapsed} onToggle={onToggle} />;
   },
 };
 
