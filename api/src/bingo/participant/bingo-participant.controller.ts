@@ -10,6 +10,8 @@ import {
   UseGuards,
   DefaultValuePipe,
   ParseIntPipe,
+  Delete,
+  Post,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -23,12 +25,17 @@ import {
 } from '@nestjs/swagger';
 
 import { AuthGuard } from '@/auth/guards/auth.guard';
+import { TransferBingoOwnershipCommand } from '@/bingo/participant/commands/transfer-bingo-ownership.command';
 import { UpdateBingoParticipantCommand } from '@/bingo/participant/commands/update-bingo-participant.command';
 import { BingoParticipantDto } from '@/bingo/participant/dto/bingo-participant.dto';
 import { PaginatedBingoParticipantsDto } from '@/bingo/participant/dto/paginated-bingo-participants.dto';
 import { UpdateBingoParticipantDto } from '@/bingo/participant/dto/update-bingo-participant.dto';
 import { SearchBingoParticipantsQuery } from '@/bingo/participant/queries/search-bingo-participants.query';
 import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
+
+import { KickBingoParticipantCommand } from './commands/kick-bingo-participant.command';
+import { LeaveBingoCommand } from './commands/leave-bingo.command';
+import { KickBingoParticipantDto } from './dto/kick-bingo-participant.dto';
 
 @Controller('v1/bingo/:bingoId/participant')
 export class BingoParticipantController {
@@ -82,14 +89,31 @@ export class BingoParticipantController {
     return new PaginatedBingoParticipantsDto({ items: bingoParticipantsDtos, ...pagination });
   }
 
+  @Delete('leave')
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Leave the bingo.' })
+  @ApiNoContentResponse({ description: 'Successfully left the bingo.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiForbiddenResponse({ description: 'The user is not a participant in this bingo or is the owner.' })
+  async leaveBingo(@Req() req: Request, @Param('bingoId') bingoId: string) {
+    await this.commandBus.execute(
+      new LeaveBingoCommand({
+        requester: req.userEntity!,
+        bingoId,
+      }),
+    );
+  }
+
   @Put(':username')
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @ApiOperation({ summary: 'Update a bingo participant team or role from a bingo event' })
   @ApiNoContentResponse({ description: 'The bingo participant has been successfully updated.' })
   @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
-  @ApiUnauthorizedResponse({ description: 'User not authed.' })
-  @ApiForbiddenResponse({ description: 'Not authorized to update the bingo participant.' })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to update this bingo participant.' })
   async updateBingoParticipant(
     @Req() req: Request,
     @Param('bingoId') bingoId: string,
@@ -105,6 +129,51 @@ export class BingoParticipantController {
           teamName: updateBingoParticipantDto.teamName,
           role: updateBingoParticipantDto.role,
         },
+      }),
+    );
+  }
+
+  @Delete(':username/kick')
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Kick a participant from the bingo, with the option to delete their tile completions' })
+  @ApiNoContentResponse({ description: 'The bingo participant has been successfully kicked.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to kick this bingo participant.' })
+  async kickBingoParticipant(
+    @Req() req: Request,
+    @Param('bingoId') bingoId: string,
+    @Param('username') username: string,
+    @Body() body: KickBingoParticipantDto,
+  ) {
+    await this.commandBus.execute(
+      new KickBingoParticipantCommand({
+        requester: req.userEntity!,
+        bingoId,
+        username,
+        deleteTileCompletions: body.deleteTileCompletions,
+      }),
+    );
+  }
+  @Post(':username/transfer-ownership')
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Transfer bingo ownership to another participant' })
+  @ApiNoContentResponse({ description: 'Bingo ownership has been successfully transferred.' })
+  @ApiNotFoundResponse({ description: 'No bingo with provided Bingo Id was found.' })
+  @ApiUnauthorizedResponse({ description: 'The user is not authenticated.' })
+  @ApiForbiddenResponse({ description: 'The user is not allowed to transfer ownership of this bingo.' })
+  async transferBingoOwnership(
+    @Req() req: Request,
+    @Param('bingoId') bingoId: string,
+    @Param('username') username: string,
+  ) {
+    await this.commandBus.execute(
+      new TransferBingoOwnershipCommand({
+        requester: req.userEntity!,
+        bingoId,
+        targetUsername: username,
       }),
     );
   }

@@ -11,7 +11,7 @@ import { User } from '@/user/user.entity';
 
 import { BingoParticipant } from '../bingo-participant.entity';
 import { BingoParticipantPolicies } from '../bingo-participant.policies';
-import { BaseUpdateBingoParticipantHandler } from './base-bingo-participant.command';
+import { BaseBingoParticipantCommandHandler } from './base-bingo-participant.command';
 import { BingoParticipantUpdatedEvent } from '../events/bingo-participant-updated.event';
 import { BingoRoles } from '../roles/bingo-roles.constants';
 
@@ -34,7 +34,7 @@ export class UpdateBingoParticipantCommand extends Command<BingoParticipant> {
 }
 
 @CommandHandler(UpdateBingoParticipantCommand)
-export class UpdateBingoParticipantHandler extends BaseUpdateBingoParticipantHandler {
+export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHandler {
   constructor(
     @InjectRepository(Bingo)
     protected readonly bingoRepository: Repository<Bingo>,
@@ -49,7 +49,7 @@ export class UpdateBingoParticipantHandler extends BaseUpdateBingoParticipantHan
   }
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
-    const { requester, bingoId, username: usernameToUpdate, updates } = command.params;
+    const { requester, bingoId, username, updates } = command.params;
 
     const bingo = await this.findBingo(requester, bingoId);
     if (!bingo) {
@@ -59,7 +59,7 @@ export class UpdateBingoParticipantHandler extends BaseUpdateBingoParticipantHan
     const { requesterParticipant, participantToUpdate } = await this.getRequesterAndParticipantToUpdate(
       bingo.id,
       requester,
-      usernameToUpdate,
+      username,
     );
 
     if (!participantToUpdate) {

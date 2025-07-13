@@ -13,9 +13,24 @@ export class BingoParticipantPolicies {
     private readonly requesterParticipant: BingoParticipant | undefined,
   ) {}
 
-  canUpdate(participantToUpdate: BingoParticipant, updates: UpdateBingoParticipantDto) {
+  canKick(participant: BingoParticipant) {
     const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
+    if (requesterIsModerator) return true;
 
+    if (!this.requesterParticipant) return false;
+
+    if (participant.role === BingoRoles.Owner) return false;
+    if (
+      participant.role === BingoRoles.Organizer &&
+      !participantHasBingoRole(this.requesterParticipant, BingoRoles.Owner)
+    )
+      return false;
+
+    return true;
+  }
+
+  canUpdate(participant: BingoParticipant, updates: UpdateBingoParticipantDto) {
+    const requesterIsModerator = userHasRole(this.requester, Roles.Moderator);
     if (requesterIsModerator) return true;
 
     if (!this.requesterParticipant) return false;
@@ -31,10 +46,24 @@ export class BingoParticipantPolicies {
     // Only an owner can update an owner
     if (
       !participantHasBingoRole(this.requesterParticipant, BingoRoles.Owner) &&
-      participantToUpdate.role === BingoRoles.Owner
+      participant.role === BingoRoles.Owner
     ) {
       return false;
     }
+
+    return true;
+  }
+
+  canLeave() {
+    if (!this.requesterParticipant) return false;
+
+    return true;
+  }
+
+  canTransferOwnership() {
+    if (!this.requesterParticipant) return false;
+
+    if (this.requesterParticipant.role !== BingoRoles.Owner) return false;
 
     return true;
   }

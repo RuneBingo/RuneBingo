@@ -25,6 +25,11 @@ export type I18nTranslations = {
         };
     };
     "bingo-participant": {
+        "kickBingoParticipant": {
+            "bingoNotFound": string;
+            "bingoParticipantNotFound": string;
+            "forbidden": string;
+        };
         "searchBingoParticipants": {
             "bingoNotFound": string;
         };
@@ -35,10 +40,32 @@ export type I18nTranslations = {
             "cannotSetOwnerRole": string;
             "forbidden": string;
         };
+        "leaveBingo": {
+            "bingoNotFound": string;
+            "notParticipant": string;
+            "ownerCannotLeave": string;
+            "forbidden": string;
+        };
+        "transferOwnership": {
+            "bingoNotFound": string;
+            "notOwner": string;
+            "targetParticipantNotFound": string;
+            "targetNotParticipant": string;
+            "forbidden": string;
+        };
         "activity": {
-            "added": string;
-            "removed": string;
+            "kicked": {
+                "title": string;
+                "deletedTileCompletions": string;
+            };
+            "left": {
+                "title": string;
+            };
+            "ownershipTransferred": {
+                "title": string;
+            };
             "updated": {
+                "title": string;
                 "role": string;
                 "teamName": string;
             };

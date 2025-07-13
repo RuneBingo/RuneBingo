@@ -48,6 +48,12 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoUpdatedActivity(activity);
           case 'bingo.reset':
             return this.formatBingoResetActivity(activity);
+          case 'bingo.participant.kicked':
+            return this.formatBingoParticipantKickedActivity(activity);
+          case 'bingo.participant.left':
+            return this.formatBingoParticipantLeftActivity(activity);
+          case 'bingo.participant.ownershipTransferred':
+            return this.formatBingoOwnershipTransferredActivity(activity);
           case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
           case 'bingo.tile.set':
@@ -214,12 +220,62 @@ export class FormatBingoActivitiesHandler {
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
   }
 
+  private formatBingoParticipantKickedActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo-participant.activity.kicked.title', {
+      args: { requester: requesterName, username: activity.parameters!.username },
+    });
+
+    const body: string[] = [];
+
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'deletedTileCompletions':
+          if (!value) break;
+
+          body.push(
+            this.i18nService.t('bingo-participant.activity.kicked.deletedTileCompletions', {
+              args: { username: activity.parameters!.username },
+            }),
+          );
+          break;
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoParticipantLeftActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo-participant.activity.left.title', {
+      args: { requester: requesterName },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
+  private formatBingoOwnershipTransferredActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const userId = activity.parameters?.userId as number;
+    const targetUser = userId ? this.usersMap.get(userId) : null;
+    const targetName = targetUser?.username ?? this.i18nService.t('general.system');
+
+    const title = this.i18nService.t('bingo-participant.activity.ownershipTransferred.title', {
+      args: { requester: requesterName, target: targetName },
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
+  }
+
   private formatBingoParticipantUpdatedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const updatedUsername = activity.parameters!.username;
-    const title = this.i18nService.t('bingo.activity.updated.title', {
-      args: { username: requesterName },
+    const title = this.i18nService.t('bingo-participant.activity.updated.title', {
+      args: { requester: requesterName, username: updatedUsername },
     });
 
     const body: string[] = [];

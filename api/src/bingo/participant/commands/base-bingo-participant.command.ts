@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { In, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
 import { ViewBingoScope } from '@/bingo/scopes/view-bingo.scope';
@@ -10,7 +10,7 @@ import { User } from '@/user/user.entity';
 
 import { BingoParticipant } from '../bingo-participant.entity';
 
-export class BaseUpdateBingoParticipantHandler {
+export class BaseBingoParticipantCommandHandler {
   constructor(
     @InjectRepository(Bingo)
     protected readonly bingoRepository: Repository<Bingo>,
@@ -51,5 +51,20 @@ export class BaseUpdateBingoParticipantHandler {
     }
 
     return { requesterParticipant, participantToUpdate };
+  }
+
+  protected async removeTeamCaptain(entityManager: EntityManager, bingoId: number, participant: BingoParticipant) {
+    const teams = await this.bingoTeamRepository.find({
+      where: { bingoId, captainId: participant.userId },
+    });
+
+    if (teams.length === 0) return;
+
+    for (const team of teams) {
+      team.captainId = null;
+      team.captain = Promise.resolve(null);
+    }
+
+    await entityManager.save(teams);
   }
 }
