@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { Command, CommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
@@ -26,7 +25,6 @@ export class FormatBingoActivitiesHandler {
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
-  private readonly logger = new Logger(FormatBingoActivitiesHandler.name);
   private readonly usersMap = new Map<number, UserDto>();
 
   async execute(command: FormatBingoActivitiesCommand): Promise<FormatBingoActivitiesResult> {
@@ -50,10 +48,6 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoUpdatedActivity(activity);
           case 'bingo.reset':
             return this.formatBingoResetActivity(activity);
-          case 'bingo.participant.added':
-            return this.formatBingoParticipantAddedActivity(activity);
-          case 'bingo.participant.removed':
-            return this.formatBingoParticipantRemovedActivity(activity);
           case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
           case 'bingo.tile.set':
@@ -215,34 +209,6 @@ export class FormatBingoActivitiesHandler {
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const title = this.i18nService.t('bingo.activity.canceled.title', {
       args: { username: requesterName },
-    });
-
-    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
-  }
-
-  private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
-    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('general.system');
-
-    const userId = activity.parameters?.userId as number | undefined;
-
-    const username =
-      userId !== undefined && this.usersMap.has(userId) ? this.usersMap.get(userId)!.username : 'Unknown';
-
-    const title = this.i18nService.t('bingo-participant.activity.added', {
-      args: { username: username, requester: requesterName },
-    });
-
-    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
-  }
-
-  private formatBingoParticipantRemovedActivity(activity: Activity): ActivityDto {
-    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
-    const requesterName = requester?.username ?? this.i18nService.t('general.system');
-    const removedUsername = activity.parameters!.username;
-
-    const title = this.i18nService.t('bingo-participant.activity.removed', {
-      args: { username: removedUsername, requester: requesterName },
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);

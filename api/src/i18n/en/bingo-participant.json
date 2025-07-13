@@ -1,26 +1,13 @@
 {
-  "addBingoParticipants": {
-    "conflict": "The user you are trying to add is already a participant."
-  },
   "searchBingoParticipants": {
-    "bingoNotFound": "No bingo with this id was found."
-  },
-  "removeBingoParticipant": {
-    "bingoNotFound": "No bingo with this id was found.",
-    "userNotFound": "No user with this username was found.",
-    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
-    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
-    "notAuthorizedToDelete": "You are not authorized to delete this user from the bingo"
+    "bingoNotFound": "The bingo you are trying to search participants for was not found."
   },
   "updateBingoParticipant": {
-    "bingoNotFound": "No bingo with this id was found.",
-    "userNotFound": "No user with this username was found.",
-    "bingoNotPending": "You cannot modify a user in a started bingo.",
-    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
-    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
-    "notAuthorizedToUpdate": "You are not authorized to update this user of the bingo",
-    "roleInvalid": "The role specified is invalid.",
-    "teamNotFound": "No team with this name was found in this bingo."
+    "bingoNotFound": "The bingo you are trying to update a participant of was not found.",
+    "bingoParticipantNotFound": "The participant you are trying to update was not found.",
+    "teamNotFound": "The team you are trying to assign the participant to was not found.",
+    "cannotSetOwnerRole": "You cannot set the owner role to a participant. Did you mean to transfer ownership?",
+    "forbidden": "You are not allowed to update this bingo participant."
   },
   "activity": {
     "added": "{username} was added to the bingo by {requester}",

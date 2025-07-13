@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -59,7 +60,21 @@ describe('AddBingoParticipantHandler', () => {
     return module.close();
   });
 
-  it('returns the list of bingo participants correctly', async () => {
+  it('throws NotFoundException if the requester is not allowed to view the bingo', async () => {
+    const requester = seedingService.getEntity(User, 'b0aty');
+    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const query = new SearchBingoParticipantsQuery({
+      requester,
+      bingoId: searchBingo.bingoId,
+      sort: 'role',
+      order: 'DESC',
+    });
+
+    await expect(handler.execute(query)).rejects.toThrow(NotFoundException);
+  });
+
+  it('returns the list of bingo participants sorted by role descending', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const expectedParticipants = [
       seedingService.getEntity(BingoParticipant, 'char0o'),
@@ -72,14 +87,16 @@ describe('AddBingoParticipantHandler', () => {
     const query = new SearchBingoParticipantsQuery({
       requester,
       bingoId: searchBingo.bingoId,
+      sort: 'role',
+      order: 'DESC',
     });
 
     const result = await handler.execute(query);
 
-    assertExpectedBingos(result, expectedParticipants);
+    assertExpectedBingoParticipants(result, expectedParticipants);
   });
 
-  it('applies the role filter correctly', async () => {
+  it('filters participants by role', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const expectedParticipants = [seedingService.getEntity(BingoParticipant, 'char0o')];
 
@@ -89,14 +106,16 @@ describe('AddBingoParticipantHandler', () => {
       requester,
       bingoId: searchBingo.bingoId,
       role: BingoRoles.Owner,
+      sort: 'role',
+      order: 'DESC',
     });
 
     const result = await handler.execute(query);
 
-    assertExpectedBingos(result, expectedParticipants);
+    assertExpectedBingoParticipants(result, expectedParticipants);
   });
 
-  it('applies the team filter correctly', async () => {
+  it('filters participants by team', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const expectedParticipants = [
       seedingService.getEntity(BingoParticipant, 'char0o'),
@@ -109,30 +128,16 @@ describe('AddBingoParticipantHandler', () => {
       requester,
       bingoId: searchBingo.bingoId,
       teamName: 'Les boys',
+      sort: 'role',
+      order: 'DESC',
     });
 
     const result = await handler.execute(query);
 
-    assertExpectedBingos(result, expectedParticipants);
+    assertExpectedBingoParticipants(result, expectedParticipants);
   });
 
-  it('should return an empty array if not a participant in a private bingo', async () => {
-    const requester = seedingService.getEntity(User, 'b0aty');
-    const expectedParticipants = [];
-
-    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
-
-    const query = new SearchBingoParticipantsQuery({
-      requester,
-      bingoId: searchBingo.bingoId,
-    });
-
-    const result = await handler.execute(query);
-
-    assertExpectedBingos(result, expectedParticipants);
-  });
-
-  it('should return participants if not participant in public bingo', async () => {
+  it('returns participants if the requester is not a participant but the bingo is public', async () => {
     const requester = seedingService.getEntity(User, 'char0o');
     const expectedParticipants = [seedingService.getEntity(BingoParticipant, 'didiking-german')];
 
@@ -141,14 +146,16 @@ describe('AddBingoParticipantHandler', () => {
     const query = new SearchBingoParticipantsQuery({
       requester,
       bingoId: searchBingo.bingoId,
+      sort: 'role',
+      order: 'DESC',
     });
 
     const result = await handler.execute(query);
 
-    assertExpectedBingos(result, expectedParticipants);
+    assertExpectedBingoParticipants(result, expectedParticipants);
   });
 
-  it('should return participants if requester is moderator but not participant of private bingo', async () => {
+  it('returns participants if the requester is a moderator but not a participant and the bingo is private', async () => {
     const requester = seedingService.getEntity(User, 'zezima');
     const expectedParticipants = [
       seedingService.getEntity(BingoParticipant, 'char0o'),
@@ -161,14 +168,19 @@ describe('AddBingoParticipantHandler', () => {
     const query = new SearchBingoParticipantsQuery({
       requester,
       bingoId: searchBingo.bingoId,
+      sort: 'role',
+      order: 'DESC',
     });
 
     const result = await handler.execute(query);
 
-    assertExpectedBingos(result, expectedParticipants);
+    assertExpectedBingoParticipants(result, expectedParticipants);
   });
 
-  const assertExpectedBingos = (result: SearchBingoParticipantsResult, expectedParticipants: BingoParticipant[]) => {
+  const assertExpectedBingoParticipants = (
+    result: SearchBingoParticipantsResult,
+    expectedParticipants: BingoParticipant[],
+  ) => {
     expect(result.items.length).toBe(expectedParticipants.length);
     result.items.forEach((item, i) => {
       expect(expectedParticipants[i]).not.toBeNull();
@@ -176,4 +188,70 @@ describe('AddBingoParticipantHandler', () => {
       expect(item.userId).toBe(expectedParticipants[i].userId);
     });
   };
+
+  it('sorts participants by username', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const expectedParticipants = [
+      seedingService.getEntity(BingoParticipant, 'char0o'),
+      seedingService.getEntity(BingoParticipant, 'dee420'),
+      seedingService.getEntity(BingoParticipant, 'didiking-osrs'),
+    ];
+
+    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const query = new SearchBingoParticipantsQuery({
+      requester,
+      bingoId: searchBingo.bingoId,
+      sort: 'username',
+      order: 'ASC',
+    });
+
+    const result = await handler.execute(query);
+
+    assertExpectedBingoParticipants(result, expectedParticipants);
+  });
+
+  it('sorts participants by team name', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const expectedParticipants = [
+      seedingService.getEntity(BingoParticipant, 'char0o'),
+      seedingService.getEntity(BingoParticipant, 'dee420'),
+      seedingService.getEntity(BingoParticipant, 'didiking-osrs'),
+    ];
+
+    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const query = new SearchBingoParticipantsQuery({
+      requester,
+      bingoId: searchBingo.bingoId,
+      sort: 'teamName',
+      order: 'ASC',
+    });
+
+    const result = await handler.execute(query);
+
+    assertExpectedBingoParticipants(result, expectedParticipants);
+  });
+
+  it('sorts participants by role', async () => {
+    const requester = seedingService.getEntity(User, 'char0o');
+    const expectedParticipants = [
+      seedingService.getEntity(BingoParticipant, 'dee420'),
+      seedingService.getEntity(BingoParticipant, 'didiking-osrs'),
+      seedingService.getEntity(BingoParticipant, 'char0o'),
+    ];
+
+    const searchBingo = seedingService.getEntity(Bingo, 'osrs-qc');
+
+    const query = new SearchBingoParticipantsQuery({
+      requester,
+      bingoId: searchBingo.bingoId,
+      sort: 'role',
+      order: 'ASC',
+    });
+
+    const result = await handler.execute(query);
+
+    assertExpectedBingoParticipants(result, expectedParticipants);
+  });
 });

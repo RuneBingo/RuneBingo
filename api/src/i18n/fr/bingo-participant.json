@@ -1,30 +1,15 @@
 {
-  "addBingoParticipants": {
-    "conflict": "L'utilisateur que vous essayez d'ajouter est déjà un participant."
-  },
   "searchBingoParticipants": {
-    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé."
-  },
-  "removeBingoParticipant": {
-    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
-    "userNotFound": "Aucun utilisateur avec ce nom n'a été trouvé.",
-    "bingoParticipantNotFound": "L'utilisateur que vous tentez d'enlever ne fait pas partie de ce Bingo.",
-    "notParticipantOfTheBingo": "Vous n'êtes pas un participant de ce bingo.",
-    "notAuthorizedToDelete": "Vous n'êtes pas autorisé à enlever cet utilisateur du bingo."
+    "bingoNotFound": "Le bingo pour lequel vous tentez de rechercher des participants n'a pas été trouvé."
   },
   "updateBingoParticipant": {
-    "bingoNotFound": "Aucun bingo avec ce id n'a été trouvé.",
-    "bingoNotPending": "Vous ne pouvez modifier un utilisateur dans un bingo qui est déjà commencé.",
-    "userNotFound": "Aucun utilisateur avec ce nom n'a été trouvé.",
-    "bingoParticipantNotFound": "L'utilisateur que vous tentez d'enlever ne fait pas partie de ce Bingo.",
-    "notParticipantOfTheBingo": "Vous n'êtes pas un participant de ce bingo.",
-    "notAuthorizedToUpdate": "Vous n'êtes pas autorisé à mettre à jour cet utilisateur du bingo.",
-    "roleInvalid": "Le rôle spécifié est invalide.",
-    "teamNotFound": "Aucune équipe n'a été trouvé avec ce nom dans le bingo."
+    "bingoNotFound": "Le bingo pour lequel vous tentez de mettre à jour un participant n'a pas été trouvé.",
+    "bingoParticipantNotFound": "Le participant que vous tentez de mettre à jour n'a pas été trouvé.",
+    "teamNotFound": "L'équipe que vous tentez d'assigner au participant n'a pas été trouvée.",
+    "cannotSetOwnerRole": "Vous ne pouvez pas assigner le rôle de propriétaire à un participant. Vouliez-vous plutôt transférer la propriété du bingo?",
+    "forbidden": "Vous n'êtes pas autorisé à mettre à jour ce participant du bingo."
   },
   "activity": {
-    "added": "{username} a été ajouté au bingo par {requester}",
-    "removed": "{username} a été retiré du bingo par {requester}",
     "updated": {
       "role": "{requester} a changé le role de {username} à {role}",
       "teamName": "{requester} a changé l'équipe de {username} à {teamName}"

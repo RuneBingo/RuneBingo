@@ -25,28 +25,15 @@ export type I18nTranslations = {
         };
     };
     "bingo-participant": {
-        "addBingoParticipants": {
-            "conflict": string;
-        };
         "searchBingoParticipants": {
             "bingoNotFound": string;
         };
-        "removeBingoParticipant": {
-            "bingoNotFound": string;
-            "userNotFound": string;
-            "bingoParticipantNotFound": string;
-            "notParticipantOfTheBingo": string;
-            "notAuthorizedToDelete": string;
-        };
         "updateBingoParticipant": {
             "bingoNotFound": string;
-            "userNotFound": string;
-            "bingoNotPending": string;
             "bingoParticipantNotFound": string;
-            "notParticipantOfTheBingo": string;
-            "notAuthorizedToUpdate": string;
-            "roleInvalid": string;
             "teamNotFound": string;
+            "cannotSetOwnerRole": string;
+            "forbidden": string;
         };
         "activity": {
             "added": string;
