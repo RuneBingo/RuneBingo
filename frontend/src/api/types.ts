@@ -154,6 +154,10 @@ export type PaginatedBingoParticipantsDto = PaginatedDtoWithoutTotal<BingoPartic
   items: BingoParticipantDto[];
 };
 
+export type KickBingoParticipantDto = {
+  deleteTileCompletions?: boolean;
+};
+
 export type BingoParticipantDto = {
   teamName: string | null;
   teamNameNormalized: string | null;

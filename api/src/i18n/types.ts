@@ -25,33 +25,47 @@ export type I18nTranslations = {
         };
     };
     "bingo-participant": {
-        "addBingoParticipants": {
-            "conflict": string;
+        "kickBingoParticipant": {
+            "bingoNotFound": string;
+            "bingoParticipantNotFound": string;
+            "forbidden": string;
         };
         "searchBingoParticipants": {
             "bingoNotFound": string;
         };
-        "removeBingoParticipant": {
-            "bingoNotFound": string;
-            "userNotFound": string;
-            "bingoParticipantNotFound": string;
-            "notParticipantOfTheBingo": string;
-            "notAuthorizedToDelete": string;
-        };
         "updateBingoParticipant": {
             "bingoNotFound": string;
-            "userNotFound": string;
-            "bingoNotPending": string;
             "bingoParticipantNotFound": string;
-            "notParticipantOfTheBingo": string;
-            "notAuthorizedToUpdate": string;
-            "roleInvalid": string;
             "teamNotFound": string;
+            "cannotSetOwnerRole": string;
+            "forbidden": string;
+        };
+        "leaveBingo": {
+            "bingoNotFound": string;
+            "notParticipant": string;
+            "ownerCannotLeave": string;
+            "forbidden": string;
+        };
+        "transferOwnership": {
+            "bingoNotFound": string;
+            "notOwner": string;
+            "targetParticipantNotFound": string;
+            "targetNotParticipant": string;
+            "forbidden": string;
         };
         "activity": {
-            "added": string;
-            "removed": string;
+            "kicked": {
+                "title": string;
+                "deletedTileCompletions": string;
+            };
+            "left": {
+                "title": string;
+            };
+            "ownershipTransferred": {
+                "title": string;
+            };
             "updated": {
+                "title": string;
                 "role": string;
                 "teamName": string;
             };

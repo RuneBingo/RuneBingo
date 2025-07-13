@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { Command, CommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
@@ -26,7 +25,6 @@ export class FormatBingoActivitiesHandler {
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
-  private readonly logger = new Logger(FormatBingoActivitiesHandler.name);
   private readonly usersMap = new Map<number, UserDto>();
 
   async execute(command: FormatBingoActivitiesCommand): Promise<FormatBingoActivitiesResult> {
@@ -50,10 +48,12 @@ export class FormatBingoActivitiesHandler {
             return this.formatBingoUpdatedActivity(activity);
           case 'bingo.reset':
             return this.formatBingoResetActivity(activity);
-          case 'bingo.participant.added':
-            return this.formatBingoParticipantAddedActivity(activity);
-          case 'bingo.participant.removed':
-            return this.formatBingoParticipantRemovedActivity(activity);
+          case 'bingo.participant.kicked':
+            return this.formatBingoParticipantKickedActivity(activity);
+          case 'bingo.participant.left':
+            return this.formatBingoParticipantLeftActivity(activity);
+          case 'bingo.participant.ownershipTransferred':
+            return this.formatBingoOwnershipTransferredActivity(activity);
           case 'bingo.participant.updated':
             return this.formatBingoParticipantUpdatedActivity(activity);
           case 'bingo.tile.set':
@@ -220,29 +220,51 @@ export class FormatBingoActivitiesHandler {
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
   }
 
-  private formatBingoParticipantAddedActivity(activity: Activity): ActivityDto {
+  private formatBingoParticipantKickedActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo-participant.activity.kicked.title', {
+      args: { requester: requesterName, username: activity.parameters!.username },
+    });
 
-    const userId = activity.parameters?.userId as number | undefined;
+    const body: string[] = [];
 
-    const username =
-      userId !== undefined && this.usersMap.has(userId) ? this.usersMap.get(userId)!.username : 'Unknown';
+    Object.entries(activity.parameters ?? {}).forEach(([key, value]) => {
+      switch (key) {
+        case 'deletedTileCompletions':
+          if (!value) break;
 
-    const title = this.i18nService.t('bingo-participant.activity.added', {
-      args: { username: username, requester: requesterName },
+          body.push(
+            this.i18nService.t('bingo-participant.activity.kicked.deletedTileCompletions', {
+              args: { username: activity.parameters!.username },
+            }),
+          );
+          break;
+      }
+    });
+
+    return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title, body);
+  }
+
+  private formatBingoParticipantLeftActivity(activity: Activity): ActivityDto {
+    const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
+    const requesterName = requester?.username ?? this.i18nService.t('general.system');
+    const title = this.i18nService.t('bingo-participant.activity.left.title', {
+      args: { requester: requesterName },
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
   }
 
-  private formatBingoParticipantRemovedActivity(activity: Activity): ActivityDto {
+  private formatBingoOwnershipTransferredActivity(activity: Activity): ActivityDto {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
-    const removedUsername = activity.parameters!.username;
+    const userId = activity.parameters?.userId as number;
+    const targetUser = userId ? this.usersMap.get(userId) : null;
+    const targetName = targetUser?.username ?? this.i18nService.t('general.system');
 
-    const title = this.i18nService.t('bingo-participant.activity.removed', {
-      args: { username: removedUsername, requester: requesterName },
+    const title = this.i18nService.t('bingo-participant.activity.ownershipTransferred.title', {
+      args: { requester: requesterName, target: targetName },
     });
 
     return new ActivityDto(requester ?? null, activity.createdAt, activity.key, title);
@@ -252,8 +274,8 @@ export class FormatBingoActivitiesHandler {
     const requester = activity.createdById ? this.usersMap.get(activity.createdById) : null;
     const requesterName = requester?.username ?? this.i18nService.t('general.system');
     const updatedUsername = activity.parameters!.username;
-    const title = this.i18nService.t('bingo.activity.updated.title', {
-      args: { username: requesterName },
+    const title = this.i18nService.t('bingo-participant.activity.updated.title', {
+      args: { requester: requesterName, username: updatedUsername },
     });
 
     const body: string[] = [];
