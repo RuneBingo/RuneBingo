@@ -70,6 +70,8 @@ export class KickBingoParticipantHandler extends BaseBingoParticipantCommandHand
       throw new ForbiddenException(this.i18nService.t('bingo-participant.kickBingoParticipant.forbidden'));
     }
 
+    const userId = participantToUpdate.userId;
+
     await this.dataSource.transaction(async (entityManager) => {
       // TODO: delete tile completion requests
       // TODO: delete tile completions
@@ -82,7 +84,7 @@ export class KickBingoParticipantHandler extends BaseBingoParticipantCommandHand
       new BingoParticipantKickedEvent({
         requesterId: requester.id,
         bingoId: bingo.id,
-        userId: participantToUpdate.userId,
+        userId,
         deletedTileCompletions: Boolean(deleteTileCompletions),
       }),
     );
