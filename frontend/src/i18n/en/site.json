@@ -9,5 +9,12 @@
       "subtitle": "RuneBingo - the Open Source platform",
       "description": "A comprehensive solution for event organizers to manage complex events without hassle."
     }
+  },
+  "errors": {
+    "404" : {
+      "title": "Page not Found",
+      "description": "The page you are trying to reach is invalid. ",
+      "returnHome": "Return Home"
+    }
   }
 }
