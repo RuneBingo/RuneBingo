@@ -1,10 +1,17 @@
 import { type Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { Fragment } from 'react';
+import { Fragment } from 'react'; //react fragment is used to group multiple elements without adding extre HTML around them
 
 import Navbar from '@/common/navbar';
 import Page from '@/design-system/components/page/page';
 
+/*
+Grabs translated text for the page title and description (from your translation files).
+
+Returns metadata that Next.js uses to:
+- Set the browser tab title
+- Set the meta description (for SEO).
+*/
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('site.home.meta');
   const tCommon = await getTranslations('common.meta');
