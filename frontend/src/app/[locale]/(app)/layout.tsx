@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
-import { Fragment } from 'react';
 
 import { getAuthenticatedUser } from '@/api/auth';
 import Navbar from '@/common/navbar';
+import Sidebar from '@/common/sidebar';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getAuthenticatedUser();
@@ -12,11 +12,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     return redirect('/sign-in');
   }
 
-  // TODO: app sidebar
   return (
-    <Fragment>
+    <div className="flex h-screen flex-col">
       <Navbar mode="app" />
-      {children}
-    </Fragment>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="w-full overflow-y-auto bg-muted/30 p-8">{children}</main>
+      </div>
+    </div>
   );
 }

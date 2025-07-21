@@ -44,6 +44,18 @@
       "signOut": "Déconnexion"
     }
   },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "event": "Événement",
+    "bingo-card": "Carte de bingo",
+    "leaderboard": "Classement",
+    "participants": "Participants",
+    "teams": "Équipes",
+    "invitations": "Invitations",
+    "applications": "Candidatures",
+    "completions": "Complétions",
+    "requests": "Demandes"
+  },
   "noResults": "Aucun résultat trouvé",
   "noQuery": "Veuillez entrer au moins {min} caractères.",
   "selectItem": {

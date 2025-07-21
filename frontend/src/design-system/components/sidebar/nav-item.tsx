@@ -31,7 +31,11 @@ export default function NavItem({ item, collapsed, linkComponent: LinkComponent 
   return (
     <LinkComponent
       href={href}
-      className={cn(buttonVariants({ variant: active ? 'secondary' : 'ghost', size: 'sm' }), 'w-full justify-start')}
+      className={cn(
+        buttonVariants({ variant: active ? 'secondary' : 'ghost', size: 'sm' }),
+        'w-full justify-start font-medium',
+        !active && 'text-foreground/80 hover:text-foreground',
+      )}
     >
       <Icon className={cn('h-4 w-4', !collapsed && 'mr-2')} />
       {!collapsed && <span className="truncate">{title}</span>}
