@@ -7,6 +7,8 @@
   "error": {
     "unexpected": "An unexpected error has occurred. Please try again later."
   },
+  "expand": "Expand",
+  "collapse": "Collapse",
   "imageUploader": {
     "noImage": "No image."
   },
@@ -41,6 +43,18 @@
       "myRequests": "My requests",
       "signOut": "Sign out"
     }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "event": "Event",
+    "bingo-card": "Bingo card",
+    "leaderboard": "Leaderboard",
+    "participants": "Participants",
+    "teams": "Teams",
+    "invitations": "Invitations",
+    "applications": "Applications",
+    "completions": "Completions",
+    "requests": "Requests"
   },
   "noResults": "No results found",
   "noQuery": "Please enter at least {min} characters.",
