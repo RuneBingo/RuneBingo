@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <Navbar mode="app" />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="w-full overflow-y-auto bg-muted/30 p-8">{children}</main>
+        <main className="w-full overflow-y-auto p-8">{children}</main>
       </div>
     </div>
   );

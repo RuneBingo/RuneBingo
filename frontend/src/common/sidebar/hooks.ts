@@ -1,6 +1,16 @@
 'use client';
 
-import { BookCheck, BookUser, Heart, HelpCircle, Home, LayoutGrid, Mail, Trophy, Users } from 'lucide-react';
+import {
+  Table,
+  Trophy,
+  UserRound,
+  LayoutDashboard,
+  UsersRound,
+  MailPlus,
+  UserRoundPlus,
+  CopyCheck,
+  FileQuestion,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -13,7 +23,7 @@ export function useSidebar() {
   const items: SidebarItem[] = [
     {
       title: t('dashboard'),
-      icon: Home,
+      icon: LayoutDashboard,
       href: '/dashboard',
       active: pathname.startsWith('/dashboard'),
     },
@@ -22,7 +32,7 @@ export function useSidebar() {
       items: [
         {
           title: t('bingo-card'),
-          icon: LayoutGrid,
+          icon: Table,
           href: '/bingo-card',
           active: pathname.startsWith('/bingo-card'),
         },
@@ -39,25 +49,25 @@ export function useSidebar() {
       items: [
         {
           title: t('participants'),
-          icon: Users,
+          icon: UserRound,
           href: '/participants',
           active: pathname.startsWith('/participants'),
         },
         {
           title: t('teams'),
-          icon: BookUser,
+          icon: UsersRound,
           href: '/teams',
           active: pathname.startsWith('/teams'),
         },
         {
           title: t('invitations'),
-          icon: Mail,
+          icon: MailPlus,
           href: '/invitations',
           active: pathname.startsWith('/invitations'),
         },
         {
           title: t('applications'),
-          icon: Heart,
+          icon: UserRoundPlus,
           href: '/applications',
           active: pathname.startsWith('/applications'),
         },
@@ -68,13 +78,13 @@ export function useSidebar() {
       items: [
         {
           title: t('completions'),
-          icon: BookCheck,
+          icon: CopyCheck,
           href: '/completions',
           active: pathname.startsWith('/completions'),
         },
         {
           title: t('requests'),
-          icon: HelpCircle,
+          icon: FileQuestion,
           href: '/requests',
           active: pathname.startsWith('/requests'),
         },
