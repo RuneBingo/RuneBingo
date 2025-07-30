@@ -46,6 +46,8 @@ import { UpdateBingoDto } from './dto/update-bingo.dto';
 import { FindBingoByBingoIdParams, FindBingoByBingoIdQuery } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesParams, SearchBingoActivitiesQuery } from './queries/search-bingo-activities.query';
 import { SearchBingosParams, SearchBingosQuery } from './queries/search-bingos.query';
+import { BingoTeamDto } from './team/dto/bingo-team.dto';
+import { SearchBingoTeamsQuery } from './team/queries/search-bingo-teams.query';
 
 @Controller('v1/bingo')
 export class BingoController {
@@ -127,6 +129,15 @@ export class BingoController {
     const createdByUser = await bingo.createdBy;
     const createdBy = createdByUser ? new UserDto(createdByUser) : undefined;
     return new BingoDto(bingo, { createdBy });
+  }
+
+  @Get(':bingoId/team')
+  @ApiOperation({ summary: 'Find all teams for a bingo' })
+  @ApiOkResponse({ description: 'The teams have been found.', type: [BingoTeamDto] })
+  @ApiNotFoundResponse({ description: 'The bingo does not exist.' })
+  async findTeamsByBingoId(@Param('bingoId') bingoId: string): Promise<BingoTeamDto[]> {
+    const teams = await this.queryBus.execute(new SearchBingoTeamsQuery(bingoId));
+    return teams.map((team) => new BingoTeamDto(team));
   }
 
   @Put(':bingoId')

@@ -2,7 +2,8 @@
   "appName": "RuneBingo",
   "confirmationModal": {
     "confirm": "Confirmer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "delete_completions": "Supprimer également leurs complétions de tuiles"
   },
   "error": {
     "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."

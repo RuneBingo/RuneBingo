@@ -1,6 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configDotenv } from 'dotenv';
-import { DataSource, type DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
+import { type DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Activity } from '@/activity/activity.entity';

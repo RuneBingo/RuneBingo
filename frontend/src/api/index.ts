@@ -130,6 +130,8 @@ async function execute<TData, TResult>(
   return { data: result as TResult, statusCode: response.status };
 }
 
+export { execute };
+
 export async function _delete<TResult = unknown>(url: string) {
   return execute<never, TResult>('DELETE', url);
 }
