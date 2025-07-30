@@ -82,8 +82,10 @@ export class SeedingService {
 
   public getEntity<Entity extends ObjectLiteral>(entity: EntityTarget<Entity>, key: string): Entity {
     const seeder = this.seederMap.get(entity);
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-    if (!seeder) throw new Error(`Seeder for entity ${entity} not found`);
+    if (!seeder) {
+      const entityName = typeof entity === 'function' ? entity.name : (entity as string);
+      throw new Error(`Seeder for entity ${entityName} not found`);
+    }
 
     const result = seeder.getEntity(key) as Entity | null;
     if (!result) throw new Error(`Entity with key ${key} not found`);

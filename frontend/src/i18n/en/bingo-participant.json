@@ -1,0 +1,50 @@
+{
+  "title": "Participants",
+  "search_placeholder": "Search usernames",
+  "roles": {
+    "all": "All roles",
+    "owner": "Owner",
+    "organizer": "Organizer",
+    "participant": "Participant"
+  },
+  "teams": {
+    "all": "All teams"
+  },
+  "table": {
+    "username": "Username",
+    "role": "Role",
+    "team": "Team",
+    "points": "Points",
+    "invited_by": "Invited by",
+    "joined_on": "Joined on",
+    "no_team": "No team"
+  },
+  "actions": {
+    "leave_event": {
+      "label": "Leave event",
+      "title": "Leave the event?",
+      "confirm_label": "Leave the event",
+      "cancel_label": "Close",
+      "description_pending_public": "You will be able to join this event by getting an invitation again or by applying to it before {maxRegistrationDate}.",
+      "description_pending_private": "Since this event is private, you will only be able to rejoin if you get invited again.",
+      "description_ongoing": "You won't be able to rejoin since this event is already started.",
+      "description_ongoing_2": "Your tile completions will still count for your team, but all your pending completion requests will be canceled."
+    },
+    "kick_from_event": {
+      "label": "Kick from event",
+      "title": "Kick {username} from the event?",
+      "description_pending": "They will be able to join this event again by getting an invitation or by applying to it before {maxRegistrationDate}.",
+      "description_ongoing": "They won't be able to rejoin since this event is already started.",
+      "description_ongoing_completions": "Their tile completions will still count for their team, but all their pending completion requests will be canceled.",
+      "description_private": "Since this event is private, they will only be able to rejoin if you invite them again.",
+      "confirm_label": "Kick {username}"
+    },
+    "transfer_ownership": {
+      "label": "Transfer ownership",
+      "title": "Transfer ownership to {username}?",
+      "description": "They will be promoted to <owner>Owner</owner> and you will be demoted to <organizer>Organizer</organizer>. This action cannot be undone.",
+      "description_simple": "They will be promoted to Owner and you will be demoted to Organizer. This action cannot be undone.",
+      "confirm_label": "Transfer ownership"
+    }
+  }
+} 

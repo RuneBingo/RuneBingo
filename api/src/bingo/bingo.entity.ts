@@ -6,6 +6,7 @@ import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
 
 import { BingoStatus } from './bingo-status.enum';
+import { BingoTeam } from './team/bingo-team.entity';
 import { BingoTile } from './tile/bingo-tile.entity';
 
 @Entity()
@@ -106,6 +107,9 @@ export class Bingo extends StrongEntityParanoid {
 
   @OneToMany(() => BingoParticipant, (bingoParticipant) => bingoParticipant.bingo)
   participants: Promise<BingoParticipant[]>;
+
+  @OneToMany(() => BingoTeam, (bingoTeam) => bingoTeam.bingo)
+  teams: Promise<BingoTeam[]>;
 
   @OneToMany(() => BingoTile, (bingoTile) => bingoTile.bingo)
   tiles: Promise<BingoTile[]>;

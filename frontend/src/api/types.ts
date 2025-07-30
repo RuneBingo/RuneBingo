@@ -159,10 +159,15 @@ export type KickBingoParticipantDto = {
 };
 
 export type BingoParticipantDto = {
+  userId: number;
+  username: string;
   teamName: string | null;
   teamNameNormalized: string | null;
   user: UserDto | null;
   role: BingoRoles;
+  points: number;
+  createdAt: Date;
+  invitedBy: UserDto | null;
 };
 
 export type UpdateBingoDto = {
