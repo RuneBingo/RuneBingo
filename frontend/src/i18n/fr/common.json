@@ -7,6 +7,8 @@
   "error": {
     "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
   },
+  "expand": "Agrandir",
+  "collapse": "Réduire",
   "imageUploader": {
     "noImage": "Aucune image."
   },
@@ -41,6 +43,18 @@
       "myRequests": "Mes demandes",
       "signOut": "Déconnexion"
     }
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "event": "Événement",
+    "bingo-card": "Carte de bingo",
+    "leaderboard": "Classement",
+    "participants": "Participants",
+    "teams": "Équipes",
+    "invitations": "Invitations",
+    "applications": "Candidatures",
+    "completions": "Complétions",
+    "requests": "Demandes"
   },
   "noResults": "Aucun résultat trouvé",
   "noQuery": "Veuillez entrer au moins {min} caractères.",

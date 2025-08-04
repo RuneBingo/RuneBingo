@@ -1,10 +1,20 @@
 import { ChevronRight } from 'lucide-react';
+import { type Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { getAuthenticatedUser } from '@/api/auth';
 import { Button } from '@/design-system/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/design-system/ui/card';
 import { Link } from '@/i18n/navigation';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('dashboard.meta');
+  const tCommon = await getTranslations('common.meta');
+
+  return {
+    title: tCommon('titleTemplate', { title: t('title') }),
+  };
+}
 
 export default async function DashboardPage() {
   const user = await getAuthenticatedUser();
@@ -13,7 +23,7 @@ export default async function DashboardPage() {
   const t = await getTranslations('dashboard');
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="flex h-full flex-col items-center justify-center p-4">
       <Card className="w-full max-w-lg shadow-lg">
         <CardHeader>
           <CardTitle className="mb-3 text-2xl font-semibold">{t('title', { name: user.username })}</CardTitle>

@@ -49,7 +49,7 @@ export default function Navbar({ mode }: NavbarProps) {
   };
 
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-between backdrop-blur-sm px-4 py-2 border-b border-border">
+    <div className="z-10 flex items-center justify-between backdrop-blur-sm px-4 py-2 border-b border-border">
       <div className="flex items-center gap-2">
         {mode === 'site' && (
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>

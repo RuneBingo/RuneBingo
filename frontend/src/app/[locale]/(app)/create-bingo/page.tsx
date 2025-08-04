@@ -63,7 +63,7 @@ export default function CreateBingoPage() {
     },
   });
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: INITIAL_VALUES,
     onSubmit: (values) => handleCreateBingo(values),
   });
@@ -109,7 +109,7 @@ export default function CreateBingoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="flex h-full flex-col items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <FormikContext.Provider value={formik}>
           <CardHeader>
