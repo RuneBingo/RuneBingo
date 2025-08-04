@@ -11,86 +11,83 @@ import {
   CopyCheck,
   FileQuestion,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { BingoRoles } from '@/api/types';
 import { type SidebarItem } from '@/design-system/components/sidebar/types';
+
+import { useAppContext } from '../context';
 
 export function useSidebar() {
   const t = useTranslations('common.navigation');
-  const pathname = usePathname();
+  const { user } = useAppContext();
+  const currentBingo = user?.currentBingo;
+  const isBingoOrganizer = currentBingo && [BingoRoles.Organizer, BingoRoles.Owner].includes(currentBingo?.role);
 
-  const items: SidebarItem[] = [
+  const items = [
     {
       title: t('dashboard'),
       icon: LayoutDashboard,
       href: '/dashboard',
-      active: pathname.startsWith('/dashboard'),
     },
-    {
+    currentBingo && {
       title: t('event'),
       items: [
         {
           title: t('bingo-card'),
           icon: Table,
-          href: '/bingo-card',
-          active: pathname.startsWith('/bingo-card'),
+          href: `/bingo/${currentBingo.id}`,
         },
         {
           title: t('leaderboard'),
           icon: Trophy,
-          href: '/leaderboard',
-          active: pathname.startsWith('/leaderboard'),
+          href: `/bingo/${currentBingo.id}/leaderboard`,
         },
       ],
     },
-    {
-      title: t('participants'),
-      items: [
-        {
-          title: t('participants'),
-          icon: UserRound,
-          href: '/participants',
-          active: pathname.startsWith('/participants'),
-        },
-        {
-          title: t('teams'),
-          icon: UsersRound,
-          href: '/teams',
-          active: pathname.startsWith('/teams'),
-        },
-        {
-          title: t('invitations'),
-          icon: MailPlus,
-          href: '/invitations',
-          active: pathname.startsWith('/invitations'),
-        },
-        {
-          title: t('applications'),
-          icon: UserRoundPlus,
-          href: '/applications',
-          active: pathname.startsWith('/applications'),
-        },
-      ],
-    },
-    {
-      title: t('completions'),
-      items: [
-        {
-          title: t('completions'),
-          icon: CopyCheck,
-          href: '/completions',
-          active: pathname.startsWith('/completions'),
-        },
-        {
-          title: t('requests'),
-          icon: FileQuestion,
-          href: '/requests',
-          active: pathname.startsWith('/requests'),
-        },
-      ],
-    },
-  ];
+    currentBingo &&
+      isBingoOrganizer && {
+        title: t('participants'),
+        items: [
+          {
+            title: t('participants'),
+            icon: UserRound,
+            href: `/bingo/${currentBingo.id}/participants`,
+          },
+          {
+            title: t('teams'),
+            icon: UsersRound,
+            href: `/bingo/${currentBingo.id}/teams`,
+          },
+          {
+            title: t('invitations'),
+            icon: MailPlus,
+            href: `/bingo/${currentBingo.id}/invitations`,
+          },
+          {
+            title: t('applications'),
+            icon: UserRoundPlus,
+            href: `/bingo/${currentBingo.id}/applications`,
+          },
+        ],
+      },
+    currentBingo &&
+      isBingoOrganizer && {
+        title: t('completions'),
+        items: [
+          {
+            title: t('completions'),
+            icon: CopyCheck,
+            href: `/bingo/${currentBingo.id}/completions`,
+          },
+          {
+            title: t('requests'),
+            icon: FileQuestion,
+            href: `/bingo/${currentBingo.id}/requests`,
+          },
+        ],
+      },
+  ].filter(Boolean) as SidebarItem[];
 
   return { items };
 }

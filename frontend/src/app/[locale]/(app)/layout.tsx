@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getAuthenticatedUser } from '@/api/auth';
 import Navbar from '@/common/navbar';
 import Sidebar from '@/common/sidebar';
+import Scrollbar from '@/design-system/components/scrollbar/scrollbar';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getAuthenticatedUser();
@@ -13,11 +14,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="h-full">
       <Navbar mode="app" />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-[calc(100vh-var(--navbar-height))]">
         <Sidebar />
-        <main className="w-full overflow-y-auto p-8">{children}</main>
+        <Scrollbar vertical className="flex-1">
+          {children}
+        </Scrollbar>
       </div>
     </div>
   );

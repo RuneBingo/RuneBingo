@@ -1,13 +1,14 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { Fragment } from 'react';
 
 import { getAuthenticatedUser } from '@/api/auth';
 import { getBingo } from '@/api/bingo';
 import Navbar from '@/common/navbar';
+import Sidebar from '@/common/sidebar';
 import type { ServerSidePageProps, ServerSideRootProps } from '@/common/types';
 import Page from '@/design-system/components/page';
+import Scrollbar from '@/design-system/components/scrollbar/scrollbar';
 
 type Params = {
   bingoId: string;
@@ -35,9 +36,14 @@ export default async function BingoLayout({ children, params }: ServerSidePagePr
   const navbarMode = user ? 'app' : 'site';
 
   return (
-    <Fragment>
+    <div className="h-full">
       <Navbar mode={navbarMode} />
-      <Page>{children}</Page>
-    </Fragment>
+      <div className="flex min-h-[calc(100vh-var(--navbar-height))]">
+        <Sidebar />
+        <Scrollbar vertical className="flex-1">
+          <Page>{children}</Page>
+        </Scrollbar>
+      </div>
+    </div>
   );
 }

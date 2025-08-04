@@ -1,7 +1,7 @@
 import NavItem from './nav-item';
 import { type NavItemGroupProps } from './types';
 
-export default function NavItemGroup({ item, collapsed, linkComponent }: NavItemGroupProps) {
+export default function NavItemGroup({ item, collapsed, linkComponent, pathname }: NavItemGroupProps) {
   return (
     <div className="grid gap-1 group-data-[collapsed=true]:pt-4">
       {item.title && (
@@ -10,7 +10,13 @@ export default function NavItemGroup({ item, collapsed, linkComponent }: NavItem
         </h2>
       )}
       {item.items.map((subItem, subIndex) => (
-        <NavItem key={subIndex} item={subItem} collapsed={collapsed} linkComponent={linkComponent} />
+        <NavItem
+          key={subIndex}
+          item={subItem}
+          collapsed={collapsed}
+          linkComponent={linkComponent}
+          pathname={pathname}
+        />
       ))}
     </div>
   );
