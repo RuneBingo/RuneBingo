@@ -2,9 +2,10 @@ import { NotFoundException } from '@nestjs/common';
 import { Query, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { Bingo } from '@/bingo/bingo.entity';
+import { ViewBingoScope } from '@/bingo/scopes/view-bingo.scope';
 import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import {
   PaginatedQueryParams,
@@ -15,7 +16,7 @@ import { I18nTranslations } from '@/i18n/types';
 import { User } from '@/user/user.entity';
 
 import { BingoParticipant } from '../bingo-participant.entity';
-import { BingoRoles } from '../roles/bingo-roles.constants';
+import { bingoRoleHierarchy, BingoRoles } from '../roles/bingo-roles.constants';
 import { ViewBingoParticipantsScope } from '../scopes/view-bingo-participants.scope';
 
 export type SearchBingoParticipantsParams = PaginatedQueryParams<{
@@ -24,6 +25,8 @@ export type SearchBingoParticipantsParams = PaginatedQueryParams<{
   query?: string;
   teamName?: string;
   role?: BingoRoles;
+  sort: 'username' | 'role' | 'teamName';
+  order: 'ASC' | 'DESC';
 }>;
 
 export type SearchBingoParticipantsResult = PaginatedResultWithoutTotal<BingoParticipant>;
@@ -45,10 +48,14 @@ export class SearchBingoParticipantsHandler {
   ) {}
 
   async execute(query: SearchBingoParticipantsQuery): Promise<SearchBingoParticipantsResult> {
-    const { bingoId, requester, query: searchQuery, teamName, role, ...pagination } = query.params;
+    const { bingoId, requester, query: searchQuery, teamName, role, sort, order, ...pagination } = query.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ bingoId });
+    const bingoScope = new ViewBingoScope(
+      requester,
+      this.bingoRepository.createQueryBuilder('bingo').where('bingo.bingo_id = :bingoId', { bingoId }),
+    ).resolve();
 
+    const bingo = await bingoScope.getOne();
     if (!bingo) {
       throw new NotFoundException(this.i18nService.t('bingo-participant.searchBingoParticipants.bingoNotFound'));
     }
@@ -74,6 +81,35 @@ export class SearchBingoParticipantsHandler {
       scope.andWhere('bingo_participant.role = :role', { role });
     }
 
+    scope = this.applySortOrder(scope, sort, order);
+
     return resolvePaginatedQueryWithoutTotal(scope, pagination);
+  }
+
+  private applySortOrder(
+    scope: SelectQueryBuilder<BingoParticipant>,
+    sort: SearchBingoParticipantsParams['sort'],
+    order: SearchBingoParticipantsParams['order'],
+  ) {
+    if (sort === 'username') {
+      return scope
+        .addSelect('user.usernameNormalized', 'user_username_normalized') // Do not remove or else TypeORM will not properly hydrate the entity
+        .orderBy('user_username_normalized', order);
+    }
+
+    if (sort === 'teamName') {
+      return scope
+        .addSelect('bingo_team.name_normalized', 'bingo_team_name_normalized') // Do not remove or else TypeORM will not properly hydrate the entity
+        .orderBy('bingo_team_name_normalized', order);
+    }
+
+    const roleOrderAlias = 'role_order';
+    const roleCaseExpression = `CASE bingo_participant.role ${bingoRoleHierarchy
+      .map((role, index) => `WHEN '${role}' THEN ${index}`)
+      .join(' ')} ELSE ${bingoRoleHierarchy.length} END`;
+
+    scope = scope.addSelect(roleCaseExpression, roleOrderAlias);
+
+    return scope.orderBy(roleOrderAlias, order);
   }
 }

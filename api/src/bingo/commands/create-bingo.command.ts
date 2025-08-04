@@ -1,14 +1,16 @@
 import { BadRequestException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
-import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 import { I18nTranslations } from '@/i18n/types';
 import { type User } from '@/user/user.entity';
 
 import { Bingo } from '../bingo.entity';
 import { BingoCreatedEvent } from '../events/bingo-created.event';
+import { BingoParticipant } from '../participant/bingo-participant.entity';
+import { BingoRoles } from '../participant/roles/bingo-roles.constants';
 
 export type CreateBingoParams = {
   requester: User;
@@ -35,8 +37,8 @@ export class CreateBingoCommand extends Command<CreateBingoResult> {
 @CommandHandler(CreateBingoCommand)
 export class CreateBingoHandler {
   constructor(
-    @InjectRepository(Bingo)
-    private readonly bingoRepository: Repository<Bingo>,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
     private readonly eventBus: EventBus,
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
@@ -80,7 +82,16 @@ export class CreateBingoHandler {
     bingo.maxRegistrationDate = maxRegistrationDate;
     bingo.createdById = requester.id;
     bingo.createdBy = Promise.resolve(requester);
-    await this.bingoRepository.save(bingo);
+
+    await this.dataSource.transaction(async (entityManager) => {
+      await entityManager.save(bingo);
+
+      const participant = new BingoParticipant();
+      participant.bingoId = bingo.id;
+      participant.userId = requester.id;
+      participant.role = BingoRoles.Owner;
+      await entityManager.save(participant);
+    });
 
     this.eventBus.publish(
       new BingoCreatedEvent({

@@ -27,8 +27,6 @@ import {
 
 import { PaginatedActivitiesDto } from '@/activity/dto/paginated-activities.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
-import { AddBingoParticipantCommand } from '@/bingo/participant/commands/add-bingo-participant.command';
-import { BingoRoles } from '@/bingo/participant/roles/bingo-roles.constants';
 import { UserDto } from '@/user/dto/user.dto';
 
 import { CancelBingoCommand } from './commands/cancel-bingo.command';
@@ -77,9 +75,7 @@ export class BingoController {
         maxRegistrationDate: body.maxRegistrationDate,
       }),
     );
-    await this.commandBus.execute(
-      new AddBingoParticipantCommand({ requester: null, user: req.userEntity!, bingo: bingo, role: BingoRoles.Owner }),
-    );
+
     const createdBy = new UserDto(await bingo.createdBy);
     return new BingoDto(bingo, { createdBy });
   }

@@ -1,31 +1,45 @@
 {
-  "addBingoParticipants": {
-    "conflict": "The user you are trying to add is already a participant."
+  "kickBingoParticipant": {
+    "bingoNotFound": "The bingo you are trying to kick a participant from was not found.",
+    "bingoParticipantNotFound": "The participant you are trying to kick was not found.",
+    "forbidden": "You are not allowed to kick this participant from the bingo."
   },
   "searchBingoParticipants": {
-    "bingoNotFound": "No bingo with this id was found."
-  },
-  "removeBingoParticipant": {
-    "bingoNotFound": "No bingo with this id was found.",
-    "userNotFound": "No user with this username was found.",
-    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
-    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
-    "notAuthorizedToDelete": "You are not authorized to delete this user from the bingo"
+    "bingoNotFound": "The bingo you are trying to search participants for was not found."
   },
   "updateBingoParticipant": {
-    "bingoNotFound": "No bingo with this id was found.",
-    "userNotFound": "No user with this username was found.",
-    "bingoNotPending": "You cannot modify a user in a started bingo.",
-    "bingoParticipantNotFound": "The user you are trying delete isn't a participant of the bingo.",
-    "notParticipantOfTheBingo": "You are not a participant of this bingo.",
-    "notAuthorizedToUpdate": "You are not authorized to update this user of the bingo",
-    "roleInvalid": "The role specified is invalid.",
-    "teamNotFound": "No team with this name was found in this bingo."
+    "bingoNotFound": "The bingo you are trying to update a participant of was not found.",
+    "bingoParticipantNotFound": "The participant you are trying to update was not found.",
+    "teamNotFound": "The team you are trying to assign the participant to was not found.",
+    "cannotSetOwnerRole": "You cannot set the owner role to a participant. Did you mean to transfer ownership?",
+    "forbidden": "You are not allowed to update this bingo participant."
+  },
+  "leaveBingo": {
+    "bingoNotFound": "The bingo you are trying to leave was not found.",
+    "notParticipant": "You are not a participant in this bingo.",
+    "ownerCannotLeave": "You cannot leave this bingo as you are the owner. Please transfer ownership to another participant first.",
+    "forbidden": "You are not allowed to leave this bingo."
+  },
+  "transferOwnership": {
+    "bingoNotFound": "The bingo you are trying to transfer ownership of was not found.",
+    "notOwner": "You are not the owner of this bingo.",
+    "targetParticipantNotFound": "The participant you are trying to transfer ownership to was not found.",
+    "targetNotParticipant": "The user you are trying to transfer ownership to is not a participant in this bingo.",
+    "forbidden": "You are not allowed to transfer ownership of this bingo."
   },
   "activity": {
-    "added": "{username} was added to the bingo by {requester}",
-    "removed": "{username} was removed from the bingo by {requester}",
+    "kicked": {
+      "title": "{requester} kicked {username} from the bingo",
+      "deletedTileCompletions": "The tile completions by {username} have also been deleted for their team."
+    },
+    "left": {
+      "title": "{requester} left the bingo"
+    },
+    "ownershipTransferred": {
+      "title": "{requester} transferred ownership to {target}"
+    },
     "updated": {
+      "title": "{requester} updated {username}'s bingo participant",
       "role": "{requester} set the role of {username} to {role}",
       "teamName": "{requester} set the team of {username} to {role}"
     }

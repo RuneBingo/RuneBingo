@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Command, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { I18nService } from 'nestjs-i18n';
@@ -11,6 +11,7 @@ import { User } from '@/user/user.entity';
 
 import { BingoParticipant } from '../bingo-participant.entity';
 import { BingoParticipantPolicies } from '../bingo-participant.policies';
+import { BaseBingoParticipantCommandHandler } from './base-bingo-participant.command';
 import { BingoParticipantUpdatedEvent } from '../events/bingo-participant-updated.event';
 import { BingoRoles } from '../roles/bingo-roles.constants';
 
@@ -33,48 +34,33 @@ export class UpdateBingoParticipantCommand extends Command<BingoParticipant> {
 }
 
 @CommandHandler(UpdateBingoParticipantCommand)
-export class UpdateBingoParticipantHandler {
+export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHandler {
   constructor(
     @InjectRepository(Bingo)
-    private readonly bingoRepository: Repository<Bingo>,
+    protected readonly bingoRepository: Repository<Bingo>,
     @InjectRepository(BingoParticipant)
-    private readonly bingoParticipantRepository: Repository<BingoParticipant>,
+    protected readonly bingoParticipantRepository: Repository<BingoParticipant>,
     @InjectRepository(BingoTeam)
-    private readonly bingoTeamRepository: Repository<BingoTeam>,
-    private readonly i18nService: I18nService<I18nTranslations>,
+    protected readonly bingoTeamRepository: Repository<BingoTeam>,
+    protected readonly i18nService: I18nService<I18nTranslations>,
     private readonly eventBus: EventBus,
-  ) {}
+  ) {
+    super(bingoRepository, bingoParticipantRepository, bingoTeamRepository, i18nService);
+  }
 
   async execute(command: UpdateBingoParticipantCommand): Promise<UpdateBingoParticipantResult> {
-    const { requester, bingoId, username: usernameToUpdate, updates } = command.params;
+    const { requester, bingoId, username, updates } = command.params;
 
-    const bingo = await this.bingoRepository.findOneBy({ bingoId });
-
+    const bingo = await this.findBingo(requester, bingoId);
     if (!bingo) {
-      throw new NotFoundException(this.i18nService.t('bingo-participant.removeBingoParticipant.bingoNotFound'));
+      throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.bingoNotFound'));
     }
 
-    const participants = await this.bingoParticipantRepository
-      .createQueryBuilder('bingo_participant')
-      .innerJoin('bingo_participant.user', 'user')
-      .where('(bingo_participant.bingo_id = :bingoId AND user.username_normalized IN (:...usernames))', {
-        bingoId: bingo.id,
-        usernames: [requester.usernameNormalized, usernameToUpdate],
-      })
-      .getMany();
-
-    let requesterParticipant: BingoParticipant | undefined;
-    let participantToUpdate: BingoParticipant | undefined;
-
-    for (const participant of participants) {
-      const user = await participant.user;
-      if (user.usernameNormalized === usernameToUpdate) {
-        participantToUpdate = participant;
-      }
-      if (user.usernameNormalized === requester.usernameNormalized) {
-        requesterParticipant = participant;
-      }
-    }
+    const { requesterParticipant, participantToUpdate } = await this.getRequesterAndParticipantToUpdate(
+      bingo.id,
+      requester,
+      username,
+    );
 
     if (!participantToUpdate) {
       throw new NotFoundException(
@@ -82,47 +68,50 @@ export class UpdateBingoParticipantHandler {
       );
     }
 
+    const filteredUpdates = { ...updates };
+    if (updates.role === participantToUpdate.role) delete filteredUpdates.role;
+
     let team: BingoTeam | null = null;
     if (updates.teamName) {
       team = await this.bingoTeamRepository.findOneBy({ nameNormalized: updates.teamName, bingoId: bingo.id });
+      if (!team) {
+        throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
+      }
+
+      if (team.id === participantToUpdate.teamId) delete filteredUpdates.teamName;
     }
 
-    if (updates.teamName && !team) {
-      throw new BadRequestException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
+    if (Object.keys(filteredUpdates).length === 0) return participantToUpdate;
+
+    if (
+      !new BingoParticipantPolicies(requester, requesterParticipant).canUpdate(participantToUpdate, filteredUpdates)
+    ) {
+      throw new ForbiddenException(this.i18nService.t('bingo-participant.updateBingoParticipant.forbidden'));
     }
 
-    if (!new BingoParticipantPolicies(requester).canUpdate(requesterParticipant, participantToUpdate, updates.role)) {
-      throw new ForbiddenException(
-        this.i18nService.t('bingo-participant.updateBingoParticipant.notAuthorizedToUpdate'),
-      );
+    if (filteredUpdates.teamName) participantToUpdate.teamId = team!.id;
+
+    if (filteredUpdates.role) {
+      if (filteredUpdates.role === BingoRoles.Owner) {
+        throw new ForbiddenException(this.i18nService.t('bingo-participant.updateBingoParticipant.cannotSetOwnerRole'));
+      }
+
+      participantToUpdate.role = filteredUpdates.role;
     }
 
-    if (updates.teamName && team) {
-      participantToUpdate.teamId = team.id;
-    }
+    await this.bingoParticipantRepository.save(participantToUpdate);
 
-    if (updates.role) {
-      participantToUpdate.role = updates.role;
-    }
+    // TODO: recalculate bingo points if a new team is assigned
 
-    this.eventBus.publish(
+    await this.eventBus.publish(
       new BingoParticipantUpdatedEvent({
         bingoId: bingo.id,
         requesterId: requester.id,
         userId: participantToUpdate.userId,
-        updates: {
-          role: updates.role,
-          teamName: updates.teamName,
-        },
+        updates: filteredUpdates,
       }),
     );
-    return await this.bingoParticipantRepository.save(participantToUpdate);
-  }
 
-  getRoleFromString(role: string): BingoRoles | undefined {
-    if (Object.values(BingoRoles).includes(role as BingoRoles)) {
-      return role as BingoRoles;
-    }
-    return undefined;
+    return participantToUpdate;
   }
 }
