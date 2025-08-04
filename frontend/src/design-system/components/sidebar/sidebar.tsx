@@ -6,7 +6,7 @@ import { Button } from '@/design-system/ui/button';
 
 import NavItem from './nav-item';
 import NavItemGroup from './nav-item-group';
-import { type SidebarProps } from './types';
+import type { SidebarProps } from './types';
 
 export function Sidebar({ collapsed, items, onToggle, className, linkComponent }: SidebarProps) {
   const t = useTranslations('common');
