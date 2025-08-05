@@ -1,0 +1,51 @@
+{
+  "title": "Invitations",
+  "search_placeholder": "Search username or team…",
+
+  "roles": {
+    "all": "All roles",
+    "organizer": "Organizer",
+    "participant": "Participant"
+  },
+
+  "statuses": {
+    "all": "All",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "canceled": "Canceled",
+    "disabled": "Disabled"
+  },
+
+  "teams": {
+    "no_team": "—"
+  },
+
+  "table": {
+    "code": "Code",
+    "invitee": "Invitee",
+    "role": "Role",
+    "team": "Team",
+    "status": "Status",
+    "uses": "Uses",
+    "invited_by": "Invited by",
+    "invited_on": "Invited on",
+    "created_by": "Created by",
+    "created_on": "Created on",
+    "no_team": "—"
+  },
+
+  "cancel": "Cancel",
+
+  "direct_tab": "Direct invitations",
+  "links_tab": "Invitation links",
+
+  "invite_participants": "Invite participants",
+  "invite_description": "Generate a link or send a direct invitation.",
+  "username_placeholder": "Username (leave blank to create a link)",
+  "generate_link": "Generate link",
+  "invite": "Invite",
+
+  "invite_copied": "Invitation link copied to clipboard!",
+  "error": "Something went wrong"
+}

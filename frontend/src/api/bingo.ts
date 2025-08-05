@@ -4,6 +4,10 @@ import type {
   BingoParticipantDto,
   BingoRoles,
   BingoTeamDto,
+  PaginatedBingoInvitationsDto,
+  BingoInvitationDto,
+  CreateBingoInvitationDto,
+  BingoInvitationStatus,
   BingoTileDto,
   CreateBingoDto,
   CreateOrEditBingoTileDto,
@@ -118,6 +122,56 @@ export async function leaveBingo(bingoId: string) {
 }
 
 //
+// Bingo Invitation
+//--------------------------------
+export type SearchBingoInvitationsParams = PaginatedQueryParams<{
+  query?: string;
+  status?: BingoInvitationStatus;
+  role?: BingoRoles;
+  team?: string;
+  limit?: number;
+  offset?: number;
+  sort?: 'username' | 'status' | 'teamName' | 'createdAt';
+  order?: 'ASC' | 'DESC';
+}>;
+
+export async function searchBingoInvitations(bingoId: string, params: SearchBingoInvitationsParams) {
+  const queryParams: Record<string, string> = {
+    ...(params.query ? { query: params.query } : {}),
+    ...(params.status ? { status: params.status } : {}),
+    ...(params.role ? { role: params.role } : {}),
+    ...(params.team ? { team: params.team } : {}),
+    ...(params.limit !== undefined ? { limit: params.limit.toString() } : {}),
+    ...(params.offset !== undefined ? { offset: params.offset.toString() } : {}),
+    ...(params.sort ? { sort: params.sort } : {}),
+    ...(params.order ? { order: params.order } : {}),
+  };
+  return get<PaginatedBingoInvitationsDto>(`/bingo/${bingoId}/invitation`, queryParams);
+}
+
+export async function createBingoInvitation(bingoId: string, data: CreateBingoInvitationDto) {
+  return post<CreateBingoInvitationDto, BingoInvitationDto>(`/bingo/${bingoId}/invitation`, data);
+}
+
+export async function cancelBingoInvitation(bingoId: string, code: string) {
+  return execute('POST', `/bingo/${bingoId}/invitation/${code}/cancel`);
+}
+
+export async function disableBingoInvitationLink(bingoId: string, code: string, disabled: boolean) {
+  return execute('POST', `/bingo/${bingoId}/invitation/${code}/disable`, { disabled });
+}
+
+export async function updateBingoInvitationLink(
+  bingoId: string,
+  code: string,
+  updates: { role?: BingoRoles; teamName?: string },
+) {
+  return put<{ role?: BingoRoles; teamName?: string }, BingoInvitationDto>(
+    `/bingo/${bingoId}/invitation/${code}`,
+    updates,
+  );
+}
+
 // Bingo Team
 //--------------------------------
 export async function searchBingoTeams(bingoId: string) {

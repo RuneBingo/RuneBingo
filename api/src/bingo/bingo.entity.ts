@@ -1,6 +1,7 @@
 import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 
+import { BingoInvitation } from '@/bingo/invitation/bingo-invitation.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { StrongEntityParanoid } from '@/db/base.entity';
 import { User } from '@/user/user.entity';
@@ -113,6 +114,9 @@ export class Bingo extends StrongEntityParanoid {
 
   @OneToMany(() => BingoTile, (bingoTile) => bingoTile.bingo)
   tiles: Promise<BingoTile[]>;
+
+  @OneToMany(() => BingoInvitation, (bingoInvitation) => bingoInvitation.bingo)
+  invitations: Promise<BingoInvitation[]>;
 
   public get status() {
     const now = new Date();

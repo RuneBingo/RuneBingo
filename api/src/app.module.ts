@@ -4,6 +4,7 @@ import { ActivityModule } from './activity/activity.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { BingoModule } from './bingo/bingo.module';
+import { BingoInvitationModule } from './bingo/invitation/bingo-invitation.module';
 import { BingoParticipantModule } from './bingo/participant/bingo-participant.module';
 import { BingoTeamModule } from './bingo/team/bingo-team.module';
 import { BingoTileModule } from './bingo/tile/bingo-tile.module';
@@ -39,6 +40,7 @@ import { UserModule } from './user/user.module';
     EmailerModule,
     JobsModule,
     BingoModule,
+    BingoInvitationModule,
     BingoParticipantModule,
     BingoTeamModule,
     BingoTileModule,

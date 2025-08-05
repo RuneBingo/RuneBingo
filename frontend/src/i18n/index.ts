@@ -15,4 +15,5 @@ export const MESSAGE_MODULES = [
   'dashboard',
   'create-bingo',
   'bingo-participant',
+  'bingo-invitation',
 ] as const;

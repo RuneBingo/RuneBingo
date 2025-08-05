@@ -1,0 +1,51 @@
+{
+  "title": "Invitations",
+  "search_placeholder": "Rechercher un utilisateur ou une équipe…",
+
+  "roles": {
+    "all": "Tous les rôles",
+    "organizer": "Organisateur",
+    "participant": "Participant"
+  },
+
+  "statuses": {
+    "all": "Tous",
+    "pending": "En attente",
+    "accepted": "Acceptée",
+    "declined": "Refusée",
+    "canceled": "Annulée",
+    "disabled": "Désactivée"
+  },
+
+  "teams": {
+    "no_team": "—"
+  },
+
+  "table": {
+    "code": "Code",
+    "invitee": "Invité",
+    "role": "Rôle",
+    "team": "Équipe",
+    "status": "Statut",
+    "uses": "Utilisations",
+    "invited_by": "Invité par",
+    "invited_on": "Invité le",
+    "created_by": "Créé par",
+    "created_on": "Créé le",
+    "no_team": "—"
+  },
+
+  "cancel": "Annuler",
+
+  "direct_tab": "Invitations directes",
+  "links_tab": "Liens d’invitation",
+
+  "invite_participants": "Inviter des participants",
+  "invite_description": "Générez un lien ou envoyez une invitation directe.",
+  "username_placeholder": "Nom d’utilisateur (laisser vide pour créer un lien)",
+  "generate_link": "Générer le lien",
+  "invite": "Inviter",
+
+  "invite_copied": "Lien d’invitation copié dans le presse-papiers !",
+  "error": "Une erreur est survenue"
+}

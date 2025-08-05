@@ -1,0 +1,41 @@
+direct_pending:
+  bingo: osrs-qc
+  createdBy: char0o
+  invitee: didiking
+  role: participant
+  status: pending
+
+direct_accepted:
+  bingo: osrs-qc
+  createdBy: char0o
+  invitee: dee420
+  role: organizer
+  status: accepted
+
+link_general:
+  bingo: osrs-qc
+  createdBy: char0o
+  role: participant
+  uses: 0
+  disabled: false
+
+lifecycle_pending:
+  bingo: lifecycle-bingo
+  createdBy: raph
+  invitee: char0o
+  role: participant
+  status: pending
+
+lifecycle_direct_accepted:
+  bingo: lifecycle-bingo
+  createdBy: raph
+  invitee: char0o
+  role: organizer
+  status: accepted
+
+lifecycle_link:
+  bingo: lifecycle-bingo
+  createdBy: raph
+  role: participant
+  uses: 0
+  disabled: false

@@ -286,3 +286,35 @@ export type ActivityDto = {
   title: string;
   body?: string | string[];
 };
+
+// ------------------
+// Bingo Invitation
+// ------------------
+export enum BingoInvitationStatus {
+  Pending = 'pending',
+  Accepted = 'accepted',
+  Declined = 'declined',
+  Canceled = 'canceled',
+  Disabled = 'disabled',
+}
+
+export type BingoInvitationDto = {
+  code: string;
+  status: BingoInvitationStatus;
+  role: BingoRoles;
+  teamName: string | null;
+  inviteeUsername: string | null;
+  uses: number;
+  createdByUsername: string;
+  createdAt: Date;
+};
+
+export type PaginatedBingoInvitationsDto = PaginatedDtoWithoutTotal<BingoInvitationDto> & {
+  items: BingoInvitationDto[];
+};
+
+export type CreateBingoInvitationDto = {
+  username?: string;
+  role: BingoRoles;
+  teamName?: string;
+};

@@ -6,6 +6,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Activity } from '@/activity/activity.entity';
 import { Bingo } from '@/bingo/bingo.entity';
+import { BingoInvitation } from '@/bingo/invitation/bingo-invitation.entity';
 import { BingoParticipant } from '@/bingo/participant/bingo-participant.entity';
 import { BingoTeam } from '@/bingo/team/bingo-team.entity';
 import { BingoTileItem } from '@/bingo/tile/bingo-tile-item';
@@ -23,6 +24,7 @@ export const entities = [
   Session,
   User,
   Bingo,
+  BingoInvitation,
   BingoParticipant,
   BingoTeam,
   Media,
