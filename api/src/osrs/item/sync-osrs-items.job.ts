@@ -40,7 +40,7 @@ type ItemOrVariant = Exclude<Item, 'id' | 'iconUrl' | 'imageUrl' | 'name'> & {
 export class SyncOsrsItemsProcessor extends WorkerHost {
   private readonly ITEM_NAME_BLACKLIST = ['template_for_placeholder'];
   private readonly PAGE_SIZE = 1000;
-  private readonly ID_LIMIT = 30888; // As of 2025-05-22, the highest item ID is 30888.
+  private readonly ID_LIMIT = 31130; // As of 2025-08-04, the highest item ID is 31130.
   private readonly BATCH_SIZE = 1000;
   private readonly BASE_URL = 'https://chisel.weirdgloop.org';
   private readonly ITEM_URL = `${this.BASE_URL}/moid/item_id.html`;

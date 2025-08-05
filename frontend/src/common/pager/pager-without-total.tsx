@@ -21,7 +21,7 @@ export default function PagerWithoutTotal({
 
   if (!hasPreviousPage && !hasNextPage) return null;
 
-  const classNames = cn('flex items-center justify-center gap-2 mt-5', className);
+  const classNames = cn('flex items-center mt-5', className);
 
   const handlePreviousPage = () => {
     if (!hasPreviousPage) return;

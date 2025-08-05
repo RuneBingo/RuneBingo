@@ -12,7 +12,7 @@ export class BingoTeam extends StrongEntityParanoid {
   bingoId: number;
 
   @ManyToOne(() => Bingo)
-  @JoinColumn({ name: 'id' })
+  @JoinColumn({ name: 'bingo_id' })
   bingo: Promise<Bingo>;
 
   @Column()

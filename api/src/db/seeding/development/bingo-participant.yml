@@ -72,3 +72,69 @@ dee420-lifecycle:
   bingo: lifecycle-bingo
   role: participant
   team: lifecycle-red
+
+zezima-lifecycle:
+  user: zezima
+  bingo: lifecycle-bingo
+  role: participant
+
+ze-zuis-zici-lifecycle:
+  user: ze-zuis-zici
+  bingo: lifecycle-bingo
+  role: participant
+
+b0aty-lifecycle:
+  user: b0aty
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-blue
+
+participant1-lifecycle:
+  user: participant1
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-red
+
+participant2-lifecycle:
+  user: participant2
+  bingo: lifecycle-bingo
+  role: participant
+
+participant3-lifecycle:
+  user: participant3
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-blue
+
+participant4-lifecycle:
+  user: participant4
+  bingo: lifecycle-bingo
+  role: participant
+
+participant5-lifecycle:
+  user: participant5
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-red
+
+participant6-lifecycle:
+  user: participant6
+  bingo: lifecycle-bingo
+  role: participant
+
+participant7-lifecycle:
+  user: participant7
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-blue
+
+participant8-lifecycle:
+  user: participant8
+  bingo: lifecycle-bingo
+  role: participant
+
+participant9-lifecycle:
+  user: participant9
+  bingo: lifecycle-bingo
+  role: participant
+  team: lifecycle-red

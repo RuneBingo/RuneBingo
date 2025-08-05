@@ -73,7 +73,10 @@ export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHa
 
     let team: BingoTeam | null = null;
     if (updates.teamName) {
-      team = await this.bingoTeamRepository.findOneBy({ nameNormalized: updates.teamName, bingoId: bingo.id });
+      team = await this.bingoTeamRepository.findOneBy({
+        nameNormalized: BingoTeam.normalizeName(updates.teamName),
+        bingoId: bingo.id,
+      });
       if (!team) {
         throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
       }

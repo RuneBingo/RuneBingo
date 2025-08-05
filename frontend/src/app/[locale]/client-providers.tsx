@@ -7,6 +7,7 @@ import { Toaster } from 'sonner';
 import { type AuthenticationDetailsDto } from '@/api/types';
 import { ConfirmationModalProvider } from '@/common/confirmation-modal';
 import AppContextProvider from '@/common/context';
+import { KickConfirmationModalProvider } from '@/common/kick-confirmation-modal';
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ export default function ClientProviders({ children, user }: ClientProvidersProps
   return (
     <QueryClientProvider client={queryClient}>
       <AppContextProvider user={user}>
-        <ConfirmationModalProvider>{children}</ConfirmationModalProvider>
+        <ConfirmationModalProvider>
+          <KickConfirmationModalProvider>{children}</KickConfirmationModalProvider>
+        </ConfirmationModalProvider>
       </AppContextProvider>
       <Toaster />
     </QueryClientProvider>

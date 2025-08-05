@@ -2,7 +2,8 @@
   "appName": "RuneBingo",
   "confirmationModal": {
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete_completions": "Also delete their tile completions"
   },
   "error": {
     "unexpected": "An unexpected error has occurred. Please try again later."
