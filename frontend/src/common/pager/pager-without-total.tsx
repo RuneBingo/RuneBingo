@@ -21,7 +21,7 @@ export default function PagerWithoutTotal({
 
   if (!hasPreviousPage && !hasNextPage) return null;
 
-  const classNames = cn('flex items-center justify-start mt-5', className);
+  const classNames = cn('flex items-center mt-5', className);
 
   const handlePreviousPage = () => {
     if (!hasPreviousPage) return;
@@ -37,14 +37,12 @@ export default function PagerWithoutTotal({
 
   return (
     <div className={classNames} onClick={(e) => e.stopPropagation()}>
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={handlePreviousPage} disabled={!hasPreviousPage || disabled}>
-          <ChevronLeftIcon className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon" onClick={handleNextPage} disabled={!hasNextPage || disabled}>
-          <ChevronRightIcon className="h-4 w-4" />
-        </Button>
-      </div>
+      <Button variant="ghost" size="icon" onClick={handlePreviousPage} disabled={!hasPreviousPage || disabled}>
+        <ChevronLeftIcon className="h-4 w-4" />
+      </Button>
+      <Button variant="ghost" size="icon" onClick={handleNextPage} disabled={!hasNextPage || disabled}>
+        <ChevronRightIcon className="h-4 w-4" />
+      </Button>
     </div>
   );
 }

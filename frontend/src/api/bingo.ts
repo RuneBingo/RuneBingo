@@ -1,4 +1,4 @@
-import { _delete, execute, get, post, put, type PaginatedQueryParams } from '.';
+import { _delete, get, post, put, type PaginatedQueryParams } from '.';
 import type {
   BingoDto,
   BingoParticipantDto,
@@ -8,6 +8,7 @@ import type {
   CreateBingoDto,
   CreateOrEditBingoTileDto,
   DetailedBingoTileDto,
+  KickBingoParticipantDto,
   PaginatedBingoParticipantsDto,
   PaginatedBingosDto,
   ResetBingoDto,
@@ -110,7 +111,7 @@ export async function updateBingoParticipant(bingoId: string, username: string, 
 }
 
 export async function kickBingoParticipant(bingoId: string, username: string, deleteTileCompletions: boolean) {
-  return execute('DELETE', `/bingo/${bingoId}/participant/${username}/kick`, { deleteTileCompletions });
+  return _delete<KickBingoParticipantDto>(`/bingo/${bingoId}/participant/${username}/kick`, { deleteTileCompletions });
 }
 
 export async function leaveBingo(bingoId: string) {

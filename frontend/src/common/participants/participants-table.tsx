@@ -22,6 +22,7 @@ import type { DataTableAction } from '@/common/data-table/types';
 import { useKickConfirmationModal } from '@/common/kick-confirmation-modal';
 
 import { getColumns } from './columns';
+import { formatDateToLocale } from '../utils/date';
 
 type ParticipantsTableProps = {
   bingo: BingoDto;
@@ -50,8 +51,8 @@ export default function ParticipantsTable({
   const queryClient = useQueryClient();
   const router = useRouter();
   const t = useTranslations('bingo-participant.table');
+  const tBingo = useTranslations('bingo');
   const tActions = useTranslations('bingo-participant.actions');
-  const [deleteCompletions, setDeleteCompletions] = useState(false);
 
   const query = useQuery({
     queryKey: ['bingo-participants', bingoId, page, limit, orderBy, queryParams],
@@ -102,11 +103,9 @@ export default function ParticipantsTable({
   };
 
   const getParticipantActions = (): DataTableAction<BingoParticipantDto>[] => {
+    // TODO: rework this to be more like bingo card actions
     const isOwner = userRole === 'owner';
     const isOrganizer = userRole === 'organizer';
-    const isPending = bingo.status === 'pending';
-    const isPrivate = bingo.private;
-
     const maxRegistrationDate = bingo.maxRegistrationDate
       ? new Date(bingo.maxRegistrationDate).toLocaleDateString()
       : '';
@@ -126,9 +125,7 @@ export default function ParticipantsTable({
             tActions(
               bingo.private ? 'leave_event.description_pending_private' : 'leave_event.description_pending_public',
               {
-                maxRegistrationDate: bingo.maxRegistrationDate
-                  ? new Date(bingo.maxRegistrationDate).toLocaleDateString()
-                  : '',
+                maxRegistrationDate,
               },
             )
           ) : (
@@ -164,20 +161,19 @@ export default function ParticipantsTable({
           if (participant.user) {
             const isPending = bingo.status === 'pending';
 
+            const descriptionKey = (() => {
+              if (!isPending) return 'kick_from_event.description_ongoing';
+              if (bingo.private) return 'kick_from_event.description_private';
+              return 'kick_from_event.description_pending';
+            })();
+
+            const maxRegistrationDate = bingo.maxRegistrationDate
+              ? formatDateToLocale(bingo.maxRegistrationDate, 'yyyy-MM-dd')
+              : '';
+
             const { confirmed, deleteCompletions } = await askKickConfirmation({
               title: tActions('kick_from_event.title', { username: participant.user.username }),
-              description: tActions(
-                isPending
-                  ? bingo.private
-                    ? 'kick_from_event.description_private'
-                    : 'kick_from_event.description_pending'
-                  : 'kick_from_event.description_ongoing',
-                {
-                  maxRegistrationDate: bingo.maxRegistrationDate
-                    ? new Date(bingo.maxRegistrationDate).toLocaleDateString()
-                    : '',
-                },
-              ),
+              description: tActions(descriptionKey, { maxRegistrationDate }),
               description2: isPending ? undefined : tActions('kick_from_event.description_ongoing_completions'),
               withDeleteCompletionsToggle: !isPending,
               confirmLabel: tActions('kick_from_event.confirm_label', {
@@ -186,10 +182,10 @@ export default function ParticipantsTable({
               confirmVariant: 'destructive',
             });
 
-            if (confirmed) {
-              await kickBingoParticipant(bingoId, participant.user.username, deleteCompletions ?? false);
-              await queryClient.invalidateQueries({ queryKey: ['bingo-participants'] });
-            }
+            if (!confirmed) return;
+
+            await kickBingoParticipant(bingoId, participant.user.username, deleteCompletions ?? false);
+            await queryClient.invalidateQueries({ queryKey: ['bingo-participants'] });
           }
         },
         visible: (participant) => participant.user?.username !== user?.username && participant.role !== 'owner',
@@ -228,7 +224,7 @@ export default function ParticipantsTable({
   };
 
   const actions = getParticipantActions();
-  const columns = getColumns(userRole, teams, onParticipantUpdate, userRole === 'owner', t);
+  const columns = getColumns(userRole, teams, onParticipantUpdate, userRole === 'owner', t, tBingo);
 
   return (
     <DataTable

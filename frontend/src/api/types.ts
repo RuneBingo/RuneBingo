@@ -166,7 +166,7 @@ export type BingoParticipantDto = {
   user: UserDto | null;
   role: BingoRoles;
   points: number;
-  createdAt: Date;
+  createdAt: string;
   invitedBy: UserDto | null;
 };
 

@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation';
+
 import { getAuthenticatedUser } from '@/api/auth';
 import { getBingo, searchBingoParticipants, searchBingoTeams } from '@/api/bingo';
 import type { BingoRoles } from '@/api/types';
@@ -17,9 +19,7 @@ export default async function ParticipantsPage({ params }: ServerSidePageProps<P
     searchBingoTeams(bingoId),
   ]);
 
-  if (!bingoResult || 'error' in bingoResult) {
-    return <div>Bingo not found</div>;
-  }
+  if ('error' in bingoResult) notFound();
 
   const bingo = bingoResult.data;
   const teams = teamsResult && 'data' in teamsResult ? teamsResult.data : [];
