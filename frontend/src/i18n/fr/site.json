@@ -9,5 +9,12 @@
       "subtitle": "RuneBingo - la plateforme de bingo open source",
       "description": "Une solution complète pour les organisateurs d'événements afin de gérer facilement des événements complexes."
     }
+  },
+  "errors": {
+    "404" : {
+      "title": "Page non trouvé",
+      "description": "La page que vous cherché est invalide. ",
+      "returnHome": "Retourner à l'accueil"
+    }
   }
 }
