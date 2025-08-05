@@ -11,9 +11,7 @@ export class AddBingoTilesTables1751051930934 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE "bingo_tile" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" integer, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" integer, "bingo_id" integer NOT NULL, "x" integer NOT NULL, "y" integer NOT NULL, "value" integer NOT NULL, "free" boolean NOT NULL DEFAULT false, "title" character varying NOT NULL, "description" character varying NOT NULL, "completion_mode" "public"."bingo_tile_completion_mode_enum" NOT NULL, "media_id" integer, "image_url" character varying, CONSTRAINT "UQ_7fd0045f5091f77044acdf957a6" UNIQUE ("bingo_id", "x", "y"), CONSTRAINT "PK_c457d5503d65dced1824de32e03" PRIMARY KEY ("id"))`,
     );
-    await queryRunner.query(`ALTER TABLE "osrs_item" ADD "icon_url" character varying`);
-    await queryRunner.query(`UPDATE "osrs_item" SET "icon_url" = ''`);
-    await queryRunner.query(`ALTER TABLE "osrs_item" ALTER COLUMN "icon_url" SET NOT NULL`);
+    await queryRunner.query(`ALTER TABLE "osrs_item" ADD "icon_url" character varying NOT NULL`);
     await queryRunner.query(`ALTER TABLE "bingo_team" DROP CONSTRAINT "FK_4215ce5c904794a3bb44c13a896"`);
     await queryRunner.query(`ALTER TABLE "bingo_team" DROP CONSTRAINT "REL_4215ce5c904794a3bb44c13a89"`);
     await queryRunner.query(
