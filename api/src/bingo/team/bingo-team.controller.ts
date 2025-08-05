@@ -9,7 +9,7 @@ import { SearchBingoTeamsQuery } from './queries/search-bingo-teams.query';
 export class BingoTeamController {
   constructor(private readonly queryBus: QueryBus) {}
 
-  @Get(':bingoId/team')
+  @Get()
   @ApiOperation({ summary: 'Find all teams for a bingo' })
   @ApiOkResponse({ description: 'The teams have been found.', type: [BingoTeamDto] })
   @ApiNotFoundResponse({ description: 'The bingo does not exist.' })

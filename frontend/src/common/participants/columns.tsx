@@ -9,6 +9,7 @@ export const getColumns = (
   onParticipantUpdate: (username: string, updates: Partial<BingoParticipantDto>) => void,
   isOwner: boolean,
   t: (key: string) => string,
+  tBingo: (key: string) => string,
 ): DataTableColumn<BingoParticipantDto>[] => {
   const canManage = userRole === 'owner' || userRole === 'organizer';
 
@@ -31,17 +32,19 @@ export const getColumns = (
       orderable: true,
       render: ({ row }) => {
         if (row.role === 'owner') {
+          // TODO: make this a reusable component like SelectRole and cleaner
           return (
             <Select defaultValue={row.role} disabled>
               <SelectTrigger className="!h-[22px] w-fit rounded-md border-0 bg-slate-900 px-2 py-0.5 text-xs font-semibold text-white shadow-none [&>svg]:hidden">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="owner">Owner</SelectItem>
+                <SelectItem value="owner">{tBingo('roles.owner')}</SelectItem>
               </SelectContent>
             </Select>
           );
         }
+
         if (canManage) {
           return (
             <Select
@@ -56,13 +59,14 @@ export const getColumns = (
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="participant">Participant</SelectItem>
-                <SelectItem value="organizer">Organizer</SelectItem>
+                <SelectItem value="participant">{tBingo('roles.participant')}</SelectItem>
+                <SelectItem value="organizer">{tBingo('roles.organizer')}</SelectItem>
               </SelectContent>
             </Select>
           );
         }
-        return row.role;
+
+        return tBingo(`roles.${row.role}`);
       },
     },
     {
@@ -119,6 +123,7 @@ export const getColumns = (
       field: 'createdAt',
       orderable: false,
       render: ({ row }) => {
+        // TODO: format date to locale, but all DTOs use date but are really strings
         const date = new Date(row.createdAt);
         return date.toLocaleDateString();
       },

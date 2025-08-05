@@ -35,10 +35,7 @@ export default function DataTableContent<TData extends object>({
         return (
           <TableRow key={key} className="h-9">
             {columns.map(({ render, field, orderable }, index) => (
-              <TableCell
-                key={index}
-                className={cn('max-w-sm py-1 text-sm font-normal leading-5', { 'pl-4': orderable })}
-              >
+              <TableCell key={index} className={cn('max-w-sm', { 'pl-4': orderable })}>
                 {render &&
                   render({
                     field,
@@ -50,7 +47,7 @@ export default function DataTableContent<TData extends object>({
               </TableCell>
             ))}
             {itemActions && itemActions.length > 0 && (
-              <TableCell className="w-0 py-1 text-sm font-normal leading-5">
+              <TableCell className="w-0">
                 <ActionsDropdown item={item} actions={itemActions} />
               </TableCell>
             )}

@@ -6,7 +6,7 @@ import { type NavItemProps } from './types';
 
 export default function NavItem({ item, collapsed, pathname, linkComponent: LinkComponent = 'a' }: NavItemProps) {
   const { icon: Icon, title, href } = item;
-  const active = pathname.startsWith(href);
+  const active = item.exact ? pathname === href : pathname.startsWith(href);
 
   if (collapsed) {
     return (
