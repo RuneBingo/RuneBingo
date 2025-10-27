@@ -8,6 +8,8 @@
       { "include": "emailer/templates/html/*", "watchAssets": true },
       { "include": "i18n/**/*", "watchAssets": true },
       { "include": "db/seeding/**/*.yml", "watchAssets": true }
-    ]
+    ],
+    "builder": "swc",
+    "typeCheck": true
   }
 }
