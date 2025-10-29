@@ -1,0 +1,51 @@
+{
+  "title": "Participants",
+  "search_placeholder": "Rechercher des noms d'utilisateur",
+  "roles": {
+    "all": "Tous les rôles",
+    "owner": "Propriétaire",
+    "organizer": "Organisateur",
+    "participant": "Participant"
+  },
+  "teams": {
+    "all": "Toutes les équipes"
+  },
+  "table": {
+    "username": "Nom d'utilisateur",
+    "role": "Rôle",
+    "team": "Équipe",
+    "points": "Points",
+    "invited_by": "Invité par",
+    "joined_on": "Rejoint le",
+    "no_team": "Aucune équipe"
+  },
+  "actions": {
+    "leave_event": {
+      "label": "Quitter l'événement",
+      "title": "Quitter l'événement?",
+      "confirm_label": "Quitter l'événement",
+      "cancel_label": "Fermer",
+      "description_pending_public": "Vous pourrez rejoindre cet événement en obtenant à nouveau une invitation ou en postulant avant le {maxRegistrationDate}.",
+      "description_pending_private": "Étant donné que cet événement est privé, vous ne pourrez le rejoindre à nouveau que si vous êtes invité.",
+      "description_ongoing": "Vous ne pourrez pas rejoindre à nouveau cet événement car il est déjà commencé.",
+      "description_ongoing_2": "Vos complétions de tuiles compteront toujours pour votre équipe, mais toutes vos demandes de complétion en attente seront annulées."
+    },
+    "kick_from_event": {
+      "label": "Expulser de l'événement",
+      "title": "Expulser {username} de l'événement?",
+      "description_pending": "Il pourra rejoindre cet événement à nouveau en recevant une invitation ou en postulant avant le {maxRegistrationDate}.",
+      "description_ongoing": "Il ne pourra pas rejoindre cet événement car il est déjà commencé.",
+      "description_ongoing_completions": "Leurs complétions de tuiles compteront toujours pour leur équipe, mais toutes leurs demandes de complétion en attente seront annulées.",
+      "description_private": "Comme cet événement est privé, il ne pourra le rejoindre que si vous l'invitez à nouveau.",
+      "delete_completions": "Supprimer également leurs complétions de tuiles",
+      "confirm_label": "Expulser {username}"
+    },
+    "transfer_ownership": {
+      "label": "Transférer la propriété",
+      "title": "Transférer la propriété à {username}?",
+      "description": "Il sera promu <owner>Propriétaire</owner> et vous serez rétrogradé <organizer>Organisateur</organizer>. Cette action est irréversible.",
+      "description_simple": "Il sera promu Propriétaire et vous serez rétrogradé Organisateur. Cette action est irréversible.",
+      "confirm_label": "Transférer la propriété"
+    }
+  }
+} 

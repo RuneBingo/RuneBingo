@@ -17,7 +17,7 @@ type Params = {
 export async function generateMetadata({ params }: ServerSideRootProps<Params>): Promise<Metadata> {
   const { bingoId } = await params;
   const response = await getBingo(bingoId);
-  if ('error' in response) notFound();
+  if (!response || 'error' in response) notFound();
 
   const tCommon = await getTranslations('common.meta');
 
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: ServerSideRootProps<Params>):
 export default async function BingoLayout({ children, params }: ServerSidePageProps<Params>) {
   const { bingoId } = await params;
   const getBingoResponse = await getBingo(bingoId);
-  if ('error' in getBingoResponse) notFound();
+  if (!getBingoResponse || 'error' in getBingoResponse) notFound();
 
   const user = await getAuthenticatedUser();
   const navbarMode = user ? 'app' : 'site';

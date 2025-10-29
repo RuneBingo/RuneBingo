@@ -22,7 +22,7 @@ export default function DataTablePager<TData extends object>({
 
   if (!paginationData) return null;
 
-  if ('total' in paginationData)
+  if ('total' in paginationData) {
     return (
       <Pager
         total={paginationData.total}
@@ -32,4 +32,15 @@ export default function DataTablePager<TData extends object>({
         disabled={query.isFetching}
       />
     );
+  }
+
+  return (
+    <Pager.WithoutTotal
+      page={page}
+      limit={limit}
+      hasNextPage={paginationData.hasNextPage}
+      hasPreviousPage={paginationData.hasPreviousPage}
+      onPageChange={onPageChange}
+    />
+  );
 }

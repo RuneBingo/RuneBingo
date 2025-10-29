@@ -3,10 +3,12 @@ import type {
   BingoDto,
   BingoParticipantDto,
   BingoRoles,
+  BingoTeamDto,
   BingoTileDto,
   CreateBingoDto,
   CreateOrEditBingoTileDto,
   DetailedBingoTileDto,
+  KickBingoParticipantDto,
   PaginatedBingoParticipantsDto,
   PaginatedBingosDto,
   ResetBingoDto,
@@ -108,12 +110,19 @@ export async function updateBingoParticipant(bingoId: string, username: string, 
   return put<UpdateBingoParticipantDto, BingoParticipantDto>(`/bingo/${bingoId}/participant/${username}`, updates);
 }
 
-export async function kickBingoParticipant(bingoId: string, username: string) {
-  return _delete(`/bingo/${bingoId}/participant/${username}`);
+export async function kickBingoParticipant(bingoId: string, username: string, deleteTileCompletions: boolean) {
+  return _delete<KickBingoParticipantDto>(`/bingo/${bingoId}/participant/${username}/kick`, { deleteTileCompletions });
 }
 
 export async function leaveBingo(bingoId: string) {
   return _delete(`/bingo/${bingoId}/participant/leave`);
+}
+
+//
+// Bingo Team
+//--------------------------------
+export async function searchBingoTeams(bingoId: string) {
+  return get<BingoTeamDto[]>(`/bingo/${bingoId}/team`);
 }
 
 //

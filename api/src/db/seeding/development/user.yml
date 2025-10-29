@@ -39,3 +39,73 @@ dee420:
   emailVerified: true
   role: user
   language: en
+
+ze-zuis-zici:
+  username: ze zuis zici
+  email: ze-zuis-zici@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant1:
+  username: participant1
+  email: participant1@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant2:
+  username: participant2
+  email: participant2@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant3:
+  username: participant3
+  email: participant3@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant4:
+  username: participant4
+  email: participant4@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant5:
+  username: participant5
+  email: participant5@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant6:
+  username: participant6
+  email: participant6@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant7:
+  username: participant7
+  email: participant7@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant8:
+  username: participant8
+  email: participant8@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
+
+participant9:
+  username: participant9
+  email: participant9@runebingo.com
+  emailVerified: true
+  role: user
+  language: en
