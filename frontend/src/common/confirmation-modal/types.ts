@@ -11,7 +11,7 @@ export type ConfirmationModalContextType = {
 export type ConfirmationModalProps = {
   open: boolean;
   title: string;
-  description: ReactNode;
+  description: ReactNode | string;
   confirmLabel?: string;
   confirmVariant?: ComponentProps<typeof Button>['variant'];
   cancelLabel?: string;

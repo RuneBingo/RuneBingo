@@ -1,4 +1,5 @@
 import { MoreVerticalIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { Fragment, useState } from 'react';
 
 import { Button } from '@/design-system/ui/button';
@@ -18,6 +19,7 @@ export default function DataTableActionsDropdown<TData extends object>({
   actions,
 }: DataTableActionsDropdownProps<TData>) {
   const [open, onOpenChange] = useState(false);
+  const t = useTranslations('common.dataTable.actionsDropdown');
 
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
@@ -27,7 +29,7 @@ export default function DataTableActionsDropdown<TData extends object>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom" align="end">
-        <DropdownMenuLabel className="font-semibold">Actions</DropdownMenuLabel>
+        <DropdownMenuLabel className="font-semibold">{t('actions')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {actions.map((actionOrGroup, index) => (
           <Fragment key={index}>

@@ -4,7 +4,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import * as React from 'react';
 
-import { cn } from '@/design-system/lib/utils';
+import { assignSubComponents, cn } from '@/design-system/lib/utils';
 
 function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />;
@@ -18,14 +18,32 @@ function SelectValue({ ...props }: React.ComponentProps<typeof SelectPrimitive.V
   return <SelectPrimitive.Value data-slot="select-value" {...props} />;
 }
 
+function SelectChevron({ className }: { className?: string }) {
+  return (
+    <SelectPrimitive.Icon asChild>
+      <ChevronDownIcon className={cn('size-4 opacity-50', className)} />
+    </SelectPrimitive.Icon>
+  );
+}
+
 function SelectTrigger({
   className,
   size = 'default',
   children,
+  asChild = false,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: 'sm' | 'default';
+  hideChevron?: boolean;
 }) {
+  if (asChild) {
+    return (
+      <SelectPrimitive.Trigger data-slot="select-trigger" data-size={size} {...props}>
+        {children}
+      </SelectPrimitive.Trigger>
+    );
+  }
+
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -37,9 +55,7 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </SelectPrimitive.Icon>
+      <SelectChevron />
     </SelectPrimitive.Trigger>
   );
 }
@@ -158,3 +174,17 @@ export {
   SelectTrigger,
   SelectValue,
 };
+
+export default assignSubComponents(Select, {
+  Select,
+  Chevron: SelectChevron,
+  Content: SelectContent,
+  Group: SelectGroup,
+  Item: SelectItem,
+  Label: SelectLabel,
+  ScrollDownButton: SelectScrollDownButton,
+  ScrollUpButton: SelectScrollUpButton,
+  Separator: SelectSeparator,
+  Trigger: SelectTrigger,
+  Value: SelectValue,
+});

@@ -41,9 +41,11 @@ export default function ResetBingo() {
       <Modal.Header title={t('title')} />
       <FormikContext.Provider value={formik}>
         <Modal.Body>
-          {t.rich('descriptionHtml', {
-            p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
-          })}
+          <Modal.Description asChild>
+            {t.rich('descriptionHtml', {
+              p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
+            })}
+          </Modal.Description>
           <Form>
             <div className="flex items-center gap-2.5 w-full">
               <DateField

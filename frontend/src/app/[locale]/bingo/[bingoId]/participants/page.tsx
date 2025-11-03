@@ -5,7 +5,7 @@ import { getBingo, searchBingoParticipants, searchBingoTeams } from '@/api/bingo
 import type { BingoRoles } from '@/api/types';
 import type { ServerSidePageProps } from '@/common/types';
 
-import ParticipantsView from './participants-view';
+import View from './view';
 
 type Params = {
   bingoId: string;
@@ -32,5 +32,5 @@ export default async function ParticipantsPage({ params }: ServerSidePageProps<P
     }
   }
 
-  return <ParticipantsView bingo={bingo} userRole={userRole} teams={teams} user={user} />;
+  return <View bingo={bingo} userRole={userRole} teams={teams} user={user} />;
 }

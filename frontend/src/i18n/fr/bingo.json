@@ -146,5 +146,8 @@
       "owner": "Vous êtes le propriétaire de ce bingo."
     },
     "description": "Vous pouvez le gérer en <button>le définissant comme votre bingo actuel</button>."
+  },
+  "selectTeam": {
+    "empty": "Aucune équipe assignée"
   }
 }

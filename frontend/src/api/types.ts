@@ -146,7 +146,7 @@ export type BingoTeamDto = {
 };
 
 export type UpdateBingoParticipantDto = {
-  teamName?: string;
+  teamName?: string | null;
   role?: BingoRoles;
 };
 

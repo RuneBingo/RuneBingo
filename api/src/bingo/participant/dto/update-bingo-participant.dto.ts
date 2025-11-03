@@ -6,7 +6,7 @@ import { BingoRoles } from '../roles/bingo-roles.constants';
 export class UpdateBingoParticipantDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  teamName?: string;
+  teamName?: string | null;
 
   @ApiProperty({ required: false, enum: BingoRoles, enumName: 'BingoRoles' })
   @IsEnum(BingoRoles)

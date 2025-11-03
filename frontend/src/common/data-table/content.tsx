@@ -33,7 +33,7 @@ export default function DataTableContent<TData extends object>({
         const key = String(item[idProperty] ?? index);
 
         return (
-          <TableRow key={key} className="h-9">
+          <TableRow key={key} className="h-13">
             {columns.map(({ render, field, orderable }, index) => (
               <TableCell key={index} className={cn('max-w-sm', { 'pl-4': orderable })}>
                 {render &&

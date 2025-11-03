@@ -1,15 +1,21 @@
 {
   "appName": "RuneBingo",
+  "cancel": "Annuler",
+  "collapse": "Réduire",
   "confirmationModal": {
     "confirm": "Confirmer",
-    "cancel": "Annuler",
-    "delete_completions": "Supprimer également leurs complétions de tuiles"
+    "cancel": "Annuler"
+  },
+  "dataTable": {
+    "actionsDropdown": {
+      "actions": "Actions"
+    }
   },
   "error": {
     "unexpected": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
   },
   "expand": "Agrandir",
-  "collapse": "Réduire",
+  "filters": "Filtres",
   "imageUploader": {
     "noImage": "Aucune image."
   },

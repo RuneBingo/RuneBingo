@@ -14,7 +14,7 @@ export class BingoParticipantDto {
     this.teamName = '';
     this.teamNameNormalized = '';
     this.points = bingoParticipant.points;
-    this.createdAt = bingoParticipant.createdAt;
+    this.createdAt = bingoParticipant.createdAt.toISOString();
     this.invitedBy = null;
   }
 
@@ -58,7 +58,7 @@ export class BingoParticipantDto {
   points: number;
 
   @ApiProperty()
-  createdAt: Date;
+  createdAt: string;
 
   @ApiProperty()
   invitedBy: UserDto | null;

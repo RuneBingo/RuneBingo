@@ -8,7 +8,7 @@ export type BingoParticipantUpdatedParams = {
   userId: number;
   updates: {
     role?: string;
-    teamName?: string;
+    teamName?: string | null;
   };
 };
 

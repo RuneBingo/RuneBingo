@@ -27,7 +27,7 @@ export default function DataTable<TData extends object, TError = unknown>({
 }: DataTableProps<TData, TError>) {
   if (columns.length === 0) return null;
 
-  if (!query.isFetching && query.data?.items.length === 0) {
+  if (!query.isPending && query.data?.items.length === 0) {
     return <BlankState blankStateText={blankStateText} blankStateIcon={blankStateIcon} />;
   }
 
@@ -37,8 +37,8 @@ export default function DataTable<TData extends object, TError = unknown>({
         <Table className="min-w-max w-full mb-2">
           <Header columns={columns} orderBy={orderBy} onOrderByFieldChange={onOrderByFieldChange} actions={actions} />
           <TableBody>
-            {query.isFetching && <Loading columns={columns} limit={limit} />}
-            {!query.isFetching && <Content query={query} columns={columns} idProperty={idProperty} actions={actions} />}
+            {query.isPending && <Loading columns={columns} limit={limit} />}
+            {!query.isPending && <Content query={query} columns={columns} idProperty={idProperty} actions={actions} />}
           </TableBody>
         </Table>
       </Scrollbar>

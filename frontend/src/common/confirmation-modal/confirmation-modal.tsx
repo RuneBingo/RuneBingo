@@ -31,13 +31,9 @@ export default function ConfirmationModal({
     <Dialog {...props} onOpenChange={handleOpenChange}>
       <DialogContent onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        {typeof description === 'string' ? (
-          <DialogDescription>{description}</DialogDescription>
-        ) : (
-          <div className="text-sm text-muted-foreground">{description}</div>
-        )}
+        <DialogDescription>{description}</DialogDescription>
         <DialogFooter>
           <Button variant={confirmVariant || 'default'} onClick={onConfirm}>
             {confirmLabel || t('confirm')}
