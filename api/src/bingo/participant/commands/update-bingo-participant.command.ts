@@ -102,8 +102,6 @@ export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHa
       participantToUpdate.role = filteredUpdates.role;
     }
 
-    console.log(filteredUpdates);
-
     await this.bingoParticipantRepository.save(participantToUpdate);
 
     // TODO: recalculate bingo points if a new team is assigned
