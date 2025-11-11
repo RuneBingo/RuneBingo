@@ -3,9 +3,8 @@ import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Fragment } from 'react';
 
-import { getAuthenticatedUser, listMyBingos } from '@/api/auth';
-import { getBingo, listBingoTiles } from '@/api/bingo';
 import { BingoRoles, BingoStatus } from '@/api/types';
+import { fetchBingoData } from '@/common/bingo/fetch-bingo-data';
 import NotCurrentBingoTip from '@/common/bingo/not-current-bingo-tip';
 import BingoStatusBadge from '@/common/bingo/status-badge';
 import type { ServerSideRootProps } from '@/common/types';
@@ -20,49 +19,31 @@ type Params = {
   bingoId: string;
 };
 
-async function fetchBingo(bingoId: string) {
-  const response = await getBingo(bingoId);
-  if ('error' in response) notFound();
-  return response.data;
-}
-
-async function fetchBingoTiles(bingoId: string) {
-  const response = await listBingoTiles(bingoId);
-  if ('error' in response) return null;
-  return response.data;
-}
-
 export default async function BingoCardPage({ params }: ServerSideRootProps<Params>) {
   const { bingoId } = await params;
 
-  const bingo = await fetchBingo(bingoId);
-  const bingoTiles = await fetchBingoTiles(bingoId);
+  const data = await fetchBingoData(bingoId, { fetchTiles: true });
+  if (!data) notFound();
 
   const t = await getTranslations('bingo.bingoCard');
   const locale = await getLocale();
-  const user = await getAuthenticatedUser();
-  const userParticipations = await listMyBingos();
-  const currentBingoParticipation = userParticipations?.find((participation) => participation.id === bingoId);
 
-  const isBingoOrganizer =
-    currentBingoParticipation &&
-    (currentBingoParticipation?.role === BingoRoles.Owner || currentBingoParticipation?.role === BingoRoles.Organizer);
-
-  const isCurrentBingoOrganizer = user?.currentBingo?.id === bingoId && isBingoOrganizer;
-
-  const readOnlyCard = !isCurrentBingoOrganizer || bingo.status !== BingoStatus.Pending;
+  const { bingo, participant, isCurrentBingo, bingoTiles } = data;
+  const isBingoOrganizer = participant?.role === BingoRoles.Owner || participant?.role === BingoRoles.Organizer;
+  const isCurrentBingoOrganizer = isCurrentBingo && isBingoOrganizer;
+  const readOnly = !isCurrentBingo || !isBingoOrganizer || bingo.status !== BingoStatus.Pending;
 
   return (
     <Fragment>
       <NotCurrentBingoTip
-        role={currentBingoParticipation?.role}
+        role={participant?.role}
         bingoId={bingoId}
         visible={Boolean(!isCurrentBingoOrganizer && isBingoOrganizer)}
       />
       <BingoStatusBadge status={bingo.status} className="mb-2" />
       <div className="w-full flex items-center justify-between mb-8">
         <Title.Primary className="!mb-0">{bingo.title}</Title.Primary>
-        <Actions bingo={bingo} participant={currentBingoParticipation} />
+        <Actions bingo={bingo} participant={participant} />
       </div>
       <div className="flex items-center gap-2.5 mb-2">
         <CalendarDaysIcon className="size-4" />
@@ -99,12 +80,7 @@ export default async function BingoCardPage({ params }: ServerSideRootProps<Para
       )}
       {bingo.description !== '' && <p>{bingo.description}</p>}
       <Title.Secondary>Bingo Card</Title.Secondary>
-      <BingoCard
-        role={user?.currentBingo?.id === bingoId ? currentBingoParticipation?.role : undefined}
-        bingo={bingo}
-        bingoTiles={bingoTiles}
-        readOnly={readOnlyCard}
-      />
+      <BingoCard role={participant?.role} bingo={bingo} bingoTiles={bingoTiles} readOnly={readOnly} />
     </Fragment>
   );
 }

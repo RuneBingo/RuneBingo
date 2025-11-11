@@ -20,10 +20,11 @@ type UseActionsArgs = {
   bingo: BingoDto;
   user: AuthenticationDetailsDto | null;
   role: BingoRoles | undefined;
+  isCurrentBingo: boolean;
   refetch: () => void;
 };
 
-export const useActions = ({ bingo, user, role, refetch }: UseActionsArgs) => {
+export const useActions = ({ bingo, user, role, isCurrentBingo, refetch }: UseActionsArgs) => {
   const t = useTranslations('bingo-participant.actions');
   const { askConfirmation } = useConfirmationModal();
   const { refreshUser } = useAppContext();
@@ -174,17 +175,21 @@ export const useActions = ({ bingo, user, role, refetch }: UseActionsArgs) => {
         variant: 'destructive',
         onClick: (participant) => handleKick(participant),
         visible: (participant: BingoParticipantDto) =>
-          canManage && participant.user?.username !== user?.username && participant.role !== BingoRoles.Owner,
+          isCurrentBingo &&
+          canManage &&
+          participant.user?.username !== user?.username &&
+          participant.role !== BingoRoles.Owner,
       },
       {
         label: t('transferOwnership.label'),
         icon: Handshake,
         variant: 'destructive',
         onClick: handleTransferOwnership,
-        visible: (participant: BingoParticipantDto) => isOwner && participant.user?.username !== user?.username,
+        visible: (participant: BingoParticipantDto) =>
+          isCurrentBingo && isOwner && participant.user?.username !== user?.username,
       },
     ];
-  }, [handleLeave, handleKick, handleTransferOwnership, role, t, user?.username]);
+  }, [handleLeave, handleKick, handleTransferOwnership, role, t, user?.username, isCurrentBingo]);
 
   return { actions, KickParticipantModal };
 };

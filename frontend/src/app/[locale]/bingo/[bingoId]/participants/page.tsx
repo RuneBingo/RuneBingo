@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import { getAuthenticatedUser } from '@/api/auth';
-import { getBingo, searchBingoParticipants, searchBingoTeams } from '@/api/bingo';
-import type { BingoRoles } from '@/api/types';
+import { fetchBingoData } from '@/common/bingo/fetch-bingo-data';
 import type { ServerSidePageProps } from '@/common/types';
 
 import View from './view';
@@ -13,24 +11,13 @@ type Params = {
 
 export default async function ParticipantsPage({ params }: ServerSidePageProps<Params>) {
   const { bingoId } = await params;
-  const [bingoResult, user, teamsResult] = await Promise.all([
-    getBingo(bingoId),
-    getAuthenticatedUser(),
-    searchBingoTeams(bingoId),
-  ]);
 
-  if ('error' in bingoResult) notFound();
+  const data = await fetchBingoData(bingoId, { fetchTeams: true });
+  if (!data) notFound();
 
-  const bingo = bingoResult.data;
-  const teams = teamsResult && 'data' in teamsResult ? teamsResult.data : [];
+  const { user, bingo, participant, isCurrentBingo, teams } = data;
 
-  let userRole: BingoRoles | undefined;
-  if (user) {
-    const participant = await searchBingoParticipants(bingoId, { query: user.username });
-    if (participant && 'data' in participant && participant.data.items.length > 0) {
-      userRole = participant.data.items[0].role;
-    }
-  }
-
-  return <View bingo={bingo} userRole={userRole} teams={teams} user={user} />;
+  return (
+    <View bingo={bingo} role={participant?.role} teams={teams ?? []} user={user} isCurrentBingo={isCurrentBingo} />
+  );
 }

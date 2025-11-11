@@ -25,18 +25,19 @@ import { useColumns } from './use-columns';
 
 type TableProps = {
   bingo: BingoDto;
-  userRole?: BingoRoles;
+  role?: BingoRoles;
   queryParams: SearchBingoParticipantsParams;
-  setQueryParams: Dispatch<SetStateAction<SearchBingoParticipantsParams>>;
   user: AuthenticationDetailsDto | null;
   teams: BingoTeamDto[];
+  isCurrentBingo: boolean;
+  setQueryParams: Dispatch<SetStateAction<SearchBingoParticipantsParams>>;
 };
 
 type OrderableFields = NonNullable<SearchBingoParticipantsParams['sort']>;
 
 const IPP = 10;
 
-export default function Table({ bingo, userRole, queryParams, user, teams, setQueryParams }: TableProps) {
+export default function Table({ bingo, role, queryParams, user, teams, isCurrentBingo, setQueryParams }: TableProps) {
   const router = useRouter();
   const t = useTranslations('bingo-participant');
 
@@ -101,8 +102,14 @@ export default function Table({ bingo, userRole, queryParams, user, teams, setQu
     setQueryParams({ ...queryParams, offset: page * IPP });
   };
 
-  const { actions, KickParticipantModal } = useActions({ bingo, user, role: userRole, refetch: query.refetch });
-  const columns = useColumns({ role: userRole, teams, onUpdate: updateParticipant });
+  const { actions, KickParticipantModal } = useActions({
+    bingo,
+    user,
+    role: role,
+    isCurrentBingo,
+    refetch: query.refetch,
+  });
+  const columns = useColumns({ role: role, teams, onUpdate: updateParticipant });
 
   return (
     <Fragment>
