@@ -5,6 +5,7 @@ export type SidebarLink = {
   icon: LucideIcon;
   href: string;
   active?: boolean;
+  exact?: boolean;
 };
 
 export type SidebarItem =

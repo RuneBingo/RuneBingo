@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
-import { cn } from '@/design-system/lib/utils';
+import { assignSubComponents, cn } from '@/design-system/lib/utils';
 
 function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
   return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
@@ -84,6 +84,18 @@ function DrawerDescription({ className, ...props }: React.ComponentProps<typeof 
     />
   );
 }
+
+export default assignSubComponents(Drawer, {
+  Portal: DrawerPortal,
+  Overlay: DrawerOverlay,
+  Trigger: DrawerTrigger,
+  Close: DrawerClose,
+  Content: DrawerContent,
+  Header: DrawerHeader,
+  Footer: DrawerFooter,
+  Title: DrawerTitle,
+  Description: DrawerDescription,
+});
 
 export {
   Drawer,

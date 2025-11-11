@@ -21,7 +21,7 @@ export type UpdateBingoParticipantParams = {
   username: string;
   updates: {
     role?: BingoRoles;
-    teamName?: string;
+    teamName?: string | null;
   };
 };
 
@@ -73,7 +73,10 @@ export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHa
 
     let team: BingoTeam | null = null;
     if (updates.teamName) {
-      team = await this.bingoTeamRepository.findOneBy({ nameNormalized: updates.teamName, bingoId: bingo.id });
+      team = await this.bingoTeamRepository.findOneBy({
+        nameNormalized: BingoTeam.normalizeName(updates.teamName),
+        bingoId: bingo.id,
+      });
       if (!team) {
         throw new NotFoundException(this.i18nService.t('bingo-participant.updateBingoParticipant.teamNotFound'));
       }
@@ -89,7 +92,7 @@ export class UpdateBingoParticipantHandler extends BaseBingoParticipantCommandHa
       throw new ForbiddenException(this.i18nService.t('bingo-participant.updateBingoParticipant.forbidden'));
     }
 
-    if (filteredUpdates.teamName) participantToUpdate.teamId = team!.id;
+    if (filteredUpdates.teamName !== undefined) participantToUpdate.teamId = team?.id ?? null;
 
     if (filteredUpdates.role) {
       if (filteredUpdates.role === BingoRoles.Owner) {

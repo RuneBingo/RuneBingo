@@ -35,9 +35,11 @@ export default function StartBingo() {
       <Modal.Header title={t('title')} />
       <FormikContext.Provider value={formik}>
         <Modal.Body>
-          {t.rich('descriptionHtml', {
-            p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
-          })}
+          <Modal.Description asChild>
+            {t.rich('descriptionHtml', {
+              p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
+            })}
+          </Modal.Description>
           <Form>
             <SwitchField
               name="endDate"

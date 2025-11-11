@@ -16,6 +16,7 @@
     "noValue": "Aucun bingo sélectionné"
   },
   "bingoCard": {
+    "unexpectedError": "Une erreur inattendue est survenue lors du chargement de cette carte de bingo. Veuillez réessayer plus tard.",
     "dateRangeHtml": "Du <b>{startDate}</b> à <b>{endDate}</b>.",
     "maxRegistrationDateHtml": "Fermeture des inscriptions le <b>{maxRegistrationDate}</b>.",
     "createdByHtml": "Organisé par <b>{username}</b>",
@@ -24,8 +25,8 @@
       "editDetails": "Modifier les détails",
       "delete": "Supprimer l'événement",
       "reset": "Réinitialiser l'événement",
-      "startNow": "Démarrer maintenant",
-      "endNow": "Terminer maintenant",
+      "start": "Démarrer maintenant",
+      "end": "Terminer maintenant",
       "cancel": "Annuler l'événement"
     },
     "deleteBingoTile": {
@@ -57,11 +58,13 @@
     },
     "startBingo": {
       "title": "Démarrer l'événement en avance ?",
-      "description": "Vous ne pourrez plus modifier la langue ou le statut public de l'événement, ou modifier la taille de la carte de bingo et ses cases.\n\nToutes les demandes et invitations en attente seront annulées et les participants seront liés à leur équipe assignée.\n\nTous les participants seront liés à leur équipe et notifiés que l'événement a commencé.",
+      "descriptionHtml": "Vous ne pourrez plus modifier la langue ou le statut public de l'événement, ou modifier la taille de la carte de bingo et ses cases.\n\nToutes les demandes et invitations en attente seront annulées et les participants seront liés à leur équipe assignée.\n\nTous les participants seront liés à leur équipe et notifiés que l'événement a commencé.",
       "endDate": {
         "switch": "Je veux aussi modifier la date de fin",
         "placeholder": "Entrer une nouvelle date de fin"
       },
+      "submit": "Démarrer l'événement",
+      "cancel": "Fermer",
       "success": "L'événement a été démarré avec succès."
     },
     "endBingo": {
@@ -143,5 +146,8 @@
       "owner": "Vous êtes le propriétaire de ce bingo."
     },
     "description": "Vous pouvez le gérer en <button>le définissant comme votre bingo actuel</button>."
+  },
+  "selectTeam": {
+    "empty": "Aucune équipe assignée"
   }
 }

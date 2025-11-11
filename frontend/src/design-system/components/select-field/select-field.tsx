@@ -4,15 +4,7 @@ import { useId } from 'react';
 
 import { cn } from '@/design-system/lib/utils';
 import { Label } from '@/design-system/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/design-system/ui/select';
+import Select from '@/design-system/ui/select';
 
 import type { SelectFieldProps } from './types';
 
@@ -36,27 +28,27 @@ export default function SelectField({
         </Label>
       )}
       <Select value={value} onValueChange={onChange} {...props}>
-        <SelectTrigger className={className} id={id}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
+        <Select.Trigger className={className} id={id}>
+          <Select.Value />
+        </Select.Trigger>
+        <Select.Content>
           {options.map((optionOrGroup) =>
             'options' in optionOrGroup ? (
-              <SelectGroup key={optionOrGroup.label}>
-                <SelectLabel>{optionOrGroup.label}</SelectLabel>
+              <Select.Group key={optionOrGroup.label}>
+                <Select.Label>{optionOrGroup.label}</Select.Label>
                 {optionOrGroup.options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <Select.Item key={option.value} value={option.value}>
                     {option.label}
-                  </SelectItem>
+                  </Select.Item>
                 ))}
-              </SelectGroup>
+              </Select.Group>
             ) : (
-              <SelectItem key={optionOrGroup.value} value={optionOrGroup.value}>
+              <Select.Item key={optionOrGroup.value} value={optionOrGroup.value}>
                 {optionOrGroup.label}
-              </SelectItem>
+              </Select.Item>
             ),
           )}
-        </SelectContent>
+        </Select.Content>
       </Select>
     </div>
   );

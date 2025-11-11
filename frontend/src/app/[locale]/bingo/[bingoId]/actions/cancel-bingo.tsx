@@ -13,9 +13,11 @@ export default function CancelBingo() {
     <Modal open={currentAction === 'cancel'} onOpenChange={closeAction}>
       <Modal.Header title={t('title')} />
       <Modal.Body>
-        {t.rich('descriptionHtml', {
-          p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
-        })}
+        <Modal.Description asChild>
+          {t.rich('descriptionHtml', {
+            p: (chunks) => <p className="text-sm text-muted-foreground">{chunks}</p>,
+          })}
+        </Modal.Description>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="default" onClick={() => cancelBingo({ input: undefined })}>

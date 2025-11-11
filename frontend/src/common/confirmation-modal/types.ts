@@ -1,4 +1,4 @@
-import type { ComponentProps, PropsWithChildren } from 'react';
+import type { ComponentProps, PropsWithChildren, ReactNode } from 'react';
 
 import type { Button } from '@/design-system/ui/button';
 
@@ -11,7 +11,7 @@ export type ConfirmationModalContextType = {
 export type ConfirmationModalProps = {
   open: boolean;
   title: string;
-  description: string;
+  description: ReactNode | string;
   confirmLabel?: string;
   confirmVariant?: ComponentProps<typeof Button>['variant'];
   cancelLabel?: string;

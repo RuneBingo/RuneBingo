@@ -1,0 +1,59 @@
+{
+  "empty": "Aucun participant n'a été trouvé pour les filtres actuels",
+  "title": "Participants",
+  "filters": {
+    "search": "Recherche",
+    "allRoles": "Tous les rôles",
+    "allTeams": "Toutes les équipes"
+  },
+  "table": {
+    "username": "Nom d'utilisateur",
+    "role": "Rôle",
+    "team": "Équipe",
+    "points": "Points",
+    "invitedBy": "Invité par",
+    "joinedOn": "Rejoint le",
+    "noTeam": "Aucune équipe"
+  },
+  "actions": {
+    "leave": {
+      "label": "Quitter l'événement",
+      "title": "Quitter l'événement?",
+      "confirmLabel": "Quitter l'événement",
+      "cancelLabel": "Fermer",
+      "description": {
+        "pending": {
+          "public": "Vous pourrez rejoindre cet événement en obtenant à nouveau une invitation ou en postulant avant le {maxRegistrationDate}.",
+          "private": "Étant donné que cet événement est privé, vous ne pourrez le rejoindre à nouveau que si vous êtes invité."
+        },
+        "ongoingHtml": "<p>Vous ne pourrez pas rejoindre à nouveau cet événement car il est déjà commencé.</p><p>Vos complétions de tuiles compteront toujours pour votre équipe, mais toutes vos demandes de complétion en attente seront annulées.</p>"
+      },
+      "success": "Vous avez quitté l'événement"
+    },
+    "kick": {
+      "label": "Expulser de l'événement",
+      "title": "Expulser {username} de l'événement?",
+      "description": {
+        "ongoingHtml": "<p>Il ne pourra pas rejoindre cet événement car il est déjà commencé.</p><p>Leurs complétions de tuiles compteront toujours pour leur équipe, mais toutes leurs demandes de complétion en attente seront annulées.</p>",
+        "pending": {
+          "private": "Comme cet événement est privé, il ne pourra le rejoindre que si vous l'invitez à nouveau.",
+          "public": "Il pourra rejoindre cet événement à nouveau en recevant une invitation ou en postulant à nouveau.",
+          "publicWithDateHtml": "<p>Il pourra rejoindre cet événement à nouveau en recevant une invitation ou en postulant avant le <b>{maxRegistrationDate}</b>.</p>"
+        }
+      },
+      "deleteTileCompletions": "Supprimer également leurs complétions de tuiles",
+      "confirmLabel": "Expulser {username}",
+      "success": "Vous avez expulsé {username} de l'événement"
+    },
+    "transferOwnership": {
+      "label": "Transférer la propriété",
+      "title": "Transférer la propriété à {username}?",
+      "descriptionHtml": "<p>Il sera promu <b>Propriétaire</b> et vous serez rétrogradé <b>Organisateur</b>.</p><p>Cette action est irréversible.</p>",
+      "confirmLabel": "Transférer la propriété",
+      "success": "Vous avez transféré la propriété à {username}"
+    },
+    "update": {
+      "success": "Le participant a été mis à jour"
+    }
+  }
+}

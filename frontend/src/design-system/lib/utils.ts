@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { enCA, frCA, type Locale } from 'date-fns/locale';
+import { type ComponentType } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -28,4 +29,8 @@ export function getDateFnsLocale(locale: string): Locale {
     default:
       return enCA;
   }
+}
+
+export function getDisplayName<T = object>(Component: ComponentType<T>) {
+  return Component.displayName || Component.name || 'Component';
 }

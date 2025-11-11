@@ -1,0 +1,58 @@
+{
+  "empty": "No participants found for the current filters",
+  "title": "Participants",
+  "filters": {
+    "search": "Search",
+    "allRoles": "All roles",
+    "allTeams": "All teams"
+  },
+  "table": {
+    "username": "Username",
+    "role": "Role",
+    "team": "Team",
+    "points": "Points",
+    "invitedBy": "Invited by",
+    "joinedOn": "Joined on"
+  },
+  "actions": {
+    "leave": {
+      "label": "Leave event",
+      "title": "Leave the event?",
+      "confirmLabel": "Leave the event",
+      "cancelLabel": "Close",
+      "description": {
+        "pending": {
+          "public": "You will be able to join this event by getting an invitation again or by applying to it before {maxRegistrationDate}.",
+          "private": "Since this event is private, you will only be able to rejoin if you get invited again."
+        },
+        "ongoingHtml": "<p>You won't be able to rejoin since this event is already started.</p><p>Your tile completions will still count for your team, but all your pending completion requests will be canceled.</p>"
+      },
+      "success": "You have left the event"
+    },
+    "kick": {
+      "label": "Kick from event",
+      "title": "Kick {username} from the event?",
+      "description": {
+        "ongoingHtml": "<p>They won't be able to rejoin ince this event is already started.</p><p>Their tile completions will still count for their team, but all their pending completion requests will be canceled.</p>",
+        "pending": {
+          "private": "Since this event is private, they will only be able to rejoin if you invite them again.",
+          "public": "They will be able to join this event again by getting an invitation or by applying to it before {maxRegistrationDate}.",
+          "publicWithDateHtml": "<p>They will be able to join this event again by getting an invitation or by applying to it before <b>{maxRegistrationDate}</b>.</p>"
+        }
+      },
+      "deleteTileCompletions": "Also delete their tile completions",
+      "confirmLabel": "Kick {username}",
+      "success": "You have kicked {username} from the event"
+    },
+    "transferOwnership": {
+      "label": "Transfer ownership",
+      "title": "Transfer ownership to {username}?",
+      "descriptionHtml": "<p>They will be promoted to <b>Owner</b> and you will be demoted to <b>Organizer</b>.</p><p>This action cannot be undone.</p>",
+      "confirmLabel": "Transfer ownership",
+      "success": "You have transferred ownership to {username}"
+    },
+    "update": {
+      "success": "Participant has been updated"
+    }
+  }
+}

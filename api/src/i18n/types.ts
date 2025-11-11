@@ -71,6 +71,11 @@ export type I18nTranslations = {
             };
         };
     };
+    "bingo-team": {
+        "searchBingoTeams": {
+            "bingoNotFound": string;
+        };
+    };
     "bingo": {
         "createBingo": {
             "titleNotUnique": string;

@@ -1,4 +1,4 @@
-import { type Select } from '@/design-system/ui/select';
+import type Select from '@/design-system/ui/select';
 
 export type Option = {
   label: string;

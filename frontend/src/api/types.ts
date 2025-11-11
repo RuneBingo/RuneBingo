@@ -146,7 +146,7 @@ export type BingoTeamDto = {
 };
 
 export type UpdateBingoParticipantDto = {
-  teamName?: string;
+  teamName?: string | null;
   role?: BingoRoles;
 };
 
@@ -159,10 +159,15 @@ export type KickBingoParticipantDto = {
 };
 
 export type BingoParticipantDto = {
+  userId: number;
+  username: string;
   teamName: string | null;
   teamNameNormalized: string | null;
   user: UserDto | null;
   role: BingoRoles;
+  points: number;
+  createdAt: string;
+  invitedBy: UserDto | null;
 };
 
 export type UpdateBingoDto = {

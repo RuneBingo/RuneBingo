@@ -13,7 +13,7 @@ export default function DeleteBingo() {
     <Modal open={currentAction === 'delete'} onOpenChange={closeAction}>
       <Modal.Header title={t('title')} />
       <Modal.Body>
-        <p className="text-sm text-muted-foreground">{t('description')}</p>
+        <Modal.Description>{t('description')}</Modal.Description>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="destructive" onClick={() => deleteBingo({ input: undefined })}>

@@ -27,10 +27,11 @@ import { BingoParticipant } from './participant/bingo-participant.entity';
 import { FindBingoByBingoIdHandler } from './queries/find-bingo-by-bingo-id.query';
 import { SearchBingoActivitiesHandler } from './queries/search-bingo-activities.query';
 import { SearchBingosHandler } from './queries/search-bingos.query';
+import { BingoTeamModule } from './team/bingo-team.module';
 import { BingoTile } from './tile/bingo-tile.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam, BingoTile])],
+  imports: [TypeOrmModule.forFeature([Bingo, User, Activity, BingoParticipant, BingoTeam, BingoTile]), BingoTeamModule],
   controllers: [BingoController],
   providers: [
     // Commands

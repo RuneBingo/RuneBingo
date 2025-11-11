@@ -30,9 +30,10 @@ export default function DataTableContent<TData extends object>({
     <Fragment>
       {query.data?.items.map((item, index) => {
         const itemActions = filterActionsByItem(actions, item);
+        const key = String(item[idProperty] ?? index);
 
         return (
-          <TableRow key={String(item[idProperty] ?? index)}>
+          <TableRow key={key} className="h-13">
             {columns.map(({ render, field, orderable }, index) => (
               <TableCell key={index} className={cn('max-w-sm', { 'pl-4': orderable })}>
                 {render &&
@@ -45,7 +46,7 @@ export default function DataTableContent<TData extends object>({
                 {Boolean(!render && field) && <Fragment>{String(item[field as keyof TData])}</Fragment>}
               </TableCell>
             ))}
-            {itemActions && (
+            {itemActions && itemActions.length > 0 && (
               <TableCell className="w-0">
                 <ActionsDropdown item={item} actions={itemActions} />
               </TableCell>

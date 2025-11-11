@@ -13,11 +13,10 @@ export class BingoTeamDto {
 
   static async fromBingoTeam(bingoTeam: BingoTeam): Promise<BingoTeamDto> {
     const dto = new BingoTeamDto(bingoTeam);
-
     dto.captain = await bingoTeam.captain;
-
     return dto;
   }
+
   @ApiProperty()
   name: string;
 
