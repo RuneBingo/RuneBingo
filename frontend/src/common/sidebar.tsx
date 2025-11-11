@@ -14,14 +14,15 @@ import {
 import NextLink from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { Sidebar as DSidebar } from '@/design-system/components/sidebar/sidebar';
 import { type SidebarItem } from '@/design-system/components/sidebar/types';
+import useToggle from '@/design-system/hooks/use-toggle';
 import { usePathname } from '@/i18n/navigation';
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, onToggle] = useToggle();
   const pathname = usePathname();
   const t = useTranslations('common.navigation');
   const { bingoId } = useParams();
@@ -97,17 +98,7 @@ export default function Sidebar() {
     [bingoId, t],
   );
 
-  const handleToggle = () => {
-    setCollapsed(!collapsed);
-  };
-
   return (
-    <DSidebar
-      items={items}
-      collapsed={collapsed}
-      onToggle={handleToggle}
-      linkComponent={NextLink}
-      pathname={pathname}
-    />
+    <DSidebar items={items} collapsed={collapsed} onToggle={onToggle} linkComponent={NextLink} pathname={pathname} />
   );
 }
